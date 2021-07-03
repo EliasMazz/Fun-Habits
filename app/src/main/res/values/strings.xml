@@ -1,3 +1,41 @@
 <resources>
-    <string name="app_name">Fun-Habit-Journal</string>
+    <string name="app_name">Fun Habits and Journal</string>
+
+    <string name="title_habit">Habits module</string>
+    <string name="title_reminders">Reminders module</string>
+    <string name="title_settings">Settings module</string>
+
+
+    <string name="module_habits_name">habits</string>
+    <string name="module_settings_name">settings</string>
+    <string name="module_reminders_name">reminders</string>
+
+    <string name="text_error">Error</string>
+    <string name="text_success">Success</string>
+    <string name="text_ok">OK</string>
+    <string name="text_cancel">Cancel</string>
+    <string name="text_info">Info</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="text_yes">Yes</string>
+    <string name="text_enter_a_title">Enter a title</string>
+    <string name="text_undo">Undo</string>
+
+
+    <string name="text_habit_go_here">Habits go here</string>
+    <string name="text_due_date">Due Date...</string>
+    <string name="text_habit_title_cannot_be_empty">Habit title can not be empty.</string>
+    <string name="text_edit_body">Edit Body</string>
+    <string name="text_edit_title">Edit Title</string>
+    <string name="text_delete">Delete</string>
+    <string name="text_filter">Filter</string>
+    <string name="text_search">Search</string>
+
+    <string name="filter_options">Filter options</string>
+    <string name="filter_asc">ASC</string>
+    <string name="filter_desc">DESC</string>
+    <string name="filter_title">Title</string>
+    <string name="filter_date">Date</string>
+    <string name="filter_title_or_date">Filter by title or date</string>
+    <string name="filter_asc_desc">Ascending or descending order</string>
+    <string name="text_Apply">Apply</string>
 </resources>
