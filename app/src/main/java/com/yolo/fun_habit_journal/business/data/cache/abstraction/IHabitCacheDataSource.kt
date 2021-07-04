@@ -1,4 +1,4 @@
-package com.yolo.fun_habit_journal.business.data.cache.`interface`
+package com.yolo.fun_habit_journal.business.data.cache.abstraction
 
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 

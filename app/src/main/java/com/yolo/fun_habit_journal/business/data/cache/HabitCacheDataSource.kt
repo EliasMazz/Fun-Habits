@@ -1,6 +1,6 @@
 package com.yolo.fun_habit_journal.business.data.cache
 
-import com.yolo.fun_habit_journal.business.data.cache.`interface`.IHabitCacheDataSource
+import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import javax.inject.Inject
 import javax.inject.Singleton
