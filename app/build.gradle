@@ -16,12 +16,15 @@ android {
 
         testInstrumentationRunner AndroidTestDependencies.instrumentation_runner
     }
+
     buildTypes {
         debug {
             minifyEnabled false
+            manifestPlaceholders = [enableCrashReporting:"false"]
         }
         release {
             minifyEnabled false
+            manifestPlaceholders = [enableCrashReporting:"true"]
         }
     }
 
@@ -32,6 +35,16 @@ android {
 
     kotlinOptions {
         jvmTarget = Java.java_version
+    }
+
+    sourceSets {
+        test.resources.srcDirs += 'src/test/res'
+    }
+
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
     }
 }
 
