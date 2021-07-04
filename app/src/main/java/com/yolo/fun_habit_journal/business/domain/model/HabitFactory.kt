@@ -11,7 +11,7 @@ class HabitFactory
 constructor(
     private val dateUtil: DateUtil
 ) {
-    fun createSingleNote(
+    fun createSingleHabit(
         id: String? = null,
         title: String,
         body: String? = null
