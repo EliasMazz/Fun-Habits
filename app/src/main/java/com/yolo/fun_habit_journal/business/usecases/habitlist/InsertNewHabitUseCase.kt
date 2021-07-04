@@ -1,7 +1,10 @@
 package com.yolo.fun_habit_journal.business.usecases.habitlist
 
 import com.yolo.fun_habit_journal.business.data.cache.HabitCacheDataSource
+import com.yolo.fun_habit_journal.business.data.cache.util.CacheResponseHandler
+import com.yolo.fun_habit_journal.business.data.cache.util.safeCacheCall
 import com.yolo.fun_habit_journal.business.data.network.HabitNetworkDataSouce
+import com.yolo.fun_habit_journal.business.data.network.util.safeApiCall
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
 import com.yolo.fun_habit_journal.business.domain.state.DataState
@@ -10,6 +13,7 @@ import com.yolo.fun_habit_journal.business.domain.state.Response
 import com.yolo.fun_habit_journal.business.domain.state.StateEvent
 import com.yolo.fun_habit_journal.business.domain.state.UIComponentType
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -18,20 +22,32 @@ class InsertNewHabitUseCase(
     private val habitNetworkDataSouce: HabitNetworkDataSouce,
     private val habitFactory: HabitFactory
 ) {
-
     fun insertNewHabit(
         id: String? = null,
         title: String,
         stateEvent: StateEvent
-    ): Flow<DataState<HabitListViewState>> = flow {
+    ): Flow<DataState<HabitListViewState>?> = flow {
         val newHabit = habitFactory.createSingleHabit(
             id = id,
             title = title
         )
 
-        val cacheResult = habitCacheDataSource.insertHabit(newHabit)
-        val cacheResponse = getCacheInsertHabitResponse(cacheResult, newHabit, stateEvent)
+        val cacheResult = safeCacheCall(IO) {
+            habitCacheDataSource.insertHabit(newHabit)
+        }
+
+        val cacheResponse = object : CacheResponseHandler<HabitListViewState, Long>(
+            response = cacheResult,
+            stateEvent = stateEvent
+        ) {
+            override fun handleSuccess(result: Long): DataState<HabitListViewState> {
+                return getCacheInsertHabitResponse(result, newHabit, stateEvent)
+            }
+        }.getResult()
+
         emit(cacheResponse)
+
+        updateNetwork(cacheResponse?.stateMessage?.response?.message, newHabit)
     }
 
     private suspend fun updateNetwork(
@@ -39,7 +55,9 @@ class InsertNewHabitUseCase(
         newHabit: Habit
     ) {
         if (cacheResponse.equals(INSERT_HABIT_SUCCESS)) {
-            habitNetworkDataSouce.insertOrUpdateHabit(newHabit)
+            safeApiCall(IO) {
+                habitNetworkDataSouce.insertOrUpdateHabit(newHabit)
+            }
         }
     }
 
