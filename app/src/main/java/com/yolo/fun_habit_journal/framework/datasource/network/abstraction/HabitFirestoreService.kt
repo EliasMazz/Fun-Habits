@@ -1,8 +1,8 @@
-package com.yolo.fun_habit_journal.business.data.network.abstraction
+package com.yolo.fun_habit_journal.framework.datasource.network.abstraction
 
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 
-interface IHabitNetworkDataSource {
+interface HabitFirestoreService {
 
     suspend fun insertOrUpdateHabit(habit: Habit)
 
@@ -10,7 +10,7 @@ interface IHabitNetworkDataSource {
 
     suspend fun insertDeletedHabit(habit: Habit)
 
-    suspend fun insertDeletedHabitList(habitList: List<Habit>)
+    suspend fun insertDeletedHabits(habitList: List<Habit>)
 
     suspend fun deleteDeletedHabit(habit: Habit)
 

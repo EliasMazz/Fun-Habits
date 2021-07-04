@@ -10,9 +10,9 @@ interface IHabitCacheDataSource {
 
     suspend fun deleteHabits(habitList: List<Habit>): Int
 
-    suspend fun updateHabit(id: String, title: String, body: String): Int
+    suspend fun updateHabit(id: String, title: String, body: String?, timestamp: String?): Int
 
-    suspend fun searchNotes(
+    suspend fun searchHabits(
         query: String,
         filterAndOrder: String,
         page: Int
