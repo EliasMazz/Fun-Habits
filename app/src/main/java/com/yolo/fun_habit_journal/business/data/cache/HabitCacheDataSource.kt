@@ -33,4 +33,7 @@ constructor(
 
     override suspend fun insertHabits(habits: List<Habit>) =
         habitDaoService.insertHabitList(habits)
+
+    override suspend fun getAllHabits(): List<Habit> =
+        habitDaoService.getAllHabits()
 }

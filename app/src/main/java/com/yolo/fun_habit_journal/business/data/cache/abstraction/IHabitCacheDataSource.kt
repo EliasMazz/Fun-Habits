@@ -24,4 +24,5 @@ interface IHabitCacheDataSource {
 
     suspend fun insertHabits(habits: List<Habit>): LongArray
 
+    suspend fun getAllHabits(): List<Habit>
 }
