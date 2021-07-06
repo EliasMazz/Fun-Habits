@@ -3,7 +3,6 @@ package com.yolo.fun_habit_journal.business.data.cache
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
-import com.yolo.fun_habit_journal.framework.datasource.database.HABIT_PAGINATION_PAGE_SIZE
 import org.junit.jupiter.api.Assertions.*
 
 const val FORCE_DELETE_HABIT_EXCEPTION = "FORCE_DELETE_HABIT_EXCEPTION"
@@ -14,6 +13,7 @@ const val FORCE_SEARCH_HABITS_EXCEPTION = "FORCE_SEARCH_HABITS_EXCEPTION"
 const val FORCE_GENERAL_FAILURE = "FORCE_GENERAL_FAILURE"
 const val DEFAULT_SUCCESS_DB_RESULT = 1
 const val DEFAULT_FAILURE_DB_RESULT = -1
+const val HABIT_PAGINATION_PAGE_SIZE = 30
 
 class FakeHabitCacheDataSource
 constructor(

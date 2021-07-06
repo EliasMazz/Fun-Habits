@@ -1,9 +1,11 @@
 package com.yolo.fun_habit_journal.business.usecases.habitlist
 
 import com.yolo.fun_habit_journal.business.data.cache.HabitCacheDataSource
+import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.data.cache.util.CacheResponseHandler
 import com.yolo.fun_habit_journal.business.data.cache.util.safeCacheCall
 import com.yolo.fun_habit_journal.business.data.network.HabitNetworkDataSouce
+import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetworkDataSource
 import com.yolo.fun_habit_journal.business.data.network.util.safeApiCall
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
@@ -18,8 +20,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class InsertNewHabitUseCase(
-    private val habitCacheDataSource: HabitCacheDataSource,
-    private val habitNetworkDataSouce: HabitNetworkDataSouce,
+    private val habitCacheDataSource: IHabitCacheDataSource,
+    private val habitNetworkDataSouce: IHabitNetworkDataSource,
     private val habitFactory: HabitFactory
 ) {
     fun insertNewHabit(

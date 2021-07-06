@@ -9,26 +9,28 @@ class HabitDataFactory(
 ) {
 
     fun produceListOfHabits(): List<Habit> {
-        return Gson()
+        val habits: List<Habit> =Gson()
             .fromJson(
-                getHabitsFromFile("habit_list.json"),
+                getHabitsFromFile("note_list.json"),
                 object : TypeToken<List<Habit>>() {}.type
             )
+
+        return habits
     }
 
-    fun produceHashMapOfHabits(habitList: List<Habit>): HashMap<String, Habit>{
+    fun produceHashMapOfHabits(habitList: List<Habit>): HashMap<String, Habit> {
         val map = HashMap<String, Habit>()
-        for(habit in habitList){
+        for (habit in habitList) {
             map[habit.id] = habit
         }
         return map
     }
 
-    fun produceEmptyListOfHabits(): List<Habit>{
+    fun produceEmptyListOfHabits(): List<Habit> {
         return ArrayList()
     }
 
-    fun getHabitsFromFile(fileName: String): String {
+    private fun getHabitsFromFile(fileName: String): String {
         return testClassLoader.getResource(fileName).readText()
     }
 

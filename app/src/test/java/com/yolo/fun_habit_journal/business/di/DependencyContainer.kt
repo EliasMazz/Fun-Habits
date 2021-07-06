@@ -21,31 +21,21 @@ class DependencyContainer {
     lateinit var habitNetworkDataSource: IHabitNetworkDataSource
     lateinit var habitCacheDataSource: IHabitCacheDataSource
     lateinit var habitFactory: HabitFactory
-    lateinit var habitDataFactory: HabitDataFactory
 
     init {
         isUnitTest = true
     }
 
-    lateinit var habitsData: HashMap<String, Habit>
-
     fun build() {
-        this.javaClass.classLoader?.let { classLoader ->
-            habitDataFactory = HabitDataFactory(classLoader)
-
-            habitsData = habitDataFactory.produceHashMapOfHabits(
-                habitDataFactory.produceListOfHabits()
-            )
-        }
         habitFactory = HabitFactory(dateUtil)
         habitNetworkDataSource = FakeHabitNetworkDataSource(
-            habitsData = habitsData,
+            habitsData = HashMap(),
             deletedHabitsData = HashMap(),
             dateUtil = dateUtil
         )
 
         habitCacheDataSource = FakeHabitCacheDataSource(
-            habitsData = habitsData,
+            habitsData = HashMap(),
             dateUtil = dateUtil
         )
     }

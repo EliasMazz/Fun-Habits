@@ -6,7 +6,7 @@ import com.yolo.fun_habit_journal.business.domain.state.StateMessage
 
 sealed class HabitListStateEvent: StateEvent {
 
-    class InsertNewNoteEvent(
+    class InsertNewHabitEvent(
         val title: String
     ): HabitListStateEvent() {
 
@@ -22,7 +22,7 @@ sealed class HabitListStateEvent: StateEvent {
     }
 
     // for testing
-    class InsertMultipleNotesEvent(
+    class InsertMultipleHabitsEvent(
         val numHabits: Int
     ): HabitListStateEvent() {
 
@@ -37,7 +37,7 @@ sealed class HabitListStateEvent: StateEvent {
         override fun shouldDisplayProgressBar() = true
     }
 
-    class DeleteNoteEvent(
+    class DeleteHabitEvent(
         val habit: Habit
     ): HabitListStateEvent(){
 
@@ -68,7 +68,7 @@ sealed class HabitListStateEvent: StateEvent {
     }
 
     class RestoreDeletedHabitEvent(
-        val note: Habit
+        val habit: Habit
     ): HabitListStateEvent() {
 
         override fun errorInfo(): String {
@@ -82,7 +82,7 @@ sealed class HabitListStateEvent: StateEvent {
         override fun shouldDisplayProgressBar() = false
     }
 
-    class SearchNotesEvent(
+    class SearchHabitsEvent(
         val clearLayoutManagerState: Boolean = true
     ): HabitListStateEvent(){
 
@@ -124,5 +124,4 @@ sealed class HabitListStateEvent: StateEvent {
 
         override fun shouldDisplayProgressBar() = false
     }
-
 }
