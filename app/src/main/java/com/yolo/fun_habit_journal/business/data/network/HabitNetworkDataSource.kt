@@ -7,7 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class HabitNetworkDataSouce
+class HabitNetworkDataSource
 @Inject
 constructor(
     private val habitFirestoreService: HabitFirestoreService
