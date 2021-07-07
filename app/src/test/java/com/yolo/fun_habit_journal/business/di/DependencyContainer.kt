@@ -1,6 +1,6 @@
 package com.yolo.fun_habit_journal.business.di
 
-import com.yolo.fun_habit_journal.business.data.HabitDataFactory
+import com.yolo.fun_habit_journal.business.data.FakeHabitDataFactory
 import com.yolo.fun_habit_journal.business.data.cache.FakeHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.data.network.FakeHabitNetworkDataSource
@@ -21,21 +21,31 @@ class DependencyContainer {
     lateinit var habitNetworkDataSource: IHabitNetworkDataSource
     lateinit var habitCacheDataSource: IHabitCacheDataSource
     lateinit var habitFactory: HabitFactory
+    lateinit var fakeHabitDataFactory: FakeHabitDataFactory
+
+    private var habitsData: HashMap<String, Habit> = HashMap()
 
     init {
         isUnitTest = true
     }
 
     fun build() {
+        this.javaClass.classLoader?.let {
+            fakeHabitDataFactory = FakeHabitDataFactory(it)
+            habitsData = fakeHabitDataFactory.produceHashMapOfHabits(
+                fakeHabitDataFactory.produceListOfHabits()
+            )
+        }
+
         habitFactory = HabitFactory(dateUtil)
         habitNetworkDataSource = FakeHabitNetworkDataSource(
-            habitsData = HashMap(),
+            habitsData = habitsData.toMutableMap() as HashMap<String, Habit>,
             deletedHabitsData = HashMap(),
             dateUtil = dateUtil
         )
 
         habitCacheDataSource = FakeHabitCacheDataSource(
-            habitsData = HashMap(),
+            habitsData = habitsData.toMutableMap() as HashMap<String, Habit>,
             dateUtil = dateUtil
         )
     }
