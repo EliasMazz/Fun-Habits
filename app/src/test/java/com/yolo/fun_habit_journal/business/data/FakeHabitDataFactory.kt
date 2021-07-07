@@ -4,14 +4,14 @@ import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 
-class HabitDataFactory(
+class FakeHabitDataFactory(
     private val testClassLoader: ClassLoader
 ) {
 
     fun produceListOfHabits(): List<Habit> {
-        val habits: List<Habit> =Gson()
+        val habits: List<Habit> = Gson()
             .fromJson(
-                getHabitsFromFile("note_list.json"),
+                getHabitsFromFile("habit_list.json"),
                 object : TypeToken<List<Habit>>() {}.type
             )
 
