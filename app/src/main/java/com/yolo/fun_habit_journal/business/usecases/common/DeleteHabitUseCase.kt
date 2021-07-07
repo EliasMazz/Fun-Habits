@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 const val DELETE_HABIT_SUCCESS = "Succesfully deleted the habit"
-const val DELETE_HABIT_FAILURE = "Failed to delet the habit"
+const val DELETE_HABIT_FAILURE = "Failed to delete the habit"
 
 class DeleteHabitUseCase<ViewState>(
     private val habitCacheDataSource: IHabitCacheDataSource,

@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.flow
 
 class InsertNewHabitUseCase(
     private val habitCacheDataSource: IHabitCacheDataSource,
-    private val habitNetworkDataSouce: IHabitNetworkDataSource,
+    private val habitNetworkDataSource: IHabitNetworkDataSource,
     private val habitFactory: HabitFactory
 ) {
     fun insertNewHabit(
@@ -56,7 +56,7 @@ class InsertNewHabitUseCase(
     ) {
         if (cacheResponse.equals(INSERT_HABIT_SUCCESS)) {
             safeApiCall(IO) {
-                habitNetworkDataSouce.insertOrUpdateHabit(newHabit)
+                habitNetworkDataSource.insertOrUpdateHabit(newHabit)
             }
         }
     }

@@ -17,14 +17,14 @@ const val GET_HABITS_COUNT_SUCCESS = "Successfully retrieved the number of habit
 const val GET_HABITS_COUNT_FAILED = "Failed to get the number of habits from the cache."
 
 class GetHabitsCountUseCase(
-    private val habitsCacheDataSource: IHabitCacheDataSource
+    private val habitCacheDataSource: IHabitCacheDataSource
 ) {
     fun getHabitsCount(
         stateEvent: StateEvent
     ): Flow<DataState<HabitListViewState>?> = flow {
 
         val cacheResult = safeCacheCall(IO) {
-            habitsCacheDataSource.getHabitsCount()
+            habitCacheDataSource.getHabitsCount()
         }
 
         val response = object : CacheResponseHandler<HabitListViewState, Int>(
