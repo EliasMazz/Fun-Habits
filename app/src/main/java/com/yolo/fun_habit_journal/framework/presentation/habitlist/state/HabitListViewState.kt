@@ -16,7 +16,7 @@ data class HabitListViewState(
     var filter: String? = null,
     var order: String? = null,
     var layoutManagerState: Parcelable? = null,
-    var numNotesInCache: Int? = null
+    var habitsCountInCache: Int? = null
 
 ) : Parcelable, ViewState {
 

@@ -97,7 +97,7 @@ sealed class HabitListStateEvent: StateEvent {
         override fun shouldDisplayProgressBar() = true
     }
 
-    class GetNumHabitsInCacheEvent: HabitListStateEvent(){
+    object GetHabitsCountInCacheEvent : HabitListStateEvent() {
 
         override fun errorInfo(): String {
             return "Error getting the number of habits from the cache."
