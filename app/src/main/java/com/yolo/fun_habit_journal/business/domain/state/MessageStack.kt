@@ -57,8 +57,8 @@ class MessageStack: ArrayList<StateMessage>() {
         return StateMessage( // this does nothing
             Response(
                 message = "does nothing",
-                uiComponentType = UIComponentType.None(),
-                messageType = MessageType.None()
+                uiComponentType = UIComponentType.None,
+                messageType = MessageType.None
             )
         )
     }
