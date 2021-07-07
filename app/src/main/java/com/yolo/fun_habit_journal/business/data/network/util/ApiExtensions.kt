@@ -15,7 +15,6 @@ suspend fun <T> safeApiCall(
 ): ApiResult<T?> {
     return withContext(dispatcher) {
         try {
-            // throws TimeoutCancellationException
             withTimeout(NetworkConstants.NETWORK_TIMEOUT) {
                 ApiResult.Success(apiCall.invoke())
             }

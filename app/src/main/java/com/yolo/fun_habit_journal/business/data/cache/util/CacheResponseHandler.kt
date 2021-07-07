@@ -16,8 +16,8 @@ abstract class CacheResponseHandler<ViewState, Data>(
                 DataState.error(
                     response = Response(
                         message = "${stateEvent?.errorInfo()} Reason: ${response.errorMessage}",
-                        uiComponentType = UIComponentType.Dialog(),
-                        messageType = MessageType.Error()
+                        uiComponentType = UIComponentType.Dialog,
+                        messageType = MessageType.Error
                     ), stateEvent = stateEvent
                 )
             }
@@ -26,8 +26,8 @@ abstract class CacheResponseHandler<ViewState, Data>(
                     return DataState.error(
                         response = Response(
                             message = "${stateEvent?.errorInfo()} Reason: ${CacheErrors.CACHE_DATA_NULL}",
-                            uiComponentType = UIComponentType.Dialog(),
-                            messageType = MessageType.Error()
+                            uiComponentType = UIComponentType.Dialog,
+                            messageType = MessageType.Error
                         ), stateEvent = stateEvent
                     )
                 } else {
