@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test
 
 @InternalCoroutinesApi
 class InsertNewHabitUseCaseTest {
-
     private val dependencyContainer: DependencyContainer = DependencyContainer().apply { build() }
     private val habitCacheDataSource: IHabitCacheDataSource = dependencyContainer.habitCacheDataSource
     private val habitNetworkDataSource: IHabitNetworkDataSource = dependencyContainer.habitNetworkDataSource
@@ -108,6 +107,4 @@ class InsertNewHabitUseCaseTest {
         val networkHabitThatWasInserted = habitNetworkDataSource.searchHabit(newHabit)
         assertEquals(networkHabitThatWasInserted, null)
     }
-
-
 }
