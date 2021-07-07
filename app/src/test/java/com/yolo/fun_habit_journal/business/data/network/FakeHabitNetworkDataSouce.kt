@@ -3,7 +3,7 @@ package com.yolo.fun_habit_journal.business.data.network
 import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetworkDataSource
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
-import org.junit.jupiter.api.Assertions.*
+import com.yolo.fun_habit_journal.framework.util.printLogD
 
 class FakeHabitNetworkDataSource
 constructor(
@@ -21,8 +21,22 @@ constructor(
         habitsData.remove(id)
     }
 
+    override suspend fun searchHabit(habit: Habit): Habit? {
+        return habitsData.get(habit.id)
+    }
+
+    override suspend fun getAllHabits(): List<Habit> {
+        return ArrayList(habitsData.values)
+    }
+
+    override suspend fun insertOrUpdateListHabit(listHabit: List<Habit>) {
+        for (habit in listHabit) {
+            habitsData[habit.id] = habit
+        }
+    }
+
     override suspend fun insertDeletedHabit(habit: Habit) {
-        habitsData[habit.id] = habit
+        deletedHabitsData[habit.id] = habit
     }
 
     override suspend fun insertDeletedHabitList(habitList: List<Habit>) {
@@ -41,19 +55,5 @@ constructor(
 
     override suspend fun deleteAllHabits() {
         deletedHabitsData.clear()
-    }
-
-    override suspend fun searchHabit(habit: Habit): Habit? {
-        return habitsData.get(habit.id)
-    }
-
-    override suspend fun getAllHabits(): List<Habit> {
-        return ArrayList(habitsData.values)
-    }
-
-    override suspend fun insertOrUpdateListHabit(listHabit: List<Habit>) {
-        for (habit in listHabit) {
-            habitsData[habit.id] = habit
-        }
     }
 }
