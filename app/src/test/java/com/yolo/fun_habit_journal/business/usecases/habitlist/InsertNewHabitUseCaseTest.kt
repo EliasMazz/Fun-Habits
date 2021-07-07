@@ -16,20 +16,31 @@ import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 @InternalCoroutinesApi
 class InsertNewHabitUseCaseTest {
-    private val dependencyContainer: DependencyContainer = DependencyContainer().apply { build() }
-    private val habitCacheDataSource: IHabitCacheDataSource = dependencyContainer.habitCacheDataSource
-    private val habitNetworkDataSource: IHabitNetworkDataSource = dependencyContainer.habitNetworkDataSource
-    private val habitFactory: HabitFactory = dependencyContainer.habitFactory
+    private lateinit var dependencyContainer: DependencyContainer
+    private lateinit var habitCacheDataSource: IHabitCacheDataSource
+    private lateinit var habitNetworkDataSource: IHabitNetworkDataSource
+    private lateinit var habitFactory: HabitFactory
 
-    private val insertNewHabitUseCase = InsertNewHabitUseCase(
-        habitCacheDataSource = habitCacheDataSource,
-        habitNetworkDataSouce = habitNetworkDataSource,
-        habitFactory = habitFactory
-    )
+    private lateinit var insertNewHabitUseCase: InsertNewHabitUseCase
+
+    @BeforeEach
+    fun setup() {
+        dependencyContainer = DependencyContainer().apply { build() }
+        habitCacheDataSource = dependencyContainer.habitCacheDataSource
+        habitNetworkDataSource = dependencyContainer.habitNetworkDataSource
+        habitFactory = dependencyContainer.habitFactory
+
+        insertNewHabitUseCase = InsertNewHabitUseCase(
+            habitCacheDataSource = habitCacheDataSource,
+            habitNetworkDataSource = habitNetworkDataSource,
+            habitFactory = habitFactory
+        )
+    }
 
     @Test
     fun `WHEN insert habit success THEN confirm network and cache updated`() = runBlocking {
@@ -50,10 +61,10 @@ class InsertNewHabitUseCaseTest {
         })
 
         val cacheHabitThatWasInserted = habitCacheDataSource.searchHabitById(newHabit.id)
-        assertEquals(cacheHabitThatWasInserted, newHabit)
+        assertEquals(newHabit, cacheHabitThatWasInserted)
 
         val networkHabitThatWasInserted = habitNetworkDataSource.searchHabit(newHabit)
-        assertEquals(networkHabitThatWasInserted, newHabit)
+        assertEquals(newHabit, networkHabitThatWasInserted)
     }
 
     @Test
@@ -76,10 +87,10 @@ class InsertNewHabitUseCaseTest {
         })
 
         val cacheHabitThatWasInserted = habitCacheDataSource.searchHabitById(newHabit.id)
-        assertEquals(cacheHabitThatWasInserted, null)
+        assertEquals(null, cacheHabitThatWasInserted)
 
         val networkHabitThatWasInserted = habitNetworkDataSource.searchHabit(newHabit)
-        assertEquals(networkHabitThatWasInserted, null)
+        assertEquals(null, networkHabitThatWasInserted)
     }
 
     @Test
@@ -102,9 +113,9 @@ class InsertNewHabitUseCaseTest {
         })
 
         val cacheHabitThatWasInserted = habitCacheDataSource.searchHabitById(newHabit.id)
-        assertEquals(cacheHabitThatWasInserted, null)
+        assertEquals(null, cacheHabitThatWasInserted)
 
         val networkHabitThatWasInserted = habitNetworkDataSource.searchHabit(newHabit)
-        assertEquals(networkHabitThatWasInserted, null)
+        assertEquals(null, networkHabitThatWasInserted)
     }
 }

@@ -3,8 +3,10 @@ package com.yolo.fun_habit_journal.business.usecases.habitlist
 import com.yolo.fun_habit_journal.business.data.cache.FORCE_SEARCH_HABITS_EXCEPTION
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.data.cache.util.CacheErrors
+import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetworkDataSource
 import com.yolo.fun_habit_journal.business.di.DependencyContainer
 import com.yolo.fun_habit_journal.business.domain.model.Habit
+import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
 import com.yolo.fun_habit_journal.business.domain.state.DataState
 import com.yolo.fun_habit_journal.framework.datasource.database.ORDER_BY_ASC_DATE_UPDATED
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListStateEvent.SearchHabitsEvent
@@ -15,18 +17,27 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 @InternalCoroutinesApi
 class SearchHabitsUseCaseTest {
 
-    private val dependencyContainer: DependencyContainer = DependencyContainer().apply { build() }
-    private val habitCacheDataSource: IHabitCacheDataSource = dependencyContainer.habitCacheDataSource
+    private lateinit var dependencyContainer: DependencyContainer
+    private lateinit var habitCacheDataSource: IHabitCacheDataSource
 
-    private val searchHabitsUseCase = SearchHabitsUseCase(
-        habitCacheDataSource = habitCacheDataSource
-    )
+    private lateinit var searchHabitsUseCase: SearchHabitsUseCase
 
+    @BeforeEach
+    fun setup() {
+        dependencyContainer = DependencyContainer().apply { build() }
+        habitCacheDataSource = dependencyContainer.habitCacheDataSource
+
+
+        searchHabitsUseCase = SearchHabitsUseCase(
+            habitCacheDataSource = habitCacheDataSource
+        )
+    }
 
     @Test
     fun `WHEN blank query is inserted THEN return success confirm habits retrieved`() = runBlocking {

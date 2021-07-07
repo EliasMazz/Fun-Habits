@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -51,14 +52,14 @@ class DeleteHabitUseCaseTest {
         ).collect(object : FlowCollector<DataState<HabitListViewState>?> {
             override suspend fun emit(value: DataState<HabitListViewState>?) {
                 Assertions.assertEquals(
-                    value?.stateMessage?.response?.message,
-                    DELETE_HABIT_SUCCESS
+                    DELETE_HABIT_SUCCESS,
+                    value?.stateMessage?.response?.message
                 )
             }
         })
 
-        val wasHabitDeleted = !habitNetworkDataSource.getAllHabits().contains(habitToDelete)
-        assertTrue { wasHabitDeleted }
+        val wasHabitDeleted = habitNetworkDataSource.getAllHabits().contains(habitToDelete)
+        assertFalse { wasHabitDeleted }
 
         val wasDeletedHabitInserted = habitNetworkDataSource.getDeletedHabitList()
             .contains(habitToDelete)
@@ -78,8 +79,8 @@ class DeleteHabitUseCaseTest {
         ).collect(object : FlowCollector<DataState<HabitListViewState>?> {
             override suspend fun emit(value: DataState<HabitListViewState>?) {
                 Assertions.assertEquals(
-                    value?.stateMessage?.response?.message,
-                    DELETE_HABIT_FAILURE
+                    DELETE_HABIT_FAILURE,
+                    value?.stateMessage?.response?.message
                 )
             }
         })
