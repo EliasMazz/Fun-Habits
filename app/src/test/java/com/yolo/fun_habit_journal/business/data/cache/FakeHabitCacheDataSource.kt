@@ -3,10 +3,9 @@ package com.yolo.fun_habit_journal.business.data.cache
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
-import org.junit.jupiter.api.Assertions.*
 
 const val FORCE_DELETE_HABIT_EXCEPTION = "FORCE_DELETE_HABIT_EXCEPTION"
-const val FORCE_DELETES_HABIT_EXCEPTION = "FORCE_DELETES_HABIT_EXCEPTION"
+const val FORCE_DELETE_HABITS_EXCEPTION = "FORCE_DELETES_HABIT_EXCEPTION"
 const val FORCE_UPDATE_HABIT_EXCEPTION = "FORCE_UPDATE_HABIT_EXCEPTION"
 const val FORCE_NEW_HABIT_EXCEPTION = "FORCE_NEW_HABIT_EXCEPTION"
 const val FORCE_SEARCH_HABITS_EXCEPTION = "FORCE_SEARCH_HABITS_EXCEPTION"
@@ -35,8 +34,8 @@ constructor(
     override suspend fun deleteHabit(id: String): Int {
         if (id == FORCE_DELETE_HABIT_EXCEPTION) {
             throw Exception("Something went wrong deleting the habit.")
-        } else if (id == FORCE_DELETES_HABIT_EXCEPTION) {
-            throw Exception("Something went wrong deleting the habit.")
+        } else if (id == FORCE_DELETE_HABITS_EXCEPTION) {
+            throw Exception("Something went wrong deleting the list of habits.")
         }
         return habitsData.remove(id)?.let { DEFAULT_SUCCESS_DB_RESULT } ?: DEFAULT_FAILURE_DB_RESULT
     }
@@ -109,7 +108,7 @@ constructor(
 
     override suspend fun insertHabits(habits: List<Habit>): LongArray {
         val results = LongArray(habits.size)
-        for((index,note) in habits.withIndex()){
+        for ((index, note) in habits.withIndex()) {
             results[index] = 1
             habitsData[note.id] = note
         }
