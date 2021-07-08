@@ -1,7 +1,7 @@
 package com.yolo.fun_habit_journal.business.usecases.common
 
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
-import com.yolo.fun_habit_journal.business.data.cache.util.CacheResponseHandler
+import com.yolo.fun_habit_journal.business.data.cache.util.CacheResultHandler
 import com.yolo.fun_habit_journal.business.data.cache.util.safeCacheCall
 import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetworkDataSource
 import com.yolo.fun_habit_journal.business.data.network.util.safeApiCall
@@ -31,21 +31,33 @@ class DeleteHabitUseCase<ViewState>(
             habitCacheDataSource.deleteHabit(habit.id)
         }
 
-        val response = object : CacheResponseHandler<ViewState, Int>(
+        val cacheResultHandler = object : CacheResultHandler<ViewState, Int>(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
-            override fun handleSuccess(result: Int): DataState<ViewState> {
+            override fun handleDataState(result: Int): DataState<ViewState> {
                 return handleCacheSuccess(stateEvent, result)
             }
         }.getResult()
 
-        emit(response)
+        emit(cacheResultHandler)
 
         updateNetwork(
-            message = response?.stateMessage?.response?.message,
+            message = cacheResultHandler?.stateMessage?.response?.message,
             habit = habit
         )
+    }
+
+    private suspend fun updateNetwork(message: String?, habit: Habit) {
+        if (message == DELETE_HABIT_SUCCESS) {
+            safeApiCall(IO) {
+                habitNetworkDataSouce.deleteHabit(habit.id)
+            }
+
+            safeApiCall(IO) {
+                habitNetworkDataSouce.insertDeletedHabit(habit)
+            }
+        }
     }
 
     private fun handleCacheSuccess(stateEvent: StateEvent, result: Int): DataState<ViewState> =
@@ -70,16 +82,4 @@ class DeleteHabitUseCase<ViewState>(
                 stateEvent = stateEvent
             )
         }
-
-    private suspend fun updateNetwork(message: String?, habit: Habit) {
-        if (message == DELETE_HABIT_SUCCESS) {
-            safeApiCall(IO) {
-                habitNetworkDataSouce.deleteHabit(habit.id)
-            }
-
-            safeApiCall(IO) {
-                habitNetworkDataSouce.insertDeletedHabit(habit)
-            }
-        }
-    }
 }

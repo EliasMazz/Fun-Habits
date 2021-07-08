@@ -1,7 +1,7 @@
 package com.yolo.fun_habit_journal.business.usecases.habitlist
 
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
-import com.yolo.fun_habit_journal.business.data.cache.util.CacheResponseHandler
+import com.yolo.fun_habit_journal.business.data.cache.util.CacheResultHandler
 import com.yolo.fun_habit_journal.business.data.cache.util.safeCacheCall
 import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetworkDataSource
 import com.yolo.fun_habit_journal.business.data.network.util.safeApiCall
@@ -38,11 +38,11 @@ class DeleteMultipleHabitsUseCase(
                 habitCacheDataSource.deleteHabit(habit.id)
             }
 
-            val response = object : CacheResponseHandler<HabitListViewState, Int>(
+            val cacheResultHandler = object : CacheResultHandler<HabitListViewState, Int>(
                 response = cacheResult,
                 stateEvent = stateEvent
             ) {
-                override fun handleSuccess(result: Int): DataState<HabitListViewState>? {
+                override fun handleDataState(result: Int): DataState<HabitListViewState>? {
                     if (result < 0) {
                         onDeleteError = true
                     } else {
@@ -52,7 +52,7 @@ class DeleteMultipleHabitsUseCase(
                 }
             }.getResult()
 
-            if (response?.stateMessage?.response?.message?.contains(stateEvent.errorInfo()) == true) {
+            if (cacheResultHandler?.stateMessage?.response?.message?.contains(stateEvent.errorInfo()) == true) {
                 onDeleteError = true
             }
         }

@@ -1,7 +1,7 @@
 package com.yolo.fun_habit_journal.business.usecases.habitlist
 
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
-import com.yolo.fun_habit_journal.business.data.cache.util.CacheResponseHandler
+import com.yolo.fun_habit_journal.business.data.cache.util.CacheResultHandler
 import com.yolo.fun_habit_journal.business.data.cache.util.safeCacheCall
 import com.yolo.fun_habit_journal.business.domain.state.DataState
 import com.yolo.fun_habit_journal.business.domain.state.MessageType
@@ -27,11 +27,11 @@ class GetHabitsCountUseCase(
             habitCacheDataSource.getHabitsCount()
         }
 
-        val response = object : CacheResponseHandler<HabitListViewState, Int>(
+        val cacheResultHandler = object : CacheResultHandler<HabitListViewState, Int>(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
-            override fun handleSuccess(result: Int): DataState<HabitListViewState> {
+            override fun handleDataState(result: Int): DataState<HabitListViewState> {
                 val viewState = HabitListViewState(
                     habitsCountInCache = result
                 )
@@ -47,6 +47,6 @@ class GetHabitsCountUseCase(
             }
         }.getResult()
 
-        emit(response)
+        emit(cacheResultHandler)
     }
 }

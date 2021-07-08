@@ -6,7 +6,7 @@ import com.yolo.fun_habit_journal.business.domain.state.Response
 import com.yolo.fun_habit_journal.business.domain.state.StateEvent
 import com.yolo.fun_habit_journal.business.domain.state.UIComponentType
 
-abstract class CacheResponseHandler<ViewState, Data>(
+abstract class CacheResultHandler<ViewState, Data>(
     private val response: CacheResult<Data?>,
     private val stateEvent: StateEvent?
 ) {
@@ -31,11 +31,11 @@ abstract class CacheResponseHandler<ViewState, Data>(
                         ), stateEvent = stateEvent
                     )
                 } else {
-                    handleSuccess(result = response.value)
+                    handleDataState(result = response.value)
                 }
             }
         }
     }
 
-    abstract fun handleSuccess(result: Data): DataState<ViewState>?
+    abstract fun handleDataState(result: Data): DataState<ViewState>?
 }

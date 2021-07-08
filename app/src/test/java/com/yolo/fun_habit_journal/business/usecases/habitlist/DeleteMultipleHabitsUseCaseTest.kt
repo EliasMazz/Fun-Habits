@@ -19,7 +19,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 @InternalCoroutinesApi
-class DeleteMultipleHabitsUseCaseTest() {
+class DeleteMultipleHabitsUseCaseTest{
     private lateinit var dependencyContainer: DependencyContainer
     private lateinit var habitCacheDataSource: IHabitCacheDataSource
     private lateinit var habitNetworkDataSource: IHabitNetworkDataSource

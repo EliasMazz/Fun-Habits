@@ -12,6 +12,6 @@ const val ORDER_BY_DESC_TITLE = HABIT_ORDER_DESC + HABIT_FILTER_TITLE
 
 const val HABIT_PAGINATION_PAGE_SIZE = 30
 
-class HabitDao {
+interface HabitDao {
 
 }

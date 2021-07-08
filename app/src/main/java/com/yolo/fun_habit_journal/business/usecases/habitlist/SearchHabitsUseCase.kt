@@ -1,7 +1,7 @@
 package com.yolo.fun_habit_journal.business.usecases.habitlist
 
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
-import com.yolo.fun_habit_journal.business.data.cache.util.CacheResponseHandler
+import com.yolo.fun_habit_journal.business.data.cache.util.CacheResultHandler
 import com.yolo.fun_habit_journal.business.data.cache.util.safeCacheCall
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.state.DataState
@@ -40,11 +40,11 @@ class SearchHabitsUseCase(
             )
         }
 
-        val response = object : CacheResponseHandler<HabitListViewState, List<Habit>>(
+        val cacheResultHandler = object : CacheResultHandler<HabitListViewState, List<Habit>>(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
-            override fun handleSuccess(result: List<Habit>): DataState<HabitListViewState> {
+            override fun handleDataState(result: List<Habit>): DataState<HabitListViewState> {
                 var message: String? = SEARCH_HABITS_SUCCESS
                 var uiComponentType: UIComponentType = UIComponentType.None
 
@@ -64,6 +64,6 @@ class SearchHabitsUseCase(
             }
         }.getResult()
 
-        emit(response)
+        emit(cacheResultHandler)
     }
 }

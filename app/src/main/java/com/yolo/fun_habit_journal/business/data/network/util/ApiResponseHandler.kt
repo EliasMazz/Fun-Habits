@@ -1,6 +1,5 @@
 package com.yolo.fun_habit_journal.business.data.network.util
 
-import com.yolo.fun_habit_journal.business.data.cache.util.CacheErrors
 import com.yolo.fun_habit_journal.business.data.network.util.NetworkErrors.NETWORK_DATA_NULL
 import com.yolo.fun_habit_journal.business.domain.state.DataState
 import com.yolo.fun_habit_journal.business.domain.state.MessageType
