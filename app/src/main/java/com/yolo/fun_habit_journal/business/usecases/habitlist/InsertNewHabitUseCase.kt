@@ -39,7 +39,7 @@ class InsertNewHabitUseCase(
             habitCacheDataSource.insertHabit(newHabit)
         }
 
-        val cacheResultHandler = object : CacheResultHandler<HabitListViewState, Long>(
+        val dataState = object : CacheResultHandler<HabitListViewState, Long>(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
@@ -52,9 +52,9 @@ class InsertNewHabitUseCase(
             }
         }.getResult()
 
-        emit(cacheResultHandler)
+        emit(dataState)
 
-        updateNetwork(cacheResultHandler?.stateMessage?.response?.message, newHabit)
+        updateNetwork(dataState?.stateMessage?.response?.message, newHabit)
     }
 
     private suspend fun updateNetwork(

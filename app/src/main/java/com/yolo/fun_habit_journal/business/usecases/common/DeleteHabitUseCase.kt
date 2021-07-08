@@ -31,7 +31,7 @@ class DeleteHabitUseCase<ViewState>(
             habitCacheDataSource.deleteHabit(habit.id)
         }
 
-        val cacheResultHandler = object : CacheResultHandler<ViewState, Int>(
+        val dataState = object : CacheResultHandler<ViewState, Int>(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
@@ -40,10 +40,10 @@ class DeleteHabitUseCase<ViewState>(
             }
         }.getResult()
 
-        emit(cacheResultHandler)
+        emit(dataState)
 
         updateNetwork(
-            message = cacheResultHandler?.stateMessage?.response?.message,
+            message = dataState?.stateMessage?.response?.message,
             habit = habit
         )
     }

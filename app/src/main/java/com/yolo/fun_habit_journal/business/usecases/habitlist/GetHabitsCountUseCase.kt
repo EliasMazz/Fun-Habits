@@ -27,7 +27,7 @@ class GetHabitsCountUseCase(
             habitCacheDataSource.getHabitsCount()
         }
 
-        val cacheResultHandler = object : CacheResultHandler<HabitListViewState, Int>(
+        val dataState = object : CacheResultHandler<HabitListViewState, Int>(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
@@ -47,6 +47,6 @@ class GetHabitsCountUseCase(
             }
         }.getResult()
 
-        emit(cacheResultHandler)
+        emit(dataState)
     }
 }

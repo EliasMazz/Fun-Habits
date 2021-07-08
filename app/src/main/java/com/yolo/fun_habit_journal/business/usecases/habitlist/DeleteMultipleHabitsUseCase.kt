@@ -38,7 +38,7 @@ class DeleteMultipleHabitsUseCase(
                 habitCacheDataSource.deleteHabit(habit.id)
             }
 
-            val cacheResultHandler = object : CacheResultHandler<HabitListViewState, Int>(
+            val dataState = object : CacheResultHandler<HabitListViewState, Int>(
                 response = cacheResult,
                 stateEvent = stateEvent
             ) {
@@ -52,7 +52,7 @@ class DeleteMultipleHabitsUseCase(
                 }
             }.getResult()
 
-            if (cacheResultHandler?.stateMessage?.response?.message?.contains(stateEvent.errorInfo()) == true) {
+            if (dataState?.stateMessage?.response?.message?.contains(stateEvent.errorInfo()) == true) {
                 onDeleteError = true
             }
         }

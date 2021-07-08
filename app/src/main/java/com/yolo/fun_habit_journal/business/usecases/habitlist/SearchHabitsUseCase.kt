@@ -40,7 +40,7 @@ class SearchHabitsUseCase(
             )
         }
 
-        val cacheResultHandler = object : CacheResultHandler<HabitListViewState, List<Habit>>(
+        val dataState = object : CacheResultHandler<HabitListViewState, List<Habit>>(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
@@ -64,6 +64,6 @@ class SearchHabitsUseCase(
             }
         }.getResult()
 
-        emit(cacheResultHandler)
+        emit(dataState)
     }
 }

@@ -1,10 +1,8 @@
 package com.yolo.fun_habit_journal.business.usecases.habitlist
 
-import com.yolo.fun_habit_journal.business.data.cache.HabitCacheDataSource
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.data.cache.util.CacheResultHandler
 import com.yolo.fun_habit_journal.business.data.cache.util.safeCacheCall
-import com.yolo.fun_habit_journal.business.data.network.HabitNetworkDataSource
 import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetworkDataSource
 import com.yolo.fun_habit_journal.business.data.network.util.safeApiCall
 import com.yolo.fun_habit_journal.business.domain.model.Habit
@@ -34,7 +32,7 @@ class RestoreDeletedHabitUseCase(
             habitCacheDataSource.insertHabit(habit)
         }
 
-        val cacheResultHandler = object : CacheResultHandler<HabitListViewState, Long>(
+        val dataState = object : CacheResultHandler<HabitListViewState, Long>(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
@@ -47,9 +45,9 @@ class RestoreDeletedHabitUseCase(
             }
         }.getResult()
 
-        emit(cacheResultHandler)
+        emit(dataState)
 
-        updateNetwork(cacheResultHandler?.stateMessage?.response?.message, habit)
+        updateNetwork(dataState?.stateMessage?.response?.message, habit)
     }
 
     private suspend fun updateNetwork(message: String?, habit: Habit) {
