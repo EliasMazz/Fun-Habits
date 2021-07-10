@@ -4,7 +4,7 @@ import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDat
 import com.yolo.fun_habit_journal.business.data.cache.util.CacheResultHandler
 import com.yolo.fun_habit_journal.business.data.cache.util.safeCacheCall
 import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetworkDataSource
-import com.yolo.fun_habit_journal.business.data.network.util.safeApiCall
+import com.yolo.fun_habit_journal.business.data.network.util.safeNetworkCall
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
 import com.yolo.fun_habit_journal.business.domain.state.DataState
@@ -62,7 +62,7 @@ class InsertNewHabitUseCase(
         newHabit: Habit
     ) {
         if (message.equals(INSERT_HABIT_SUCCESS)) {
-            safeApiCall(IO) {
+            safeNetworkCall(IO) {
                 habitNetworkDataSource.insertOrUpdateHabit(newHabit)
             }
         }

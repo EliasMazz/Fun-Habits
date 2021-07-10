@@ -4,7 +4,7 @@ import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDat
 import com.yolo.fun_habit_journal.business.data.cache.util.CacheResultHandler
 import com.yolo.fun_habit_journal.business.data.cache.util.safeCacheCall
 import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetworkDataSource
-import com.yolo.fun_habit_journal.business.data.network.util.safeApiCall
+import com.yolo.fun_habit_journal.business.data.network.util.safeNetworkCall
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.state.DataState
 import com.yolo.fun_habit_journal.business.domain.state.MessageType
@@ -50,11 +50,11 @@ class DeleteHabitUseCase<ViewState>(
 
     private suspend fun updateNetwork(message: String?, habit: Habit) {
         if (message == DELETE_HABIT_SUCCESS) {
-            safeApiCall(IO) {
+            safeNetworkCall(IO) {
                 habitNetworkDataSouce.deleteHabit(habit.id)
             }
 
-            safeApiCall(IO) {
+            safeNetworkCall(IO) {
                 habitNetworkDataSouce.insertDeletedHabit(habit)
             }
         }

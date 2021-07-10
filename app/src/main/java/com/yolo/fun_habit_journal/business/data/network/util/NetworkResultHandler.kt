@@ -7,14 +7,14 @@ import com.yolo.fun_habit_journal.business.domain.state.Response
 import com.yolo.fun_habit_journal.business.domain.state.StateEvent
 import com.yolo.fun_habit_journal.business.domain.state.UIComponentType
 
-abstract class ApiResponseHandler<ViewState, Data>(
-    private val response: ApiResult<Data?>,
+abstract class NetworkResultHandler<ViewState, Data>(
+    private val response: NetworkResult<Data?>,
     private val stateEvent: StateEvent?
 ) {
 
     suspend fun getResult(): DataState<ViewState> {
         return when (response) {
-            is ApiResult.GenericError -> {
+            is NetworkResult.GenericError -> {
                 DataState.error(
                     response = Response(
                         message = "${stateEvent?.errorInfo()} Reason: ${response.errorMessage}",
@@ -24,17 +24,17 @@ abstract class ApiResponseHandler<ViewState, Data>(
                 )
             }
 
-            is ApiResult.NetworkError -> {
+            is NetworkResult.NetworkError -> {
                 DataState.error(
                     response = Response(
-                        message = "${stateEvent?.errorInfo()} Reason: ${ApiResult.NetworkError}",
+                        message = "${stateEvent?.errorInfo()} Reason: ${NetworkResult.NetworkError}",
                         uiComponentType = UIComponentType.Dialog,
                         messageType = MessageType.Error
                     ), stateEvent = stateEvent
                 )
             }
 
-            is ApiResult.Success -> {
+            is NetworkResult.Success -> {
                 if (response.value == null) {
                     return DataState.error(
                         response = Response(

@@ -14,7 +14,7 @@ interface IHabitNetworkDataSource {
 
     suspend fun deleteDeletedHabit(habit: Habit)
 
-    suspend fun getDeletedHabitList(): List<Habit>
+    suspend fun getDeletedHabitList(): List<Habit>?
 
     suspend fun deleteAllHabits()
 

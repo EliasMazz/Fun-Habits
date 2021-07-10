@@ -4,11 +4,10 @@ import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDat
 import com.yolo.fun_habit_journal.business.data.cache.util.CacheResultHandler
 import com.yolo.fun_habit_journal.business.data.cache.util.safeCacheCall
 import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetworkDataSource
-import com.yolo.fun_habit_journal.business.data.network.util.ApiResponseHandler
-import com.yolo.fun_habit_journal.business.data.network.util.safeApiCall
+import com.yolo.fun_habit_journal.business.data.network.util.NetworkResultHandler
+import com.yolo.fun_habit_journal.business.data.network.util.safeNetworkCall
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.state.DataState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -56,11 +55,11 @@ class SyncHabitsUseCase(
         cacheHabitsInMemory: ArrayList<Habit>
     ) = withContext(IO) {
 
-        val networkResult = safeApiCall(IO) {
+        val networkResult = safeNetworkCall(IO) {
             habitNetworkDataSource.getAllHabits()
         }
 
-        val dataState = object : ApiResponseHandler<List<Habit>, List<Habit>>(
+        val dataState = object : NetworkResultHandler<List<Habit>, List<Habit>>(
             response = networkResult,
             stateEvent = null
         ) {
@@ -87,7 +86,7 @@ class SyncHabitsUseCase(
         job.join()
 
         for (cachedHabit in cacheHabitsInMemory) {
-            safeApiCall(IO) {
+            safeNetworkCall(IO) {
                 habitNetworkDataSource.insertOrUpdateHabit(cachedHabit)
             }
         }
@@ -110,7 +109,7 @@ class SyncHabitsUseCase(
                 )
             }
         } else {
-            safeApiCall(IO) {
+            safeNetworkCall(IO) {
                 habitNetworkDataSource.insertOrUpdateHabit(cachedHabit)
             }
         }

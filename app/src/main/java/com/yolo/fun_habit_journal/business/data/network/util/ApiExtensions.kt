@@ -9,37 +9,37 @@ import kotlinx.coroutines.withTimeout
 import retrofit2.HttpException
 import java.io.IOException
 
-suspend fun <T> safeApiCall(
+suspend fun <T> safeNetworkCall(
     dispatcher: CoroutineDispatcher,
-    apiCall: suspend () -> T?
-): ApiResult<T?> {
+    networkCall: suspend () -> T?
+): NetworkResult<T?> {
     return withContext(dispatcher) {
         try {
             withTimeout(NetworkConstants.NETWORK_TIMEOUT) {
-                ApiResult.Success(apiCall.invoke())
+                NetworkResult.Success(networkCall.invoke())
             }
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
             when (throwable) {
                 is TimeoutCancellationException -> {
                     val code = 408 // timeout error code
-                    ApiResult.GenericError(code, NetworkErrors.NETWORK_ERROR_TIMEOUT)
+                    NetworkResult.GenericError(code, NetworkErrors.NETWORK_ERROR_TIMEOUT)
                 }
                 is IOException -> {
-                    ApiResult.NetworkError
+                    NetworkResult.NetworkError
                 }
                 is HttpException -> {
                     val code = throwable.code()
                     val errorResponse = convertErrorBody(throwable)
                     cLog(errorResponse)
-                    ApiResult.GenericError(
+                    NetworkResult.GenericError(
                         code,
                         errorResponse
                     )
                 }
                 else -> {
                     cLog(NetworkErrors.NETWORK_ERROR_UNKNOWN)
-                    ApiResult.GenericError(
+                    NetworkResult.GenericError(
                         null,
                         NetworkErrors.NETWORK_ERROR_UNKNOWN
                     )
