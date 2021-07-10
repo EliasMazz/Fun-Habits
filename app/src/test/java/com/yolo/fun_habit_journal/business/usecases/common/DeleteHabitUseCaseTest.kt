@@ -59,8 +59,7 @@ class DeleteHabitUseCaseTest {
         val wasHabitDeleted = habitNetworkDataSource.getAllHabits().contains(habitToDelete)
         assertFalse { wasHabitDeleted }
 
-        val wasDeletedHabitInserted = habitNetworkDataSource.getDeletedHabitList()
-            .contains(habitToDelete)
+        val wasDeletedHabitInserted = habitNetworkDataSource.getDeletedHabitList()!!.contains(habitToDelete)
         assertTrue { wasDeletedHabitInserted }
     }
 
@@ -87,8 +86,7 @@ class DeleteHabitUseCaseTest {
         val habitsCountInCache = habitCacheDataSource.getHabitsCount()
         assertTrue { habitsCountInCache == habitList.size }
 
-        val wasDeletedHabitInserted = !habitNetworkDataSource.getDeletedHabitList()
-            .contains(habitToDelete)
+        val wasDeletedHabitInserted = !habitNetworkDataSource.getDeletedHabitList()!!.contains(habitToDelete)
         assertTrue { wasDeletedHabitInserted }
     }
 
@@ -116,8 +114,7 @@ class DeleteHabitUseCaseTest {
         val habitsCountInCache = habitCacheDataSource.getHabitsCount()
         assertTrue { habitsCountInCache == habitList.size }
 
-        val wasDeletedHabitInserted = !habitNetworkDataSource.getDeletedHabitList()
-            .contains(habitToDelete)
+        val wasDeletedHabitInserted = !habitNetworkDataSource.getDeletedHabitList()!!.contains(habitToDelete)
         assertTrue { wasDeletedHabitInserted }
     }
 

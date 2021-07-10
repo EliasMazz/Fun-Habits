@@ -35,7 +35,7 @@ class SyncHabitsUseCaseTest {
     }
 
     @Test
-    fun `WHEN insert new habits into the network and perform sync THEN check if the network habits were inserted into the cache`() =
+    fun `WHEN insert new habits into the network THEN perform sync and check if the network habits were inserted into the cache`() =
         runBlocking {
             val newHabitList = habitFactory.createHabitList(50)
             habitNetworkDataSource.insertOrUpdateListHabit(newHabitList)
@@ -49,7 +49,7 @@ class SyncHabitsUseCaseTest {
         }
 
     @Test
-    fun `WHEN insert new habits into the cache and perform sync THEN check if the cache habits were inserted into the network`() =
+    fun `WHEN insert new habits into the cache THEN perform sync and check if the cache habits were inserted into the network`() =
         runBlocking {
             val newHabits = habitFactory.createHabitList(50)
             habitCacheDataSource.insertHabits(newHabits)
@@ -63,7 +63,7 @@ class SyncHabitsUseCaseTest {
         }
 
     @Test
-    fun `WHEN update new habits into the cache and perform sync THEN check if the cache habits were updated into the network`() =
+    fun `WHEN update new habits into the cache THEN perform sync and check if the cache habits were updated into the network`() =
         runBlocking {
             val cacheHabits = habitCacheDataSource.searchHabits("", "", 1)
             val habitsToUpdate: ArrayList<Habit> = ArrayList()
@@ -94,7 +94,7 @@ class SyncHabitsUseCaseTest {
         }
 
     @Test
-    fun `WHEN update new habits into the network and perform sync THEN check if the network habits were updated into the cache`() =
+    fun `WHEN update new habits into the network THEN perform sync and check if the network habits were updated into the cache`() =
         runBlocking {
             val networkHabits = habitNetworkDataSource.getAllHabits()
             val habitsToUpdate: ArrayList<Habit> = ArrayList()

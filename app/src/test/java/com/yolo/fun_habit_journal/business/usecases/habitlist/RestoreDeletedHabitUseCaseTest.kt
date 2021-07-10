@@ -51,7 +51,7 @@ class RestoreDeletedHabitUseCaseTest {
         networkDataSource.insertDeletedHabit(restoreHabit)
 
         var deletedHabitList = networkDataSource.getDeletedHabitList()
-        assertTrue { deletedHabitList.contains(restoreHabit) }
+        assertTrue { deletedHabitList!!.contains(restoreHabit) }
 
         restoreDeletedHabitUseCase.restoreDeletedHabit(
             habit = restoreHabit,
@@ -72,7 +72,7 @@ class RestoreDeletedHabitUseCaseTest {
         assertTrue { habitInNetwork == restoreHabit }
 
         deletedHabitList = networkDataSource.getDeletedHabitList()
-        assertFalse { deletedHabitList.contains(restoreHabit) }
+        assertFalse { deletedHabitList!!.contains(restoreHabit) }
     }
 
     @Test
@@ -85,7 +85,7 @@ class RestoreDeletedHabitUseCaseTest {
         networkDataSource.insertDeletedHabit(restoreHabit)
 
         var deletedHabitList = networkDataSource.getDeletedHabitList()
-        assertTrue { deletedHabitList.contains(restoreHabit) }
+        assertTrue { deletedHabitList!!.contains(restoreHabit) }
 
         restoreDeletedHabitUseCase.restoreDeletedHabit(
             habit = restoreHabit,
@@ -106,7 +106,7 @@ class RestoreDeletedHabitUseCaseTest {
         assertFalse { habitInNetwork == restoreHabit }
 
         deletedHabitList = networkDataSource.getDeletedHabitList()
-        assertTrue { deletedHabitList.contains(restoreHabit) }
+        assertTrue { deletedHabitList!!.contains(restoreHabit) }
     }
 
     @Test
@@ -119,7 +119,7 @@ class RestoreDeletedHabitUseCaseTest {
         networkDataSource.insertDeletedHabit(restoreHabit)
 
         var deletedHabitList = networkDataSource.getDeletedHabitList()
-        assertTrue { deletedHabitList.contains(restoreHabit) }
+        assertTrue { deletedHabitList!!.contains(restoreHabit) }
 
         restoreDeletedHabitUseCase.restoreDeletedHabit(
             habit = restoreHabit,
@@ -139,8 +139,6 @@ class RestoreDeletedHabitUseCaseTest {
         assertFalse { habitInNetwork == restoreHabit }
 
         deletedHabitList = networkDataSource.getDeletedHabitList()
-        assertTrue { deletedHabitList.contains(restoreHabit) }
+        assertTrue { deletedHabitList!!.contains(restoreHabit) }
     }
-
-
 }

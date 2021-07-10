@@ -65,7 +65,7 @@ class DeleteMultipleHabitsUseCaseTest{
         })
 
         val deletedNetworkHabits = habitNetworkDataSource.getDeletedHabitList()
-        assertTrue(deletedNetworkHabits.containsAll(randomHabits))
+        assertTrue(deletedNetworkHabits!!.containsAll(randomHabits))
 
         val doHabitsExistInNetwork = habitNetworkDataSource.getAllHabits().containsAll(randomHabits)
         assertFalse(doHabitsExistInNetwork)
@@ -118,8 +118,8 @@ class DeleteMultipleHabitsUseCaseTest{
 
         //Confirm ONLY the valid habits are inserted into list of deleted network
         val deletedNetworkHabits = habitNetworkDataSource.getDeletedHabitList()
-        assertTrue { deletedNetworkHabits.containsAll(validaHabits) }
-        assertFalse { deletedNetworkHabits.containsAll(invalidHabits) }
+        assertTrue { deletedNetworkHabits!!.containsAll(validaHabits) }
+        assertFalse { deletedNetworkHabits!!.containsAll(invalidHabits) }
 
         //Confirm ONLY the valid habits are deleted from the cache
         for (habit in validaHabits) {
@@ -171,8 +171,8 @@ class DeleteMultipleHabitsUseCaseTest{
 
         //Confirm ONLY the valid habits are inserted into list of deleted network
         val deletedNetworkHabits = habitNetworkDataSource.getDeletedHabitList()
-        assertTrue { deletedNetworkHabits.containsAll(validaHabits) }
-        assertFalse { deletedNetworkHabits.containsAll(invalidHabits) }
+        assertTrue { deletedNetworkHabits!!.containsAll(validaHabits) }
+        assertFalse { deletedNetworkHabits!!.containsAll(invalidHabits) }
 
         //Confirm ONLY the valid habits are deleted from the cache
         for (habit in validaHabits) {
