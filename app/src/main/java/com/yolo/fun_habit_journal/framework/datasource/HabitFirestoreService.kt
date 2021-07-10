@@ -7,6 +7,7 @@ import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.framework.datasource.network.abstraction.IHabitFirestoreService
 import com.yolo.fun_habit_journal.framework.datasource.network.mapper.NetworkMapper
 import com.yolo.fun_habit_journal.framework.datasource.network.model.HabitNetworkEntity
+import com.yolo.fun_habit_journal.framework.util.crashliticsLogs
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -32,6 +33,7 @@ class HabitFirestoreService
             .collection(HABITS_COLLECTION)
             .document(entity.id)
             .set(entity)
+            .addOnFailureListener { "insertOrUpdateHabit" + crashliticsLogs(it.message) }
             .await()
     }
 
@@ -45,14 +47,16 @@ class HabitFirestoreService
             .document(USER_ID)
             .collection(HABITS_COLLECTION)
 
-        firestore.runBatch { batch ->
-            for (habit in listHabit) {
-                val entity = networkMapper.mapToEntity(habit)
-                entity.updated_at = Timestamp.now()
-                val documentRef = collectionRef.document(habit.id)
-                batch.set(documentRef, entity)
-            }
-        }
+        firestore
+            .runBatch { batch ->
+                for (habit in listHabit) {
+                    val entity = networkMapper.mapToEntity(habit)
+                    entity.updated_at = Timestamp.now()
+                    val documentRef = collectionRef.document(habit.id)
+                    batch.set(documentRef, entity)
+                }
+            }.addOnFailureListener { "insertOrUpdateListHabit" + crashliticsLogs(it.message) }
+            .await()
     }
 
     override suspend fun deleteHabit(id: String) {
@@ -62,6 +66,7 @@ class HabitFirestoreService
             .collection(HABITS_COLLECTION)
             .document(id)
             .delete()
+            .addOnFailureListener { "deleteHabit" + crashliticsLogs(it.message) }
             .await()
     }
 
@@ -72,6 +77,7 @@ class HabitFirestoreService
             .collection(HABITS_DELETED_COLLECTION)
             .document(entity.id)
             .set(entity)
+            .addOnFailureListener { "insertDeletedHabit" + crashliticsLogs(it.message) }
             .await()
     }
 
@@ -91,7 +97,8 @@ class HabitFirestoreService
                 val documentRef = collectionRef.document(habit.id)
                 batch.set(documentRef, entity)
             }
-        }
+        }.addOnFailureListener { "insertDeletedHabits" + crashliticsLogs(it.message) }
+            .await()
     }
 
     override suspend fun deleteDeletedHabit(habit: Habit) {
@@ -100,6 +107,7 @@ class HabitFirestoreService
             .collection(HABITS_DELETED_COLLECTION)
             .document(habit.id)
             .delete()
+            .addOnFailureListener { "deleteDeletedHabit" + crashliticsLogs(it.message) }
             .await()
     }
 
@@ -107,11 +115,13 @@ class HabitFirestoreService
         firestore.collection(HABITS_DELETED_COLLECTION)
             .document(USER_ID)
             .delete()
+            .addOnFailureListener { "deleteAllHabits" + HABITS_DELETED_COLLECTION + crashliticsLogs(it.message) }
             .await()
 
         firestore.collection(HABITS_COLLECTION)
             .document(USER_ID)
             .delete()
+            .addOnFailureListener { "deleteAllHabits" + HABITS_COLLECTION + crashliticsLogs(it.message) }
             .await()
     }
 
@@ -121,6 +131,7 @@ class HabitFirestoreService
             .document(USER_ID)
             .collection(HABITS_DELETED_COLLECTION)
             .get()
+            .addOnFailureListener { "getDeletedHabitList" + crashliticsLogs(it.message) }
             .await().toObjects(HabitNetworkEntity::class.java)
             .map { networkMapper.mapFromEntity(it) }
 
@@ -131,6 +142,7 @@ class HabitFirestoreService
             .collection(HABITS_COLLECTION)
             .document(habit.id)
             .get()
+            .addOnFailureListener { "searchHabit" + crashliticsLogs(it.message) }
             .await()
             .toObject(HabitNetworkEntity::class.java)?.let {
                 networkMapper.mapFromEntity(it)
@@ -142,6 +154,7 @@ class HabitFirestoreService
             .document(USER_ID)
             .collection(HABITS_COLLECTION)
             .get()
+            .addOnFailureListener { "getAllHabits" + crashliticsLogs(it.message) }
             .await().toObjects(HabitNetworkEntity::class.java)
             .map { networkMapper.mapFromEntity(it) }
 }

@@ -1,7 +1,7 @@
 package com.yolo.fun_habit_journal.business.data.network.util
 
 import com.yolo.fun_habit_journal.business.data.util.GenericErrors
-import com.yolo.fun_habit_journal.framework.util.cLog
+import com.yolo.fun_habit_journal.framework.util.crashliticsLogs
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withContext
@@ -20,6 +20,7 @@ suspend fun <T> safeNetworkCall(
             }
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
+            crashliticsLogs("network" + throwable.message)
             when (throwable) {
                 is TimeoutCancellationException -> {
                     val code = 408 // timeout error code
@@ -31,14 +32,14 @@ suspend fun <T> safeNetworkCall(
                 is HttpException -> {
                     val code = throwable.code()
                     val errorResponse = convertErrorBody(throwable)
-                    cLog(errorResponse)
+                    crashliticsLogs(errorResponse)
                     NetworkResult.GenericError(
                         code,
                         errorResponse
                     )
                 }
                 else -> {
-                    cLog(NetworkErrors.NETWORK_ERROR_UNKNOWN)
+                    crashliticsLogs(NetworkErrors.NETWORK_ERROR_UNKNOWN)
                     NetworkResult.GenericError(
                         null,
                         NetworkErrors.NETWORK_ERROR_UNKNOWN

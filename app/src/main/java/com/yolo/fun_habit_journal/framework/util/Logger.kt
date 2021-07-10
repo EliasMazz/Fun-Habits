@@ -15,7 +15,7 @@ fun printLogD(className: String?, message: String) {
     }
 }
 
-fun cLog(msg: String?) {
+fun crashliticsLogs(msg: String?) {
     msg?.let {
         if (!DEBUG) {
             FirebaseCrashlytics.getInstance().log(it)

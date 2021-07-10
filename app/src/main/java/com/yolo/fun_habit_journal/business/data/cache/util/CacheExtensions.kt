@@ -1,6 +1,6 @@
 package com.yolo.fun_habit_journal.business.data.cache.util
 
-import com.yolo.fun_habit_journal.framework.util.cLog
+import com.yolo.fun_habit_journal.framework.util.crashliticsLogs
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withContext
@@ -12,18 +12,18 @@ suspend fun <T> safeCacheCall(
 ): CacheResult<T?> {
     return withContext(dispatcher) {
         try {
-            withTimeout(CacheConstants.CACHE_TIMEOUT){
+            withTimeout(CacheConstants.CACHE_TIMEOUT) {
                 CacheResult.Success(cacheCall.invoke())
             }
         } catch (throwable: Throwable) {
             throwable.printStackTrace()
+            crashliticsLogs("cache" + throwable.message)
             when (throwable) {
-
                 is TimeoutCancellationException -> {
                     CacheResult.GenericError(CacheErrors.CACHE_ERROR_TIMEOUT)
                 }
                 else -> {
-                    cLog(CacheErrors.CACHE_ERROR_UNKNOWN)
+                    crashliticsLogs(CacheErrors.CACHE_ERROR_UNKNOWN)
                     CacheResult.GenericError(CacheErrors.CACHE_ERROR_UNKNOWN)
                 }
             }
