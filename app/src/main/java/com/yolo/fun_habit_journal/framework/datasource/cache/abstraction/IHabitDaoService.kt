@@ -3,7 +3,7 @@ package com.yolo.fun_habit_journal.framework.datasource.cache.abstraction
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.framework.datasource.database.HABIT_PAGINATION_PAGE_SIZE
 
-interface HabitDaoService {
+interface IHabitDaoService {
     suspend fun insertHabit(habit: Habit): Long
 
     suspend fun insertHabitList(habitList: List<Habit>): LongArray
@@ -14,14 +14,12 @@ interface HabitDaoService {
         id: String,
         title: String,
         body: String?,
-        timestamp: String?
+        updatedAt: String?
     ): Int
 
     suspend fun deleteHabit(id: String): Int
 
     suspend fun deleteHabitList(habitList: List<Habit>): Int
-
-    suspend fun searchHabits(): List<Habit>
 
     suspend fun getAllHabits(): List<Habit>
 
@@ -31,25 +29,25 @@ interface HabitDaoService {
         pageSize: Int = HABIT_PAGINATION_PAGE_SIZE
     ): List<Habit>
 
-    suspend fun searchNotesOrderByDateASC(
+    suspend fun searchHabitsOrderByDateASC(
         query: String,
         page: Int,
         pageSize: Int = HABIT_PAGINATION_PAGE_SIZE
     ): List<Habit>
 
-    suspend fun searchNotesOrderByTitleDESC(
+    suspend fun searchHabitsOrderByTitleDESC(
         query: String,
         page: Int,
         pageSize: Int = HABIT_PAGINATION_PAGE_SIZE
     ): List<Habit>
 
-    suspend fun searchNotesOrderByTitleASC(
+    suspend fun searchHabitsOrderByTitleASC(
         query: String,
         page: Int,
         pageSize: Int = HABIT_PAGINATION_PAGE_SIZE
     ): List<Habit>
 
-    suspend fun getHabitCount(): Int
+    suspend fun getHabitsCount(): Int
 
     suspend fun returnOrderedQuery(
         query: String,
