@@ -10,7 +10,7 @@ import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
 import com.yolo.fun_habit_journal.business.domain.state.DataState
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListStateEvent
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
-import junit.framework.Assert.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.runBlocking
