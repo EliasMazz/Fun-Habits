@@ -2,7 +2,7 @@ package com.yolo.fun_habit_journal.business.data.cache
 
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.domain.model.Habit
-import com.yolo.fun_habit_journal.framework.datasource.cache.abstraction.HabitDaoService
+import com.yolo.fun_habit_journal.framework.datasource.cache.abstraction.IHabitDaoService
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -10,7 +10,7 @@ import javax.inject.Singleton
 class HabitCacheDataSource
 @Inject
 constructor(
-    private val habitDaoService: HabitDaoService
+    private val habitDaoService: IHabitDaoService
 ) : IHabitCacheDataSource {
 
     override suspend fun insertHabit(habit: Habit) = habitDaoService.insertHabit(habit)
@@ -29,7 +29,7 @@ constructor(
         habitDaoService.searchHabitById(id)
 
     override suspend fun getHabitsCount() =
-        habitDaoService.getHabitCount()
+        habitDaoService.getHabitsCount()
 
     override suspend fun insertHabits(habits: List<Habit>) =
         habitDaoService.insertHabitList(habits)
