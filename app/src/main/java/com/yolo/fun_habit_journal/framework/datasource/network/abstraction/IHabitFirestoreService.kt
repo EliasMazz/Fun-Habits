@@ -2,7 +2,7 @@ package com.yolo.fun_habit_journal.framework.datasource.network.abstraction
 
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 
-interface HabitFirestoreService {
+interface IHabitFirestoreService {
 
     suspend fun insertOrUpdateHabit(habit: Habit)
 
