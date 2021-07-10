@@ -22,4 +22,18 @@ constructor(
         created_at = dateUtil.getCurrentTimestamp(),
         updated_at = dateUtil.getCurrentTimestamp()
     )
+
+    fun createHabitList(numHabits: Int): List<Habit> {
+        val list: ArrayList<Habit> = ArrayList()
+        for (i in 0 until numHabits) {
+            list.add(
+                createSingleHabit(
+                    title = UUID.randomUUID().toString(),
+                    body = UUID.randomUUID().toString()
+                )
+            )
+        }
+        return list
+    }
+
 }
