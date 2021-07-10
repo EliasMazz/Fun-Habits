@@ -37,5 +37,5 @@ abstract class CacheResultHandler<ViewState, Data>(
         }
     }
 
-    abstract fun handleDataState(result: Data): DataState<ViewState>?
+    abstract suspend fun handleDataState(result: Data): DataState<ViewState>?
 }

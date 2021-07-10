@@ -42,7 +42,7 @@ class DeleteMultipleHabitsUseCase(
                 response = cacheResult,
                 stateEvent = stateEvent
             ) {
-                override fun handleDataState(result: Int): DataState<HabitListViewState>? {
+                override suspend fun handleDataState(result: Int): DataState<HabitListViewState>? {
                     if (result < 0) {
                         onDeleteError = true
                     } else {

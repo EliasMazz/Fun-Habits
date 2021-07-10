@@ -35,7 +35,7 @@ class DeleteHabitUseCase<ViewState>(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
-            override fun handleDataState(result: Int): DataState<ViewState> {
+            override suspend fun handleDataState(result: Int): DataState<ViewState> {
                 return handleCacheSuccess(stateEvent, result)
             }
         }.getResult()

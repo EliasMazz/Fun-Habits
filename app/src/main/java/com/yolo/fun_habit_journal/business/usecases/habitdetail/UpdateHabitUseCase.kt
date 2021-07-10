@@ -42,7 +42,7 @@ class UpdateHabitUseCase(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
-            override fun handleDataState(result: Int): DataState<HabitDetailViewState> {
+            override suspend fun handleDataState(result: Int): DataState<HabitDetailViewState> {
                 return if (result > 0) {
                     getDataStateSuccess(stateEvent)
                 } else {

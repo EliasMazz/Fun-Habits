@@ -44,7 +44,7 @@ class SearchHabitsUseCase(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
-            override fun handleDataState(result: List<Habit>): DataState<HabitListViewState> {
+            override suspend fun handleDataState(result: List<Habit>): DataState<HabitListViewState> {
                 var message: String? = SEARCH_HABITS_SUCCESS
                 var uiComponentType: UIComponentType = UIComponentType.None
 

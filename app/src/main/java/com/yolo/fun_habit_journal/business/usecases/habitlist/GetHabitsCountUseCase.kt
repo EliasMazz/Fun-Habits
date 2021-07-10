@@ -31,7 +31,7 @@ class GetHabitsCountUseCase(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
-            override fun handleDataState(result: Int): DataState<HabitListViewState> {
+            override suspend fun handleDataState(result: Int): DataState<HabitListViewState> {
                 val viewState = HabitListViewState(
                     habitsCountInCache = result
                 )

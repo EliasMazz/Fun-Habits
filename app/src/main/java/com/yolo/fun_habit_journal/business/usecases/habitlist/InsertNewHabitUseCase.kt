@@ -43,7 +43,7 @@ class InsertNewHabitUseCase(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
-            override fun handleDataState(result: Long): DataState<HabitListViewState> {
+            override suspend fun handleDataState(result: Long): DataState<HabitListViewState> {
                 return if (result > 0) {
                     getDataStateSuccess(newHabit, stateEvent)
                 } else {
