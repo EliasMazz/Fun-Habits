@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "323406162382",
+    "project_id": "fun-habit-journal",
+    "storage_bucket": "fun-habit-journal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323406162382:android:6498082627742dfaf1e39f",
+        "android_client_info": {
+          "package_name": "com.yolo.fun_habit_journal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "323406162382-m39k47asjq7vtfih4g26v0dtl3bhd4gj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCewMbkJQtDdBc6_9hOM2kPqy7qrcJdqS8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "323406162382-m39k47asjq7vtfih4g26v0dtl3bhd4gj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
