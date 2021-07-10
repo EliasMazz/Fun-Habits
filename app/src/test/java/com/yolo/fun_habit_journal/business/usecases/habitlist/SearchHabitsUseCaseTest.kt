@@ -104,7 +104,7 @@ class SearchHabitsUseCaseTest {
     }
 
     @Test
-    fun `WHEN search note throws exception THEN return fail confirm no habits retrieved`() = runBlocking {
+    fun `WHEN search habit throws exception THEN return fail confirm no habits retrieved`() = runBlocking {
 
         val query = FORCE_SEARCH_HABITS_EXCEPTION
         var results: ArrayList<Habit>? = null

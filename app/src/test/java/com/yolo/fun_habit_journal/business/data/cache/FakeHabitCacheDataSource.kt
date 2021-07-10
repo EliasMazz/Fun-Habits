@@ -81,11 +81,11 @@ constructor(
             throw Exception("Something went searching the cache for habits.")
         }
         val results: ArrayList<Habit> = ArrayList()
-        for (note in habitsData.values) {
-            if (note.title.contains(query)) {
-                results.add(note)
-            } else if (note.body.contains(query)) {
-                results.add(note)
+        for (habit in habitsData.values) {
+            if (habit.title.contains(query)) {
+                results.add(habit)
+            } else if (habit.body.contains(query)) {
+                results.add(habit)
             }
             if (results.size > (page * HABIT_PAGINATION_PAGE_SIZE)) {
                 break
@@ -108,9 +108,9 @@ constructor(
 
     override suspend fun insertHabits(habits: List<Habit>): LongArray {
         val results = LongArray(habits.size)
-        for ((index, note) in habits.withIndex()) {
+        for ((index, habit) in habits.withIndex()) {
             results[index] = 1
-            habitsData[note.id] = note
+            habitsData[habit.id] = habit
         }
         return results
     }
