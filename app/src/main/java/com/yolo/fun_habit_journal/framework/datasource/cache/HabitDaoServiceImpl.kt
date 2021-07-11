@@ -3,32 +3,32 @@ package com.yolo.fun_habit_journal.framework.datasource.cache
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
 import com.yolo.fun_habit_journal.framework.datasource.cache.abstraction.IHabitDaoService
-import com.yolo.fun_habit_journal.framework.datasource.cache.util.CacheMapper
+import com.yolo.fun_habit_journal.framework.datasource.cache.util.HabitCacheMapper
 import com.yolo.fun_habit_journal.framework.datasource.database.HabitDao
 import com.yolo.fun_habit_journal.framework.datasource.database.returnOrderedQuery
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class HabitDaoService
+class HabitDaoServiceImpl
 @Inject
 constructor(
     private val habitDao: HabitDao,
-    private val habitMapper: CacheMapper,
+    private val habitMapperHabit: HabitCacheMapper,
     private val dateUtil: DateUtil
 ) : IHabitDaoService {
 
     override suspend fun insertHabit(habit: Habit): Long =
-        habitDao.insertHabit(habitMapper.mapToEntity(habit))
+        habitDao.insertHabit(habitMapperHabit.mapToEntity(habit))
 
     override suspend fun insertHabitList(habitList: List<Habit>): LongArray =
         habitDao.insertHabitList(
-            habitList = habitList.map { habitMapper.mapToEntity(it) }
+            habitList = habitList.map { habitMapperHabit.mapToEntity(it) }
         )
 
     override suspend fun searchHabitById(id: String): Habit? =
         habitDao.searchHabitById(id)?.let {
-            habitMapper.mapFromEntity(it)
+            habitMapperHabit.mapFromEntity(it)
         }
 
     override suspend fun updateHabit(
@@ -63,28 +63,28 @@ constructor(
     }
 
     override suspend fun getAllHabits(): List<Habit> =
-        habitDao.getAllHabits().map { habitMapper.mapFromEntity(it) }
+        habitDao.getAllHabits().map { habitMapperHabit.mapFromEntity(it) }
 
     override suspend fun searchHabitsOrderByDateDESC(query: String, page: Int, pageSize: Int): List<Habit> =
         habitDao.searchHabitsOrderByDateDESC(
             query = query,
             page = page,
             pageSize = pageSize
-        ).map { habitMapper.mapFromEntity(it) }
+        ).map { habitMapperHabit.mapFromEntity(it) }
 
     override suspend fun searchHabitsOrderByDateASC(query: String, page: Int, pageSize: Int): List<Habit> =
         habitDao.searchHabitsOrderByDateASC(
             query = query,
             page = page,
             pageSize = pageSize
-        ).map { habitMapper.mapFromEntity(it) }
+        ).map { habitMapperHabit.mapFromEntity(it) }
 
     override suspend fun searchHabitsOrderByTitleDESC(query: String, page: Int, pageSize: Int): List<Habit> =
         habitDao.searchHabitsOrderByTitleDESC(
             query = query,
             page = page,
             pageSize = pageSize
-        ).map { habitMapper.mapFromEntity(it) }
+        ).map { habitMapperHabit.mapFromEntity(it) }
 
 
     override suspend fun searchHabitsOrderByTitleASC(query: String, page: Int, pageSize: Int): List<Habit> =
@@ -92,7 +92,7 @@ constructor(
             query = query,
             page = page,
             pageSize = pageSize
-        ).map { habitMapper.mapFromEntity(it) }
+        ).map { habitMapperHabit.mapFromEntity(it) }
 
     override suspend fun getHabitsCount(): Int = habitDao.getHabitsCount()
 
@@ -101,5 +101,5 @@ constructor(
             query = query,
             page = page,
             filterAndOrder = filterAndOrder
-        ).map { habitMapper.mapFromEntity(it) }
+        ).map { habitMapperHabit.mapFromEntity(it) }
 }

@@ -5,7 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.framework.datasource.network.abstraction.IHabitFirestoreService
-import com.yolo.fun_habit_journal.framework.datasource.network.mapper.NetworkMapper
+import com.yolo.fun_habit_journal.framework.datasource.network.mapper.HabitNetworkMapper
 import com.yolo.fun_habit_journal.framework.datasource.network.model.HabitNetworkEntity
 import com.yolo.fun_habit_journal.framework.util.crashliticsLogs
 import kotlinx.coroutines.tasks.await
@@ -19,14 +19,14 @@ const val USER_ID = "dJFxDcMBmzL80FJNyYLAjcFjBnL2" //TODO hardcoded to test
 const val EMAIL = "test@test.com"
 
 @Singleton
-class HabitFirestoreService
+class HabitFirestoreServiceImpl
 @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
-    private val networkMapper: NetworkMapper
+    private val habitNetworkMapper: HabitNetworkMapper
 ) : IHabitFirestoreService {
     override suspend fun insertOrUpdateHabit(habit: Habit) {
-        val entity = networkMapper.mapToEntity(habit)
+        val entity = habitNetworkMapper.mapToEntity(habit)
         entity.updated_at = Timestamp.now()
         firestore.collection(HABITS_COLLECTION)
             .document(USER_ID)
@@ -50,7 +50,7 @@ class HabitFirestoreService
         firestore
             .runBatch { batch ->
                 for (habit in listHabit) {
-                    val entity = networkMapper.mapToEntity(habit)
+                    val entity = habitNetworkMapper.mapToEntity(habit)
                     entity.updated_at = Timestamp.now()
                     val documentRef = collectionRef.document(habit.id)
                     batch.set(documentRef, entity)
@@ -71,7 +71,7 @@ class HabitFirestoreService
     }
 
     override suspend fun insertDeletedHabit(habit: Habit) {
-        val entity = networkMapper.mapToEntity(habit)
+        val entity = habitNetworkMapper.mapToEntity(habit)
         firestore.collection(HABITS_DELETED_COLLECTION)
             .document(USER_ID)
             .collection(HABITS_DELETED_COLLECTION)
@@ -93,7 +93,7 @@ class HabitFirestoreService
 
         firestore.runBatch { batch ->
             for (habit in habitList) {
-                val entity = networkMapper.mapToEntity(habit)
+                val entity = habitNetworkMapper.mapToEntity(habit)
                 val documentRef = collectionRef.document(habit.id)
                 batch.set(documentRef, entity)
             }
@@ -133,7 +133,7 @@ class HabitFirestoreService
             .get()
             .addOnFailureListener { "getDeletedHabitList" + crashliticsLogs(it.message) }
             .await().toObjects(HabitNetworkEntity::class.java)
-            .map { networkMapper.mapFromEntity(it) }
+            .map { habitNetworkMapper.mapFromEntity(it) }
 
     override suspend fun searchHabit(habit: Habit): Habit? =
         firestore
@@ -145,7 +145,7 @@ class HabitFirestoreService
             .addOnFailureListener { "searchHabit" + crashliticsLogs(it.message) }
             .await()
             .toObject(HabitNetworkEntity::class.java)?.let {
-                networkMapper.mapFromEntity(it)
+                habitNetworkMapper.mapFromEntity(it)
             }
 
     override suspend fun getAllHabits(): List<Habit> =
@@ -156,5 +156,5 @@ class HabitFirestoreService
             .get()
             .addOnFailureListener { "getAllHabits" + crashliticsLogs(it.message) }
             .await().toObjects(HabitNetworkEntity::class.java)
-            .map { networkMapper.mapFromEntity(it) }
+            .map { habitNetworkMapper.mapFromEntity(it) }
 }

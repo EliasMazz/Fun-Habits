@@ -6,7 +6,7 @@ import com.yolo.fun_habit_journal.business.domain.util.EntityMapper
 import com.yolo.fun_habit_journal.framework.datasource.cache.model.HabitCacheEntity
 import javax.inject.Inject
 
-class CacheMapper @Inject constructor(
+class HabitCacheMapper @Inject constructor(
     private val dateUtil: DateUtil
 ) : EntityMapper<HabitCacheEntity, Habit> {
     override fun mapFromEntity(entity: HabitCacheEntity): Habit {

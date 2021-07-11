@@ -6,7 +6,7 @@ import com.yolo.fun_habit_journal.business.domain.util.EntityMapper
 import com.yolo.fun_habit_journal.framework.datasource.network.model.HabitNetworkEntity
 import javax.inject.Inject
 
-class NetworkMapper
+class HabitNetworkMapper
 @Inject
 constructor(
     private val dateUtil: DateUtil
