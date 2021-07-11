@@ -1,44 +1,48 @@
-package com.yolo.fun_habit_journal.business.usecases.habitlist
+package com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase
 
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.data.cache.util.CacheResultHandler
 import com.yolo.fun_habit_journal.business.data.cache.util.safeCacheCall
 import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetworkDataSource
-import com.yolo.fun_habit_journal.business.data.network.util.safeNetworkCall
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.state.DataState
 import com.yolo.fun_habit_journal.business.domain.state.MessageType
 import com.yolo.fun_habit_journal.business.domain.state.Response
 import com.yolo.fun_habit_journal.business.domain.state.StateEvent
 import com.yolo.fun_habit_journal.business.domain.state.UIComponentType
-import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
+import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailViewState
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-const val RESTORE_HABIT_SUCCESS = "Successfully restored the deleted habit"
-const val RESTORE_HABIT_FAILED = "Failed to restore the deleted habit"
+const val UPDATE_HABIT_SUCCESS = "Successfully updated habit"
+const val UPDATE_HABIT_FAILED = "Failed to update habit"
 
-class RestoreDeletedHabitUseCase(
+class UpdateHabitUseCase(
     private val habitCacheDataSource: IHabitCacheDataSource,
     private val habitNetworkDataSource: IHabitNetworkDataSource
 ) {
-    fun restoreDeletedHabit(
+    fun updateHabit(
         habit: Habit,
         stateEvent: StateEvent
-    ): Flow<DataState<HabitListViewState>?> = flow {
+    ): Flow<DataState<HabitDetailViewState>?> = flow {
 
         val cacheResult = safeCacheCall(IO) {
-            habitCacheDataSource.insertHabit(habit)
+            habitCacheDataSource.updateHabit(
+                id = habit.id,
+                title = habit.title,
+                body = habit.body,
+                timestamp = null
+            )
         }
 
-        val dataState = object : CacheResultHandler<HabitListViewState, Long>(
+        val dataState = object : CacheResultHandler<HabitDetailViewState, Int>(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
-            override suspend fun handleDataState(result: Long): DataState<HabitListViewState> {
+            override suspend fun handleDataState(result: Int): DataState<HabitDetailViewState> {
                 return if (result > 0) {
-                    getDataStateSuccess(habit, stateEvent)
+                    getDataStateSuccess(stateEvent)
                 } else {
                     getDataStateFailure(stateEvent)
                 }
@@ -47,45 +51,37 @@ class RestoreDeletedHabitUseCase(
 
         emit(dataState)
 
-        updateNetwork(dataState?.stateMessage?.response?.message, habit)
+        updateNetowrk(dataState?.stateMessage?.response?.message, habit)
     }
 
-    private suspend fun updateNetwork(message: String?, habit: Habit) {
-        if (message == RESTORE_HABIT_SUCCESS) {
-            safeNetworkCall(IO) {
+    private suspend fun updateNetowrk(message: String?, habit: Habit) {
+        if (message == UPDATE_HABIT_SUCCESS) {
+            safeCacheCall(IO) {
                 habitNetworkDataSource.insertOrUpdateHabit(habit)
-            }
-
-            safeNetworkCall(IO) {
-                habitNetworkDataSource.deleteDeletedHabit(habit)
             }
         }
     }
 
-    private fun getDataStateSuccess(habit: Habit, stateEvent: StateEvent): DataState<HabitListViewState> {
-        val viewState = HabitListViewState(
-            habitPendingDelete = HabitListViewState.HabitPendingDelete(
-                habit = habit
-            )
-        )
-        return DataState.data(
-            response = Response(
-                message = RESTORE_HABIT_SUCCESS,
-                uiComponentType = UIComponentType.Toast,
-                messageType = MessageType.Success
-            ), data = viewState,
-            stateEvent = stateEvent
-        )
-    }
-
-    private fun getDataStateFailure(stateEvent: StateEvent): DataState<HabitListViewState> =
+    private fun getDataStateSuccess(stateEvent: StateEvent): DataState<HabitDetailViewState> =
         DataState.data(
             response = Response(
-                message = RESTORE_HABIT_FAILED,
+                message = UPDATE_HABIT_SUCCESS,
                 uiComponentType = UIComponentType.Toast,
                 messageType = MessageType.Success
+            ),
+            data = null,
+            stateEvent = stateEvent
+        )
+
+    private fun getDataStateFailure(stateEvent: StateEvent): DataState<HabitDetailViewState> =
+        DataState.data(
+            response = Response(
+                message = UPDATE_HABIT_FAILED,
+                uiComponentType = UIComponentType.Toast,
+                messageType = MessageType.Error
             ), data = null,
             stateEvent = stateEvent
         )
-
 }
+
+

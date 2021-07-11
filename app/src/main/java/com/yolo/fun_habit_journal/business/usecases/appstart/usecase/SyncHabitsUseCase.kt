@@ -1,4 +1,4 @@
-package com.yolo.fun_habit_journal.business.usecases.appstart
+package com.yolo.fun_habit_journal.business.usecases.appstart.usecase
 
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.data.cache.util.CacheResultHandler
