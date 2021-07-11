@@ -1,9 +1,9 @@
 package com.yolo.fun_habit_journal.business.di
 
 import com.yolo.fun_habit_journal.business.data.FakeHabitDataFactory
-import com.yolo.fun_habit_journal.business.data.cache.FakeHabitCacheDataSource
+import com.yolo.fun_habit_journal.business.data.cache.FakeHabitCacheDataSourceImpl
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
-import com.yolo.fun_habit_journal.business.data.network.FakeHabitNetworkDataSource
+import com.yolo.fun_habit_journal.business.data.network.FakeHabitNetworkDataSourceImpl
 import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetworkDataSource
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
@@ -38,13 +38,13 @@ class DependencyContainer {
         }
 
         habitFactory = HabitFactory(dateUtil)
-        habitNetworkDataSource = FakeHabitNetworkDataSource(
+        habitNetworkDataSource = FakeHabitNetworkDataSourceImpl(
             habitsData = habitsData.toMutableMap() as HashMap<String, Habit>,
             deletedHabitsData = HashMap(),
             dateUtil = dateUtil
         )
 
-        habitCacheDataSource = FakeHabitCacheDataSource(
+        habitCacheDataSource = FakeHabitCacheDataSourceImpl(
             habitsData = habitsData.toMutableMap() as HashMap<String, Habit>,
             dateUtil = dateUtil
         )

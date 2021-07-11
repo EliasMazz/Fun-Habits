@@ -8,6 +8,9 @@ import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetwor
 import com.yolo.fun_habit_journal.business.di.DependencyContainer
 import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
 import com.yolo.fun_habit_journal.business.domain.state.DataState
+import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.UPDATE_HABIT_FAILED
+import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.UPDATE_HABIT_SUCCESS
+import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.UpdateHabitUseCase
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailStateEvent
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailViewState
 import kotlinx.coroutines.InternalCoroutinesApi

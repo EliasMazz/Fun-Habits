@@ -3,6 +3,8 @@ package com.yolo.fun_habit_journal.business.usecases.habitlist
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.di.DependencyContainer
 import com.yolo.fun_habit_journal.business.domain.state.DataState
+import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.GET_HABITS_COUNT_SUCCESS
+import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.GetHabitsCountUseCase
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListStateEvent
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
 import kotlinx.coroutines.InternalCoroutinesApi
