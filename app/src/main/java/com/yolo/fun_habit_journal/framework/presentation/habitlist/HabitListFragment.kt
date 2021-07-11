@@ -1,6 +1,5 @@
 package com.yolo.fun_habit_journal.framework.presentation.habitlist
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -39,12 +38,9 @@ import com.yolo.fun_habit_journal.framework.datasource.database.HABIT_FILTER_DAT
 import com.yolo.fun_habit_journal.framework.datasource.database.HABIT_FILTER_TITLE
 import com.yolo.fun_habit_journal.framework.datasource.database.HABIT_ORDER_ASC
 import com.yolo.fun_habit_journal.framework.datasource.database.HABIT_ORDER_DESC
-import com.yolo.fun_habit_journal.framework.presentation.BaseApplication
-import com.yolo.fun_habit_journal.framework.presentation.UIController
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseFragment
 import com.yolo.fun_habit_journal.framework.presentation.common.hideKeyboard
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.HABIT_DETAIL_SELECTED_HABIT_BUNDLE_KEY
-import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailStateEvent
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListStateEvent
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListToolbarState.*
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
@@ -70,7 +66,6 @@ class HabitListFragment constructor(
         viewModelFactory
     }
 
-    lateinit var uiController: UIController
     private var listAdapter: HabitListAdapter? = null
     private var itemTouchHelper: ItemTouchHelper? = null
 
@@ -448,11 +443,7 @@ class HabitListFragment constructor(
         }
     }
 
-    override fun inject() {
-        activity?.run {
-            (application as BaseApplication).appComponent.inject(this@HabitListFragment)
-        } ?: throw Exception("AppComponent is null.")
-    }
+    override fun inject() {}
 
     override fun onResume() {
         super.onResume()
@@ -521,7 +512,7 @@ class HabitListFragment constructor(
 
     private fun deleteNotes() {
         viewModel.setStateEvent(
-            HabitDetailStateEvent.CreateStateMessageEvent(
+            HabitListStateEvent.CreateStateMessageEvent(
                 stateMessage = StateMessage(
                     response = Response(
                         message = DELETE_HABITS_ARE_YOU_SURE,
@@ -541,14 +532,5 @@ class HabitListFragment constructor(
                 )
             )
         )
-    }
-
-    override fun onAttach(context: Context) {
-        try {
-            uiController = context as UIController
-        } catch (e: ClassCastException) {
-            e.printStackTrace()
-        }
-        super.onAttach(context)
     }
 }

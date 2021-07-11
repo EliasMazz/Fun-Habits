@@ -28,7 +28,7 @@
 
             </View>
 
-            <EditText
+            <com.yydcdut.markdown.MarkdownEditText
                 android:id="@+id/habit_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

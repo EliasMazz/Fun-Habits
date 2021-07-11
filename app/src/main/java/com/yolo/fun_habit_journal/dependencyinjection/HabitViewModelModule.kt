@@ -6,6 +6,7 @@ import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.HabitDetailInteractors
 import com.yolo.fun_habit_journal.business.usecases.habitlist.HabitListInteractors
 import com.yolo.fun_habit_journal.framework.presentation.common.HabitViewModelFactory
+import com.yolo.fun_habit_journal.framework.presentation.splash.HabitNetworkSyncManager
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,14 +26,16 @@ object HabitViewModelModule {
         habitDetailInteractors: HabitDetailInteractors,
         habitFactory: HabitFactory,
         editor: SharedPreferences.Editor,
-        sharedPreferences: SharedPreferences
+        sharedPreferences: SharedPreferences,
+        habitNetworkSyncManager: HabitNetworkSyncManager
     ): ViewModelProvider.Factory {
         return HabitViewModelFactory(
             habitListInteractors = habitListInteractors,
             habitDetailInteractors = habitDetailInteractors,
             habitFactory = habitFactory,
             editor = editor,
-            sharedPreferences = sharedPreferences
+            sharedPreferences = sharedPreferences,
+            habitNetworkSyncManager = habitNetworkSyncManager
         )
     }
 

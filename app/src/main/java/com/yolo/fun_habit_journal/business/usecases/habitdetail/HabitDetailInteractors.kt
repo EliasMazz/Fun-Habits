@@ -5,6 +5,6 @@ import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.UpdateHa
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailViewState
 
 class HabitDetailInteractors(
-    val deleteHabit: DeleteHabitUseCase<HabitDetailViewState>,
+    val deleteHabitUseCase: DeleteHabitUseCase<HabitDetailViewState>,
     val updateHabitUseCase: UpdateHabitUseCase
 )

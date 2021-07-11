@@ -8,6 +8,7 @@ import com.yolo.fun_habit_journal.business.usecases.habitdetail.HabitDetailInter
 import com.yolo.fun_habit_journal.business.usecases.habitlist.HabitListInteractors
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.HabitDetailViewModel
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.HabitListViewModel
+import com.yolo.fun_habit_journal.framework.presentation.splash.HabitNetworkSyncManager
 import com.yolo.fun_habit_journal.framework.presentation.splash.SplashViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -25,7 +26,8 @@ constructor(
     private val habitDetailInteractors: HabitDetailInteractors,
     private val habitFactory: HabitFactory,
     private val editor: SharedPreferences.Editor,
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val habitNetworkSyncManager: HabitNetworkSyncManager
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -46,7 +48,7 @@ constructor(
             }
 
             SplashViewModel::class.java -> {
-                SplashViewModel() as T
+                SplashViewModel(habitNetworkSyncManager) as T
             }
 
             else -> {

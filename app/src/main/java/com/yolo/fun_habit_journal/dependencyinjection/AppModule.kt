@@ -28,8 +28,7 @@ import com.yolo.fun_habit_journal.framework.datasource.database.HabitDatabase
 import com.yolo.fun_habit_journal.framework.datasource.network.HabitFirestoreServiceImpl
 import com.yolo.fun_habit_journal.framework.datasource.network.abstraction.IHabitFirestoreService
 import com.yolo.fun_habit_journal.framework.datasource.network.mapper.HabitNetworkMapper
-import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailViewState
-import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
+import com.yolo.fun_habit_journal.framework.presentation.splash.HabitNetworkSyncManager
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -198,8 +197,8 @@ object AppModule {
         habitCacheDataSource: IHabitCacheDataSource,
         habitNetworkDataSource: IHabitNetworkDataSource,
         habitFactory: HabitFactory
-    ): HabitListInteractors {
-        return HabitListInteractors(
+    ): HabitListInteractors =
+        HabitListInteractors(
             InsertNewHabitUseCase(habitCacheDataSource, habitNetworkDataSource, habitFactory),
             DeleteHabitUseCase(habitCacheDataSource, habitNetworkDataSource),
             SearchHabitsUseCase(habitCacheDataSource),
@@ -207,5 +206,19 @@ object AppModule {
             RestoreDeletedHabitUseCase(habitCacheDataSource, habitNetworkDataSource),
             DeleteMultipleHabitsUseCase(habitCacheDataSource, habitNetworkDataSource)
         )
-    }
+
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun provideHabitNetworkSyncManager(
+        syncHabitsUseCase: SyncHabitsUseCase,
+        syncDeletedHabitsUseCase: SyncDeletedHabitsUseCase
+    ): HabitNetworkSyncManager =
+        HabitNetworkSyncManager(
+            syncHabitsUseCase,
+            syncDeletedHabitsUseCase
+        )
+
 }
+

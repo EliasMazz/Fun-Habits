@@ -5,6 +5,7 @@ import com.yolo.fun_habit_journal.framework.presentation.BaseApplication
 import com.yolo.fun_habit_journal.framework.presentation.MainActivity
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.HabitDetailFragment
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.HabitListFragment
+import com.yolo.fun_habit_journal.framework.presentation.splash.SplashFragment
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,4 +35,6 @@ interface AppComponent {
     fun inject(habitListFragment: HabitListFragment)
 
     fun inject(habitDetailFragment: HabitDetailFragment)
+
+    fun inject(splashFragment: SplashFragment)
 }

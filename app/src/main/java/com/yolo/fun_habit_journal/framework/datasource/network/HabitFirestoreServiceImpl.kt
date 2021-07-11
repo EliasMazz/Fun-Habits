@@ -16,7 +16,7 @@ const val HABITS_COLLECTION = "habits"
 const val USERS_COLLECTION = "users"
 const val HABITS_DELETED_COLLECTION = "habits_deleted"
 const val USER_ID = "dJFxDcMBmzL80FJNyYLAjcFjBnL2" //TODO hardcoded to test
-const val EMAIL = "test@test.com"
+const val EMAIL = "admin@test.com"
 
 @Singleton
 class HabitFirestoreServiceImpl
