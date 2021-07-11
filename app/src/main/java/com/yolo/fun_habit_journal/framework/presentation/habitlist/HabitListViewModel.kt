@@ -30,6 +30,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 
 const val DELETE_PENDING_ERROR = "There is already a pending delete operation."
+const val HABIT_PENDING_DELETE_BUNDLE_KEY = "pending_delete"
 
 @ExperimentalCoroutinesApi
 @FlowPreview

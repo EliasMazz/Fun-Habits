@@ -43,7 +43,6 @@ import javax.inject.Singleton
 @Module
 object AppModule {
 
-
     // https://developer.android.com/reference/java/text/SimpleDateFormat.html?hl=pt-br
     @JvmStatic
     @Singleton
@@ -147,7 +146,7 @@ object AppModule {
     @Provides
     fun provideHabitNetworkDataSource(
         firestoreService: HabitFirestoreServiceImpl
-    ): HabitNetworkDataSourceImpl {
+    ): IHabitNetworkDataSource {
         return HabitNetworkDataSourceImpl(
             firestoreService
         )
@@ -187,7 +186,7 @@ object AppModule {
         habitNetworkDataSource: IHabitNetworkDataSource
     ): HabitDetailInteractors {
         return HabitDetailInteractors(
-            DeleteHabitUseCase<HabitDetailViewState>(habitCacheDataSource, habitNetworkDataSource),
+            DeleteHabitUseCase(habitCacheDataSource, habitNetworkDataSource),
             UpdateHabitUseCase(habitCacheDataSource, habitNetworkDataSource)
         )
     }
@@ -202,7 +201,7 @@ object AppModule {
     ): HabitListInteractors {
         return HabitListInteractors(
             InsertNewHabitUseCase(habitCacheDataSource, habitNetworkDataSource, habitFactory),
-            DeleteHabitUseCase<HabitListViewState>(habitCacheDataSource, habitNetworkDataSource),
+            DeleteHabitUseCase(habitCacheDataSource, habitNetworkDataSource),
             SearchHabitsUseCase(habitCacheDataSource),
             GetHabitsCountUseCase(habitCacheDataSource),
             RestoreDeletedHabitUseCase(habitCacheDataSource, habitNetworkDataSource),

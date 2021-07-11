@@ -12,6 +12,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
 const val HABIT_DETAIL_STATE_BUNDLE_KEY = "com.yolo.fun_habit_journal.framework.presentation.habitdetail.state"
+const val HABIT_DETAIL_SELECTED_HABIT_BUNDLE_KEY = "selectedHabit"
+const val HABIT_TITLE_CANNOT_BE_EMPTY = "Habit title can not be empty."
 
 @ExperimentalCoroutinesApi
 @FlowPreview

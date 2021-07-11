@@ -17,12 +17,12 @@ import javax.inject.Singleton
 @FlowPreview
 @Module
 object ProductionModule {
+
     @JvmStatic
     @Singleton
     @Provides
-    fun provideNoteDb(app: BaseApplication): HabitDatabase {
-        return Room
-            .databaseBuilder(app, HabitDatabase::class.java, HabitDatabase.DATABASE_NAME)
+    fun provideHabitDb(app: BaseApplication): HabitDatabase {
+        return Room.databaseBuilder(app, HabitDatabase::class.java, HabitDatabase.DATABASE_NAME)
             .fallbackToDestructiveMigration()
             .build()
     }
