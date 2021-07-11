@@ -9,10 +9,10 @@ import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.SearchHabi
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
 
 class HabitListInteractors(
-    insertNewHabitUseCase: InsertNewHabitUseCase,
-    deleteHabitUseCase: DeleteHabitUseCase<HabitListViewState>,
-    searchHabitsUseCase: SearchHabitsUseCase,
-    getHabitsCountUseCase: GetHabitsCountUseCase,
-    restoreDeletedHabitUseCase: RestoreDeletedHabitUseCase,
-    deleteMultipleHabitsUseCase: DeleteMultipleHabitsUseCase
+    val insertNewHabitUseCase: InsertNewHabitUseCase,
+    val deleteHabitUseCase: DeleteHabitUseCase<HabitListViewState>,
+    val searchHabitsUseCase: SearchHabitsUseCase,
+    val getHabitsCountUseCase: GetHabitsCountUseCase,
+    val restoreDeletedHabitUseCase: RestoreDeletedHabitUseCase,
+    val deleteMultipleHabitsUseCase: DeleteMultipleHabitsUseCase
 )
