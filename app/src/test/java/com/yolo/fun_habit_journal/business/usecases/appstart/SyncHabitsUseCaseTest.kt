@@ -5,6 +5,7 @@ import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetwor
 import com.yolo.fun_habit_journal.business.di.DependencyContainer
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
+import com.yolo.fun_habit_journal.business.usecases.appstart.usecase.SyncHabitsUseCase
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
