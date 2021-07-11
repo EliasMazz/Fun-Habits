@@ -14,8 +14,8 @@ import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
 import com.yolo.fun_habit_journal.framework.presentation.common.changeColor
 import com.yolo.fun_habit_journal.framework.util.printLogD
-import kotlinx.android.synthetic.main.fragment_habit_detail.view.habit_title
 import kotlinx.android.synthetic.main.layout_habit_list_item.view.habit_timestamp
+import kotlinx.android.synthetic.main.layout_habit_list_item.view.habit_title
 
 class HabitListAdapter(
     private val interaction: Interaction? = null,
@@ -107,7 +107,7 @@ class HabitListAdapter(
             }
 
             habit = item
-            habit_title.setText(item.title);
+            habit_title.text = item.title
             habit_timestamp.text = dateUtil.removeTimeFromDateString(item.updated_at)
 
             selectedHabits.observe(lifecycleOwner, Observer { habits ->
