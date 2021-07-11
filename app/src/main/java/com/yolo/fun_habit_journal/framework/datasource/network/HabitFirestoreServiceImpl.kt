@@ -1,4 +1,4 @@
-package com.yolo.fun_habit_journal.framework.datasource
+package com.yolo.fun_habit_journal.framework.datasource.network
 
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
