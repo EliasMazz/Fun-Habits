@@ -33,7 +33,6 @@ class SyncDeletedHabitsUseCaseTest() {
         )
     }
 
-
     @Test
     fun `WHEN exists delete network habits that are not deleted from the cache THEN perform delete sync and check if the cache habits were deleted`() =
         runBlocking {

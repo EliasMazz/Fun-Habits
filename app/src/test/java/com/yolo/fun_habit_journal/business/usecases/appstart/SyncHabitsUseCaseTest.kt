@@ -7,9 +7,12 @@ import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
 import com.yolo.fun_habit_journal.business.usecases.appstart.usecase.SyncHabitsUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -126,6 +129,80 @@ class SyncHabitsUseCaseTest {
                 assertEquals(habit.title, cacheHabit?.title)
                 assertEquals(habit.body, cacheHabit?.body)
                 assertEquals(habit.updated_at, cacheHabit?.updated_at)
+            }
+        }
+
+
+    @Test
+    fun `WHEN update new habit into the network THEN perform sync check if only the updated habit has chaged the updated at date`() =
+        runBlocking {
+            // update a single habit with new timestamp
+            val newDate = dateUtil.getCurrentTimestamp()
+            val firstNetworkHabit = networkDataSource.getAllHabits().first()
+
+            val updatedHabit = Habit(
+                id = firstNetworkHabit.id,
+                title = firstNetworkHabit.title,
+                body = firstNetworkHabit.body,
+                created_at = firstNetworkHabit.created_at,
+                updated_at = newDate
+            )
+
+            networkDataSource.insertOrUpdateHabit(updatedHabit)
+
+//        ONLY FOR DEBUG
+//        for(habit in networkDataSource.getAllHabits()){
+//         println("date: ${habit.updated_at}")
+//        }
+//        println("BREAK")
+
+            syncHabitsUseCase.syncHabits()
+
+//          Confirm only a single 'updated_at' date was updated
+            val habitsInNetowrk = networkDataSource.getAllHabits()
+            for (habit in habitsInNetowrk) {
+                cacheDataSource.searchHabitById(habit.id)?.let { habit ->
+//                ONLY FOR DEBUG
+//                println("date: ${habit.updated_at}")
+                    if (habit.id == updatedHabit.id) {
+                        Assertions.assertTrue { habit.updated_at == newDate }
+                    } else {
+                        Assertions.assertFalse { habit.updated_at == newDate }
+                    }
+                }
+            }
+        }
+
+    @Test
+    fun `WHEN update new habit into the network perform sync close app THEN open app and perform sync check if the updated habit is not updated again `() =
+        runBlocking {
+            // update a single habit with new timestamp
+            val newDate = dateUtil.getCurrentTimestamp()
+            val firstNetworkHabit = networkDataSource.getAllHabits().first()
+
+            val updatedHabit = Habit(
+                id = firstNetworkHabit.id,
+                title = firstNetworkHabit.title,
+                body = firstNetworkHabit.body,
+                created_at = firstNetworkHabit.created_at,
+                updated_at = newDate
+            )
+
+            networkDataSource.insertOrUpdateHabit(updatedHabit)
+
+            syncHabitsUseCase.syncHabits()
+
+            // simulate launch app again
+            delay(1000)
+            syncHabitsUseCase.syncHabits()
+
+            // confirm the date was not updated a second time
+            val habits = networkDataSource.getAllHabits()
+            for (habit in habits) {
+                if (habit.id == updatedHabit.id) {
+                    assertTrue { habit.updated_at == newDate }
+                    break
+                }
             }
         }
 }

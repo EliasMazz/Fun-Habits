@@ -27,7 +27,63 @@ class SyncHabitsUseCase(
 ) {
     suspend fun syncHabits() {
         val cachedHabitList = getCachedHabits()
-        syncNetworkHabitsWithCachedHabits(ArrayList(cachedHabitList))
+        val networkHabitList = getNetworkHabits()
+        syncNetworkHabitsWithCachedHabits(
+            ArrayList(cachedHabitList),
+            networkHabitList
+        )
+    }
+
+    private suspend fun syncNetworkHabitsWithCachedHabits(
+        cacheHabitsInMemory: ArrayList<Habit>,
+        habitListInNetwork: List<Habit>
+    ) = withContext(IO) {
+
+        val job = launch {
+            for (habitInNetwork in habitListInNetwork) {
+                habitCacheDataSource.searchHabitById(habitInNetwork.id)?.let { cachedHabit ->
+                    cacheHabitsInMemory.remove(habitInNetwork)
+                    checkIfCachedHabitRequiresUpdate(cachedHabit, habitInNetwork)
+                } ?: habitCacheDataSource.insertHabit(habitInNetwork)
+            }
+        }
+
+        job.join()
+
+        for (cachedHabit in cacheHabitsInMemory) {
+            safeNetworkCall(IO) {
+                habitNetworkDataSource.insertOrUpdateHabit(cachedHabit)
+            }
+        }
+    }
+
+    private suspend fun checkIfCachedHabitRequiresUpdate(
+        cachedHabit: Habit,
+        networkHabit: Habit
+    ) {
+        val cacheUpdatedAt = cachedHabit.updated_at
+        val networkUpdatedAt = networkHabit.updated_at
+
+        when {
+            networkUpdatedAt > cacheUpdatedAt -> {
+                safeCacheCall(IO) {
+                    habitCacheDataSource.updateHabit(
+                        id = networkHabit.id,
+                        title = networkHabit.title,
+                        body = networkHabit.body,
+                        timestamp = networkHabit.updated_at
+                    )
+                }
+            }
+            networkUpdatedAt < cacheUpdatedAt -> {
+                safeNetworkCall(IO) {
+                    habitNetworkDataSource.insertOrUpdateHabit(cachedHabit)
+                }
+            }
+            networkUpdatedAt == cacheUpdatedAt -> {
+                // No operation (do nothing)
+            }
+        }
     }
 
     private suspend fun getCachedHabits(): List<Habit> {
@@ -51,10 +107,7 @@ class SyncHabitsUseCase(
         return dataState?.data ?: ArrayList()
     }
 
-    private suspend fun syncNetworkHabitsWithCachedHabits(
-        cacheHabitsInMemory: ArrayList<Habit>
-    ) = withContext(IO) {
-
+    private suspend fun getNetworkHabits(): List<Habit> {
         val networkResult = safeNetworkCall(IO) {
             habitNetworkDataSource.getAllHabits()
         }
@@ -72,46 +125,6 @@ class SyncHabitsUseCase(
             }
         }.getResult()
 
-        val habitListInNetwork = dataState.data ?: ArrayList()
-
-        val job = launch {
-            for (habitInNetwork in habitListInNetwork) {
-                habitCacheDataSource.searchHabitById(habitInNetwork.id)?.let { cachedHabit ->
-                    cacheHabitsInMemory.remove(habitInNetwork)
-                    checkIfCachedHabitRequiresUpdate(cachedHabit, habitInNetwork)
-                } ?: habitCacheDataSource.insertHabit(habitInNetwork)
-
-            }
-        }
-        job.join()
-
-        for (cachedHabit in cacheHabitsInMemory) {
-            safeNetworkCall(IO) {
-                habitNetworkDataSource.insertOrUpdateHabit(cachedHabit)
-            }
-        }
-    }
-
-    private suspend fun checkIfCachedHabitRequiresUpdate(
-        cachedHabit: Habit,
-        networkHabit: Habit
-    ) {
-        val cacheUpdatedAt = cachedHabit.updated_at
-        val networkUpdatedAt = networkHabit.updated_at
-
-        if (networkUpdatedAt > cacheUpdatedAt) {
-            safeCacheCall(IO) {
-                habitCacheDataSource.updateHabit(
-                    id = networkHabit.id,
-                    title = networkHabit.title,
-                    body = networkHabit.body,
-                    timestamp = networkHabit.updated_at
-                )
-            }
-        } else {
-            safeNetworkCall(IO) {
-                habitNetworkDataSource.insertOrUpdateHabit(cachedHabit)
-            }
-        }
+        return dataState.data ?: ArrayList()
     }
 }
