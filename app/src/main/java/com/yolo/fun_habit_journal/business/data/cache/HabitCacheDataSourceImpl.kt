@@ -7,7 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class HabitCacheDataSource
+class HabitCacheDataSourceImpl
 @Inject
 constructor(
     private val habitDaoService: IHabitDaoService
