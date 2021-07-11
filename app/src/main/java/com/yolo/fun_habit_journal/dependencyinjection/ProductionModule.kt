@@ -1,8 +1,11 @@
 package com.yolo.fun_habit_journal.dependencyinjection
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yolo.fun_habit_journal.framework.datasource.database.HabitDatabase
+import com.yolo.fun_habit_journal.framework.datasource.preferences.PreferenceKeys
 import com.yolo.fun_habit_journal.framework.presentation.BaseApplication
 import dagger.Module
 import dagger.Provides
@@ -30,4 +33,15 @@ object ProductionModule {
     fun provideFirebaseFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
     }
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun provideSharedPreferences(
+        application: BaseApplication
+    ): SharedPreferences =
+        application.getSharedPreferences(
+            PreferenceKeys.HABIT_PREFERENCES,
+            Context.MODE_PRIVATE
+        )
 }
