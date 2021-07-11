@@ -14,7 +14,7 @@ const val DEFAULT_SUCCESS_DB_RESULT = 1
 const val DEFAULT_FAILURE_DB_RESULT = -1
 const val HABIT_PAGINATION_PAGE_SIZE = 30
 
-class FakeHabitCacheDataSource
+class FakeHabitCacheDataSourceImpl
 constructor(
     private val habitsData: HashMap<String, Habit>,
     private val dateUtil: DateUtil

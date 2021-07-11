@@ -5,7 +5,7 @@ import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
 import com.yolo.fun_habit_journal.framework.util.printLogD
 
-class FakeHabitNetworkDataSource
+class FakeHabitNetworkDataSourceImpl
 constructor(
     private val habitsData: HashMap<String, Habit>,
     private val deletedHabitsData: HashMap<String, Habit>,
