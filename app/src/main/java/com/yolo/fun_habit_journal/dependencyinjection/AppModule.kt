@@ -20,12 +20,12 @@ import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.GetHabitsC
 import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.InsertNewHabitUseCase
 import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.RestoreDeletedHabitUseCase
 import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.SearchHabitsUseCase
-import com.yolo.fun_habit_journal.framework.datasource.HabitFirestoreServiceImpl
 import com.yolo.fun_habit_journal.framework.datasource.cache.HabitDaoServiceImpl
 import com.yolo.fun_habit_journal.framework.datasource.cache.abstraction.IHabitDaoService
 import com.yolo.fun_habit_journal.framework.datasource.cache.util.HabitCacheMapper
 import com.yolo.fun_habit_journal.framework.datasource.database.HabitDao
 import com.yolo.fun_habit_journal.framework.datasource.database.HabitDatabase
+import com.yolo.fun_habit_journal.framework.datasource.network.HabitFirestoreServiceImpl
 import com.yolo.fun_habit_journal.framework.datasource.network.abstraction.IHabitFirestoreService
 import com.yolo.fun_habit_journal.framework.datasource.network.mapper.HabitNetworkMapper
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailViewState
