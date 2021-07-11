@@ -3,6 +3,7 @@ package com.yolo.fun_habit_journal.framework.presentation.habitlist
 import android.content.SharedPreferences
 import android.os.Parcelable
 import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.LiveData
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
 import com.yolo.fun_habit_journal.business.domain.state.DataState
@@ -12,12 +13,15 @@ import com.yolo.fun_habit_journal.business.domain.state.StateEvent
 import com.yolo.fun_habit_journal.business.domain.state.StateMessage
 import com.yolo.fun_habit_journal.business.domain.state.UIComponentType
 import com.yolo.fun_habit_journal.business.usecases.habitlist.HabitListInteractors
+import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.DELETE_HABITS_YOU_MUST_SELECT
 import com.yolo.fun_habit_journal.framework.datasource.database.HABIT_FILTER_DATE_CREATED
 import com.yolo.fun_habit_journal.framework.datasource.database.HABIT_ORDER_DESC
 import com.yolo.fun_habit_journal.framework.datasource.preferences.PreferenceKeys.Companion.HABIT_FILTER
 import com.yolo.fun_habit_journal.framework.datasource.preferences.PreferenceKeys.Companion.HABIT_ORDER
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseViewModel
+import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListInteractionManager
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListStateEvent.*
+import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListToolbarState
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState.*
 import com.yolo.fun_habit_journal.framework.util.printLogD
@@ -36,6 +40,54 @@ constructor(
     private val editor: SharedPreferences.Editor,
     private val sharedPreferences: SharedPreferences
 ) : BaseViewModel<HabitListViewState>() {
+
+    // -------------- TODO Check if necessary ------------------------------------------------------------
+    val habitListInteractionManager =
+        HabitListInteractionManager()
+
+    val toolbarState: LiveData<HabitListToolbarState>
+        get() = habitListInteractionManager.toolbarState
+
+    fun getSelectedHabits() = habitListInteractionManager.getSelectedHabits()
+
+    fun setToolbarState(state: HabitListToolbarState) = habitListInteractionManager.setToolbarState(state)
+
+    fun isMultiSelectionStateActive() = habitListInteractionManager.isMultiSelectionStateActive()
+
+    fun addOrRemoveHabitFromSelectedList(habit: Habit) = habitListInteractionManager.addOrRemoveHabitFromSelectedList(habit)
+
+    fun isHabitSelected(habit: Habit): Boolean = habitListInteractionManager.isHabitSelected(habit)
+
+    fun clearSelectedHabits() = habitListInteractionManager.clearSelectedHabits()
+
+
+    private fun removeSelectedHabitsFromList() {
+        val update = getCurrentViewStateOrNew()
+        update.habitList?.removeAll(getSelectedHabits())
+        setViewState(update)
+        clearSelectedHabits()
+    }
+
+    fun deleteNotes() {
+        if (getSelectedHabits().size > 0) {
+            setStateEvent(DeleteMultipleHabitsEvent(getSelectedHabits()))
+            removeSelectedHabitsFromList()
+        } else {
+            setStateEvent(
+                CreateStateMessageEvent(
+                    stateMessage = StateMessage(
+                        response = Response(
+                            message = DELETE_HABITS_YOU_MUST_SELECT,
+                            uiComponentType = UIComponentType.Toast,
+                            messageType = MessageType.Info
+                        )
+                    )
+                )
+            )
+        }
+    }
+
+    // ------------------------------------------------------------
 
     init {
         setHabitFilter(
