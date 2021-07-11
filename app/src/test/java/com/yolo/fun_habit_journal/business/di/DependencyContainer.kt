@@ -5,7 +5,6 @@ import com.yolo.fun_habit_journal.business.data.cache.FakeHabitCacheDataSourceIm
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.data.network.FakeHabitNetworkDataSourceImpl
 import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetworkDataSource
-import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
 import com.yolo.fun_habit_journal.framework.util.isUnitTest
@@ -22,8 +21,6 @@ class DependencyContainer {
     lateinit var habitFactory: HabitFactory
     lateinit var fakeHabitDataFactory: FakeHabitDataFactory
 
-    private var habitsData: HashMap<String, Habit> = HashMap()
-
     init {
         isUnitTest = true
     }
@@ -35,19 +32,20 @@ class DependencyContainer {
 
         this.javaClass.classLoader?.let {
             fakeHabitDataFactory = FakeHabitDataFactory(it)
-            habitsData = fakeHabitDataFactory.produceHashMapOfHabits(
-                fakeHabitDataFactory.produceListOfHabits()
-            )
         }
 
         habitNetworkDataSource = FakeHabitNetworkDataSourceImpl(
-            habitsData = habitsData.toMutableMap() as HashMap<String, Habit>,
+            habitsData = fakeHabitDataFactory.produceHashMapOfHabits(
+                fakeHabitDataFactory.produceListOfHabits()
+            ),
             deletedHabitsData = HashMap(),
             dateUtil = habitDateUtil
         )
 
         habitCacheDataSource = FakeHabitCacheDataSourceImpl(
-            habitsData = habitsData.toMutableMap() as HashMap<String, Habit>,
+            habitsData = fakeHabitDataFactory.produceHashMapOfHabits(
+                fakeHabitDataFactory.produceListOfHabits()
+            ),
             dateUtil = habitDateUtil
         )
     }

@@ -221,7 +221,7 @@ constructor(
     private fun getHabitListCountInCache() = getCurrentViewStateOrNew().habitsCountInCache ?: 0
 
     // for debugging
-    fun getActiveJobs() = dataChannelManager.getActiveJobs()
+    fun getActiveJobs() = dataStateManager.getActiveJobs()
 
     fun getLayoutManagerState(): Parcelable? {
         return getCurrentViewStateOrNew().layoutManagerState

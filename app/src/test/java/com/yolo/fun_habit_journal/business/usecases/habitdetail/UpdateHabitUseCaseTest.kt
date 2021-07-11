@@ -1,11 +1,11 @@
 package com.yolo.fun_habit_journal.business.usecases.habitdetail
 
-import com.yolo.fun_habit_journal.business.data.cache.FORCE_GENERAL_FAILURE
 import com.yolo.fun_habit_journal.business.data.cache.FORCE_UPDATE_HABIT_EXCEPTION
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.data.cache.util.CacheErrors
 import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetworkDataSource
 import com.yolo.fun_habit_journal.business.di.DependencyContainer
+import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
 import com.yolo.fun_habit_journal.business.domain.state.DataState
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.UPDATE_HABIT_FAILED
@@ -32,11 +32,10 @@ class UpdateHabitUseCaseTest {
 
     @BeforeEach
     fun setup() {
-        with(DependencyContainer().apply { build() }) {
-            cacheDataSource = habitCacheDataSource
-            networkDataSource = habitNetworkDataSource
-            factory = habitFactory
-        }
+        dependencyContainer = DependencyContainer().apply { build() }
+        cacheDataSource = dependencyContainer.habitCacheDataSource
+        networkDataSource = dependencyContainer.habitNetworkDataSource
+        factory = dependencyContainer.habitFactory
 
         updateHabitUseCase = UpdateHabitUseCase(
             habitCacheDataSource = cacheDataSource,
@@ -48,10 +47,12 @@ class UpdateHabitUseCaseTest {
     fun `WHEN update habit success THEN confirm network and cache are updated`() = runBlocking {
 
         val randomHabit = cacheDataSource.searchHabits("", "", 1).get(0)
-        val updateHabit = randomHabit.copy(
+        val updateHabit = Habit(
             id = randomHabit.id,
             title = "Updated title",
-            body = "Updated body"
+            body = "Updated body",
+            updated_at = dependencyContainer.habitDateUtil.getCurrentTimestamp(),
+            created_at = randomHabit.created_at
         )
 
         updateHabitUseCase.updateHabit(

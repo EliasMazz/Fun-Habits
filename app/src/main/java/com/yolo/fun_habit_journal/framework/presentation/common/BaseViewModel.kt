@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yolo.fun_habit_journal.business.data.util.GenericErrors
-import com.yolo.fun_habit_journal.business.domain.state.DataChannelManager
+import com.yolo.fun_habit_journal.business.domain.state.DataStateManager
 import com.yolo.fun_habit_journal.business.domain.state.DataState
 import com.yolo.fun_habit_journal.business.domain.state.MessageType
 import com.yolo.fun_habit_journal.business.domain.state.Response
@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.flow
 abstract class BaseViewModel<ViewState> : ViewModel() {
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData()
 
-    val dataChannelManager: DataChannelManager<ViewState> = object : DataChannelManager<ViewState>() {
+    val dataStateManager: DataStateManager<ViewState> = object : DataStateManager<ViewState>() {
 
         override fun handleNewData(data: ViewState) {
             this@BaseViewModel.handleNewData(data)
@@ -32,17 +32,17 @@ abstract class BaseViewModel<ViewState> : ViewModel() {
     val viewState: LiveData<ViewState>
         get() = _viewState
 
-    val shouldDisplayProgressBar: LiveData<Boolean> = dataChannelManager.shouldDisplayProgressBar
+    val shouldDisplayProgressBar: LiveData<Boolean> = dataStateManager.shouldDisplayProgressBar
 
     val stateMessage: LiveData<StateMessage?>
-        get() = dataChannelManager.messageStack.stateMessage
+        get() = dataStateManager.messageStack.stateMessage
 
     // FOR DEBUGGING
     fun getMessageStackSize(): Int {
-        return dataChannelManager.messageStack.size
+        return dataStateManager.messageStack.size
     }
 
-    fun setupChannel() = dataChannelManager.setupChannel()
+    fun setupChannel() = dataStateManager.setupChannel()
 
     abstract fun handleNewData(data: ViewState)
 
@@ -76,7 +76,7 @@ abstract class BaseViewModel<ViewState> : ViewModel() {
     fun launchJob(
         stateEvent: StateEvent,
         jobFunction: Flow<DataState<ViewState>?>
-    ) = dataChannelManager.launchJob(stateEvent, jobFunction)
+    ) = dataStateManager.launchJob(stateEvent, jobFunction)
 
     fun getCurrentViewStateOrNew(): ViewState {
         return viewState.value ?: initNewViewState()
@@ -88,16 +88,16 @@ abstract class BaseViewModel<ViewState> : ViewModel() {
 
     fun clearStateMessage(index: Int = 0) {
         printLogD("BaseViewModel", "clearStateMessage")
-        dataChannelManager.clearStateMessage(index)
+        dataStateManager.clearStateMessage(index)
     }
 
-    fun clearActiveStateEvents() = dataChannelManager.clearActiveStateEventCounter()
+    fun clearActiveStateEvents() = dataStateManager.clearActiveStateEventCounter()
 
-    fun clearAllStateMessages() = dataChannelManager.clearAllStateMessages()
+    fun clearAllStateMessages() = dataStateManager.clearAllStateMessages()
 
-    fun printStateMessages() = dataChannelManager.printStateMessages()
+    fun printStateMessages() = dataStateManager.printStateMessages()
 
-    fun cancelActiveJobs() = dataChannelManager.cancelJobs()
+    fun cancelActiveJobs() = dataStateManager.cancelJobs()
 
     abstract fun initNewViewState(): ViewState
 }

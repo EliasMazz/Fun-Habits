@@ -41,6 +41,7 @@ class SyncDeletedHabitsUseCaseTest() {
             for (habit in habitsToDelete) {
                 habitsToDelete.add(habit)
                 networkDataSource.deleteHabit(habit.id)
+                networkDataSource.insertOrUpdateHabit(habit)
 
                 val randomNumberOfHabitsToDelete = 4
                 if (habitsToDelete.size > randomNumberOfHabitsToDelete) {
