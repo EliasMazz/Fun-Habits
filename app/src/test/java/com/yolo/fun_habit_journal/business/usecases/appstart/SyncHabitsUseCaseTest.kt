@@ -5,6 +5,7 @@ import com.yolo.fun_habit_journal.business.data.network.abstraction.IHabitNetwor
 import com.yolo.fun_habit_journal.business.di.DependencyContainer
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
+import com.yolo.fun_habit_journal.business.domain.util.DateUtil
 import com.yolo.fun_habit_journal.business.usecases.appstart.usecase.SyncHabitsUseCase
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -16,35 +17,38 @@ import kotlin.collections.ArrayList
 
 class SyncHabitsUseCaseTest {
     private lateinit var dependencyContainer: DependencyContainer
-    private lateinit var habitCacheDataSource: IHabitCacheDataSource
-    private lateinit var habitNetworkDataSource: IHabitNetworkDataSource
-    private lateinit var habitFactory: HabitFactory
+    private lateinit var cacheDataSource: IHabitCacheDataSource
+    private lateinit var networkDataSource: IHabitNetworkDataSource
+    private lateinit var factory: HabitFactory
+    private lateinit var dateUtil: DateUtil
 
     private lateinit var syncHabitsUseCase: SyncHabitsUseCase
 
     @BeforeEach
     fun setup() {
-        dependencyContainer = DependencyContainer().apply { build() }
-        habitCacheDataSource = dependencyContainer.habitCacheDataSource
-        habitNetworkDataSource = dependencyContainer.habitNetworkDataSource
-        habitFactory = dependencyContainer.habitFactory
+        with(DependencyContainer().apply { build() }) {
+            cacheDataSource = habitCacheDataSource
+            networkDataSource = habitNetworkDataSource
+            factory = habitFactory
+            dateUtil = habitDateUtil
+        }
 
         syncHabitsUseCase = SyncHabitsUseCase(
-            habitCacheDataSource = habitCacheDataSource,
-            habitNetworkDataSource = habitNetworkDataSource
+            habitCacheDataSource = cacheDataSource,
+            habitNetworkDataSource = networkDataSource
         )
     }
 
     @Test
     fun `WHEN insert new habits into the network THEN perform sync and check if the network habits were inserted into the cache`() =
         runBlocking {
-            val newHabitList = habitFactory.createHabitList(50)
-            habitNetworkDataSource.insertOrUpdateListHabit(newHabitList)
+            val newHabitList = factory.createHabitList(50)
+            networkDataSource.insertOrUpdateListHabit(newHabitList)
 
             syncHabitsUseCase.syncHabits()
 
             for (habit in newHabitList) {
-                val cachedHabit = habitCacheDataSource.searchHabitById(habit.id)
+                val cachedHabit = cacheDataSource.searchHabitById(habit.id)
                 assertNotNull(cachedHabit)
             }
         }
@@ -52,13 +56,13 @@ class SyncHabitsUseCaseTest {
     @Test
     fun `WHEN insert new habits into the cache THEN perform sync and check if the cache habits were inserted into the network`() =
         runBlocking {
-            val newHabits = habitFactory.createHabitList(50)
-            habitCacheDataSource.insertHabits(newHabits)
+            val newHabits = factory.createHabitList(50)
+            cacheDataSource.insertHabits(newHabits)
 
             syncHabitsUseCase.syncHabits()
 
             for (habit in newHabits) {
-                val networkHabit = habitNetworkDataSource.searchHabit(habit)
+                val networkHabit = networkDataSource.searchHabit(habit)
                 assertNotNull(networkHabit)
             }
         }
@@ -66,10 +70,10 @@ class SyncHabitsUseCaseTest {
     @Test
     fun `WHEN update new habits into the cache THEN perform sync and check if the cache habits were updated into the network`() =
         runBlocking {
-            val cacheHabits = habitCacheDataSource.searchHabits("", "", 1)
+            val cacheHabits = cacheDataSource.searchHabits("", "", 1)
             val habitsToUpdate: ArrayList<Habit> = ArrayList()
             for (habit in cacheHabits) {
-                val updatedHabit = habitFactory.createSingleHabit(
+                val updatedHabit = factory.createSingleHabit(
                     id = habit.id,
                     title = UUID.randomUUID().toString(),
                     body = UUID.randomUUID().toString()
@@ -80,12 +84,12 @@ class SyncHabitsUseCaseTest {
                     break
                 }
 
-                habitCacheDataSource.insertHabits(habitsToUpdate)
+                cacheDataSource.insertHabits(habitsToUpdate)
 
                 syncHabitsUseCase.syncHabits()
 
                 for (habit in habitsToUpdate) {
-                    val networkHabit = habitNetworkDataSource.searchHabit(habit)
+                    val networkHabit = networkDataSource.searchHabit(habit)
                     assertEquals(habit.id, networkHabit?.id)
                     assertEquals(habit.title, networkHabit?.title)
                     assertEquals(habit.body, networkHabit?.body)
@@ -97,10 +101,10 @@ class SyncHabitsUseCaseTest {
     @Test
     fun `WHEN update new habits into the network THEN perform sync and check if the network habits were updated into the cache`() =
         runBlocking {
-            val networkHabits = habitNetworkDataSource.getAllHabits()
+            val networkHabits = networkDataSource.getAllHabits()
             val habitsToUpdate: ArrayList<Habit> = ArrayList()
             for (habit in networkHabits) {
-                val updatedHabit = habitFactory.createSingleHabit(
+                val updatedHabit = factory.createSingleHabit(
                     id = habit.id,
                     title = UUID.randomUUID().toString(),
                     body = UUID.randomUUID().toString()
@@ -112,12 +116,12 @@ class SyncHabitsUseCaseTest {
                 }
             }
 
-            habitNetworkDataSource.insertOrUpdateListHabit(habitsToUpdate)
+            networkDataSource.insertOrUpdateListHabit(habitsToUpdate)
 
             syncHabitsUseCase.syncHabits()
 
             for (habit in habitsToUpdate) {
-                val cacheHabit = habitCacheDataSource.searchHabitById(habit.id)
+                val cacheHabit = cacheDataSource.searchHabitById(habit.id)
                 assertEquals(habit.id, cacheHabit?.id)
                 assertEquals(habit.title, cacheHabit?.title)
                 assertEquals(habit.body, cacheHabit?.body)

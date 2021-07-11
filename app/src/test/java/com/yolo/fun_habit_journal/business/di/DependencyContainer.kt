@@ -14,10 +14,9 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class DependencyContainer {
-
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
-    private val dateUtil = DateUtil(dateFormat)
 
+    lateinit var habitDateUtil: DateUtil
     lateinit var habitNetworkDataSource: IHabitNetworkDataSource
     lateinit var habitCacheDataSource: IHabitCacheDataSource
     lateinit var habitFactory: HabitFactory
@@ -30,6 +29,10 @@ class DependencyContainer {
     }
 
     fun build() {
+
+        habitDateUtil = DateUtil(dateFormat)
+        habitFactory = HabitFactory(habitDateUtil)
+
         this.javaClass.classLoader?.let {
             fakeHabitDataFactory = FakeHabitDataFactory(it)
             habitsData = fakeHabitDataFactory.produceHashMapOfHabits(
@@ -37,16 +40,15 @@ class DependencyContainer {
             )
         }
 
-        habitFactory = HabitFactory(dateUtil)
         habitNetworkDataSource = FakeHabitNetworkDataSourceImpl(
             habitsData = habitsData.toMutableMap() as HashMap<String, Habit>,
             deletedHabitsData = HashMap(),
-            dateUtil = dateUtil
+            dateUtil = habitDateUtil
         )
 
         habitCacheDataSource = FakeHabitCacheDataSourceImpl(
             habitsData = habitsData.toMutableMap() as HashMap<String, Habit>,
-            dateUtil = dateUtil
+            dateUtil = habitDateUtil
         )
     }
 }
