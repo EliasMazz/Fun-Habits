@@ -71,15 +71,6 @@ class HabitListAdapter(
         differ.submitList(list, commitCallback)
     }
 
-    fun getHabit(index: Int): Habit? {
-        return try {
-            differ.currentList[index]
-        } catch (e: IndexOutOfBoundsException) {
-            e.printStackTrace()
-            null
-        }
-    }
-
     class HabitViewHolder
     constructor(
         itemView: View,
