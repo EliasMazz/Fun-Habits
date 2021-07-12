@@ -2,9 +2,6 @@ package com.yolo.fun_habit_journal.framework.presentation.habitlist
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -15,18 +12,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yolo.fun_habit_journal.R
 import com.yolo.fun_habit_journal.business.domain.model.Habit
-import com.yolo.fun_habit_journal.business.domain.state.AreYouSureCallback
 import com.yolo.fun_habit_journal.business.domain.state.DialogInputCaptureCallback
 import com.yolo.fun_habit_journal.business.domain.state.MessageType
 import com.yolo.fun_habit_journal.business.domain.state.Response
 import com.yolo.fun_habit_journal.business.domain.state.SnackbarUndoCallback
-import com.yolo.fun_habit_journal.business.domain.state.StateMessage
 import com.yolo.fun_habit_journal.business.domain.state.StateMessageCallback
 import com.yolo.fun_habit_journal.business.domain.state.UIComponentType
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
 import com.yolo.fun_habit_journal.business.usecases.common.usecase.DELETE_HABIT_PENDING
 import com.yolo.fun_habit_journal.business.usecases.common.usecase.DELETE_HABIT_SUCCESS
-import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.DELETE_HABITS_ARE_YOU_SURE
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseFragment
 import com.yolo.fun_habit_journal.framework.presentation.common.hideKeyboard
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.HABIT_DETAIL_SELECTED_HABIT_BUNDLE_KEY
@@ -34,11 +28,9 @@ import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitLi
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListToolbarState.*
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
 import com.yolo.fun_habit_journal.framework.util.TodoCallback
-import com.yolo.fun_habit_journal.framework.util.printLogD
 import kotlinx.android.synthetic.main.fragment_habit_list.add_new_habit_fab
 import kotlinx.android.synthetic.main.fragment_habit_list.recycler_view
 import kotlinx.android.synthetic.main.fragment_habit_list.swipe_refresh
-import kotlinx.android.synthetic.main.fragment_habit_list.toolbar_content_container
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
@@ -49,7 +41,7 @@ const val HABIT_LIST_STATE_BUNDLE_KEY = "com.yolo.fun_habit_journal.framework.pr
 class HabitListFragment constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val dateUtil: DateUtil
-) : BaseFragment(R.layout.fragment_habit_list), HabitListAdapter.Interaction, ItemTouchHelperAdapter {
+) : BaseFragment(R.layout.fragment_habit_list), HabitListAdapter.Interaction {
 
     val viewModel: HabitListViewModel by viewModels {
         viewModelFactory
@@ -72,10 +64,6 @@ class HabitListFragment constructor(
 
     private fun clearArgs() {
         arguments?.clear()
-    }
-
-    override fun activateMultiSelectionMode() {
-        TODO("Not yet implemented")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -107,7 +95,7 @@ class HabitListFragment constructor(
         })
 
         viewModel.shouldDisplayProgressBar.observe(viewLifecycleOwner, Observer {
-            printActiveJobs()
+//            printActiveJobs()
             uiController.displayProgressBar(it)
         })
 
@@ -143,17 +131,9 @@ class HabitListFragment constructor(
             val topSpacingDecorator = TopSpacingItemDecoration(20)
             addItemDecoration(topSpacingDecorator)
 
-            itemTouchHelper = ItemTouchHelper(
-                HabitItemTouchHelperCallback(
-                    this@HabitListFragment,
-                    viewModel.habitListInteractionManager
-                )
-            )
-
             listAdapter = HabitListAdapter(
                 this@HabitListFragment,
                 viewLifecycleOwner,
-                viewModel.habitListInteractionManager.selectedHabits,
                 dateUtil
             )
 
@@ -223,16 +203,16 @@ class HabitListFragment constructor(
         )
     }
 
-    // for debugging
-    private fun printActiveJobs() {
-
-        for ((index, job) in viewModel.getActiveJobs().withIndex()) {
-            printLogD(
-                "HabitList",
-                "${index}: ${job}"
-            )
-        }
-    }
+// for debugging
+//    private fun printActiveJobs() {
+//
+//        for ((index, job) in viewModel.getActiveJobs().withIndex()) {
+//            printLogD(
+//                "HabitList",
+//                "${index}: ${job}"
+//            )
+//        }
+//    }
 
     private fun navigateToDetailFragment(selectedHabit: Habit) {
         val bundle = bundleOf(HABIT_DETAIL_SELECTED_HABIT_BUNDLE_KEY to selectedHabit)
@@ -250,46 +230,6 @@ class HabitListFragment constructor(
     private fun saveLayoutManagerState() {
         recycler_view.layoutManager?.onSaveInstanceState()?.let { lmState ->
             viewModel.setLayoutManagerState(lmState)
-        }
-    }
-
-    private fun enableMultiSelectToolbarState() {
-        view?.let { v ->
-            val view = View.inflate(
-                v.context,
-                R.layout.layout_multiselection_toolbar,
-                null
-            )
-            view.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-            )
-            toolbar_content_container.addView(view)
-            setupMultiSelectionToolbar(view)
-        }
-    }
-
-    private fun setupMultiSelectionToolbar(parentView: View) {
-        parentView
-            .findViewById<ImageView>(R.id.action_exit_multiselect_state)
-            .setOnClickListener {
-
-            }
-
-        parentView
-            .findViewById<ImageView>(R.id.action_delete_habit)
-            .setOnClickListener {
-                deleteNotes()
-            }
-    }
-
-
-    private fun disableMultiSelectToolbarState() {
-        view?.let {
-            val view = toolbar_content_container
-                .findViewById<Toolbar>(R.id.multiselect_toolbar)
-            toolbar_content_container.removeView(view)
-            viewModel.clearSelectedHabits()
         }
     }
 
@@ -326,14 +266,8 @@ class HabitListFragment constructor(
         }
     }
 
-    override fun isMultiSelectionModeEnabled() = viewModel.isMultiSelectionStateActive()
-
     override fun onItemSelected(position: Int, item: Habit) {
-        if (isMultiSelectionModeEnabled()) {
-            viewModel.addOrRemoveHabitFromSelectedList(item)
-        } else {
-            viewModel.setHabit(item)
-        }
+        viewModel.setHabit(item)
     }
 
     override fun onDestroyView() {
@@ -342,41 +276,4 @@ class HabitListFragment constructor(
         itemTouchHelper = null // can leak memory
     }
 
-    override fun isHabitSelected(habit: Habit): Boolean {
-        return viewModel.isHabitSelected(habit)
-    }
-
-    override fun onItemSwiped(position: Int) {
-        if (!viewModel.isDeletePending()) {
-            listAdapter?.getHabit(position)?.let { note ->
-                viewModel.beginPendingDelete(note)
-            }
-        } else {
-            listAdapter?.notifyDataSetChanged()
-        }
-    }
-
-    private fun deleteNotes() {
-        viewModel.setStateEvent(
-            HabitListStateEvent.CreateStateMessageEvent(
-                stateMessage = StateMessage(
-                    response = Response(
-                        message = DELETE_HABITS_ARE_YOU_SURE,
-                        uiComponentType = UIComponentType.AreYouSureDialog(
-                            object : AreYouSureCallback {
-                                override fun proceed() {
-                                    viewModel.deleteNotes()
-                                }
-
-                                override fun cancel() {
-                                    // do nothing
-                                }
-                            }
-                        ),
-                        messageType = MessageType.Info
-                    )
-                )
-            )
-        )
-    }
 }

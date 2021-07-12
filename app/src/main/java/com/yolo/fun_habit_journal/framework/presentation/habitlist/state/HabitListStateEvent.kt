@@ -34,52 +34,6 @@ sealed class HabitListStateEvent: StateEvent {
         override fun shouldDisplayProgressBar() = true
     }
 
-    // for testing
-    class InsertMultipleHabitsEvent(
-        val numHabits: Int
-    ): HabitListStateEvent() {
-
-        override fun errorInfo(): String {
-            return "Error inserting the habits."
-        }
-
-        override fun eventName(): String {
-            return "InsertMultipleHabitsEvent"
-        }
-
-        override fun shouldDisplayProgressBar() = true
-    }
-
-    class DeleteHabitEvent(
-        val habit: Habit
-    ): HabitListStateEvent(){
-
-        override fun errorInfo(): String {
-            return "Error deleting habit."
-        }
-
-        override fun eventName(): String {
-            return "DeleteHabitEvent"
-        }
-
-        override fun shouldDisplayProgressBar() = true
-    }
-
-    class DeleteMultipleHabitsEvent(
-        val habits: List<Habit>
-    ): HabitListStateEvent(){
-
-        override fun errorInfo(): String {
-            return "Error deleting the selected habits"
-        }
-
-        override fun eventName(): String {
-            return "DeleteMultipleHabitsEvent"
-        }
-
-        override fun shouldDisplayProgressBar() = true
-    }
-
     class RestoreDeletedHabitEvent(
         val habit: Habit
     ): HabitListStateEvent() {

@@ -20,7 +20,6 @@ import kotlinx.android.synthetic.main.layout_habit_list_item.view.habit_title
 class HabitListAdapter(
     private val interaction: Interaction? = null,
     private val lifecycleOwner: LifecycleOwner,
-    private val selectedHabits: LiveData<ArrayList<Habit>>,
     private val dateUtil: DateUtil
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -47,7 +46,6 @@ class HabitListAdapter(
             ),
             interaction,
             lifecycleOwner,
-            selectedHabits,
             dateUtil
         )
     }
@@ -87,61 +85,26 @@ class HabitListAdapter(
         itemView: View,
         private val interaction: Interaction?,
         private val lifecycleOwner: LifecycleOwner,
-        private val selectedHabits: LiveData<ArrayList<Habit>>,
         private val dateUtil: DateUtil
     ) : RecyclerView.ViewHolder(itemView) {
 
-        private val COLOR_GREY = R.color.app_background_color
-        private val COLOR_PRIMARY = R.color.colorPrimary
         private lateinit var habit: Habit
 
         fun bind(item: Habit) = with(itemView) {
-            setOnClickListener {
-                interaction?.onItemSelected(adapterPosition, habit)
-            }
-
-            setOnLongClickListener {
-                interaction?.activateMultiSelectionMode()
-                interaction?.onItemSelected(adapterPosition, habit)
-                true
-            }
-
             habit = item
             habit_title.text = item.title
             habit_timestamp.text = dateUtil.removeTimeFromDateString(item.updated_at)
 
-            selectedHabits.observe(lifecycleOwner, Observer { habits ->
-
-                if (habits != null) {
-                    if (habits.contains(habit)) {
-                        changeColor(
-                            newColor = COLOR_GREY
-                        )
-                    } else {
-                        changeColor(
-                            newColor = COLOR_PRIMARY
-                        )
-                    }
-                } else {
-                    changeColor(
-                        newColor = COLOR_PRIMARY
-                    )
-                }
-            })
+            setOnClickListener {
+                interaction?.onItemSelected(adapterPosition, habit)
+            }
         }
     }
 
     interface Interaction {
-
         fun onItemSelected(position: Int, item: Habit)
 
         fun restoreListPosition()
-
-        fun isMultiSelectionModeEnabled(): Boolean
-
-        fun activateMultiSelectionMode()
-
-        fun isHabitSelected(habit: Habit): Boolean
     }
 }
 

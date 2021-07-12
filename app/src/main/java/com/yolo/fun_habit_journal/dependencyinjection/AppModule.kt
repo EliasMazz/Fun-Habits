@@ -14,7 +14,6 @@ import com.yolo.fun_habit_journal.business.usecases.common.usecase.DeleteHabitUs
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.HabitDetailInteractors
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.UpdateHabitUseCase
 import com.yolo.fun_habit_journal.business.usecases.habitlist.HabitListInteractors
-import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.DeleteMultipleHabitsUseCase
 import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.GetHabitsCountUseCase
 import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.GetListHabitstUseCase
 import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.InsertNewHabitUseCase
@@ -193,7 +192,6 @@ object AppModule {
             DeleteHabitUseCase(habitCacheDataSource, habitNetworkDataSource),
             GetHabitsCountUseCase(habitCacheDataSource),
             RestoreDeletedHabitUseCase(habitCacheDataSource, habitNetworkDataSource),
-            DeleteMultipleHabitsUseCase(habitCacheDataSource, habitNetworkDataSource),
             GetListHabitstUseCase(habitCacheDataSource)
         )
 

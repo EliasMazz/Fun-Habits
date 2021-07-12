@@ -17,7 +17,6 @@ import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.Habit
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailViewState
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitInteractionManager
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitInteractionState
-import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListStateEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -69,7 +68,7 @@ constructor(
                 }
             }
 
-            is HabitListStateEvent.DeleteHabitEvent -> {
+            is HabitDetailStateEvent.DeleteHabitEvent -> {
                 habitDetailInteractors.deleteHabitUseCase.deleteHabit(
                     habit = stateEvent.habit,
                     stateEvent = stateEvent
@@ -92,7 +91,7 @@ constructor(
 
     fun beginPendingDelete(habit: Habit) {
         setStateEvent(
-            HabitListStateEvent.DeleteHabitEvent(
+            HabitDetailStateEvent.DeleteHabitEvent(
                 habit = habit
             )
         )

@@ -10,6 +10,7 @@ import com.yolo.fun_habit_journal.business.domain.state.DataState
 import com.yolo.fun_habit_journal.business.usecases.common.usecase.DELETE_HABIT_FAILURE
 import com.yolo.fun_habit_journal.business.usecases.common.usecase.DELETE_HABIT_SUCCESS
 import com.yolo.fun_habit_journal.business.usecases.common.usecase.DeleteHabitUseCase
+import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailStateEvent
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListStateEvent
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -49,7 +50,7 @@ class DeleteHabitUseCaseTest {
 
         deleteHabitUseCase.deleteHabit(
             habit = habitToDelete,
-            stateEvent = HabitListStateEvent.DeleteHabitEvent(habitToDelete)
+            stateEvent = HabitDetailStateEvent.DeleteHabitEvent(habitToDelete)
         ).collect(object : FlowCollector<DataState<HabitListViewState>?> {
             override suspend fun emit(value: DataState<HabitListViewState>?) {
                 Assertions.assertEquals(
@@ -75,7 +76,7 @@ class DeleteHabitUseCaseTest {
 
         deleteHabitUseCase.deleteHabit(
             habit = habitToDelete,
-            stateEvent = HabitListStateEvent.DeleteHabitEvent(habitToDelete)
+            stateEvent = HabitDetailStateEvent.DeleteHabitEvent(habitToDelete)
         ).collect(object : FlowCollector<DataState<HabitListViewState>?> {
             override suspend fun emit(value: DataState<HabitListViewState>?) {
                 Assertions.assertEquals(
@@ -102,7 +103,7 @@ class DeleteHabitUseCaseTest {
 
         deleteHabitUseCase.deleteHabit(
             habit = habitToDelete,
-            stateEvent = HabitListStateEvent.DeleteHabitEvent(habitToDelete)
+            stateEvent = HabitDetailStateEvent.DeleteHabitEvent(habitToDelete)
         ).collect(object : FlowCollector<DataState<HabitListViewState>?> {
             override suspend fun emit(value: DataState<HabitListViewState>?) {
                 assert(

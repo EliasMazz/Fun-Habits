@@ -10,9 +10,7 @@ import com.yolo.fun_habit_journal.business.domain.state.StateEvent
 import com.yolo.fun_habit_journal.business.domain.state.StateMessage
 import com.yolo.fun_habit_journal.business.domain.state.UIComponentType
 import com.yolo.fun_habit_journal.business.usecases.habitlist.HabitListInteractors
-import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.DELETE_HABITS_YOU_MUST_SELECT
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseViewModel
-import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListInteractionManager
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListStateEvent.*
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState.*
@@ -31,50 +29,6 @@ constructor(
     private val habitListInteractors: HabitListInteractors,
     private val habitFactory: HabitFactory
 ) : BaseViewModel<HabitListViewState>() {
-
-    // -------------- TODO Check if necessary ------------------------------------------------------------
-    val habitListInteractionManager =
-        HabitListInteractionManager()
-
-
-    fun getSelectedHabits() = habitListInteractionManager.getSelectedHabits()
-
-    fun isMultiSelectionStateActive() = habitListInteractionManager.isMultiSelectionStateActive()
-
-    fun addOrRemoveHabitFromSelectedList(habit: Habit) = habitListInteractionManager.addOrRemoveHabitFromSelectedList(habit)
-
-    fun isHabitSelected(habit: Habit): Boolean = habitListInteractionManager.isHabitSelected(habit)
-
-    fun clearSelectedHabits() = habitListInteractionManager.clearSelectedHabits()
-
-
-    private fun removeSelectedHabitsFromList() {
-        val update = getCurrentViewStateOrNew()
-        update.habitList?.removeAll(getSelectedHabits())
-        setViewState(update)
-        clearSelectedHabits()
-    }
-
-    fun deleteNotes() {
-        if (getSelectedHabits().size > 0) {
-            setStateEvent(DeleteMultipleHabitsEvent(getSelectedHabits()))
-            removeSelectedHabitsFromList()
-        } else {
-            setStateEvent(
-                CreateStateMessageEvent(
-                    stateMessage = StateMessage(
-                        response = Response(
-                            message = DELETE_HABITS_YOU_MUST_SELECT,
-                            uiComponentType = UIComponentType.Toast,
-                            messageType = MessageType.Info
-                        )
-                    )
-                )
-            )
-        }
-    }
-
-    // ------------------------------------------------------------
 
 
     override fun handleNewData(data: HabitListViewState) {
@@ -117,20 +71,6 @@ constructor(
                 )
             }
 
-            is DeleteHabitEvent -> {
-                habitListInteractors.deleteHabitUseCase.deleteHabit(
-                    habit = stateEvent.habit,
-                    stateEvent = stateEvent
-                )
-            }
-
-            is DeleteMultipleHabitsEvent -> {
-                habitListInteractors.deleteMultipleHabitsUseCase.deleteHabits(
-                    habitList = stateEvent.habits,
-                    stateEvent = stateEvent
-                )
-            }
-
             is RestoreDeletedHabitEvent -> {
                 habitListInteractors.restoreDeletedHabitUseCase.restoreDeletedHabit(
                     habit = stateEvent.habit,
@@ -161,8 +101,6 @@ constructor(
     /*
         Getters
      */
-
-
     fun getHabitListSize() = getCurrentViewStateOrNew().habitList?.size ?: 0
 
     private fun getHabitListCountInCache() = getCurrentViewStateOrNew().habitsCountInCache ?: 0
@@ -186,14 +124,10 @@ constructor(
         return 0
     }
 
-
     override fun initNewViewState(): HabitListViewState {
         return HabitListViewState()
     }
 
-    /*
-        Setters
-     */
     private fun setHabitListData(habitList: ArrayList<Habit>) {
         val update = getCurrentViewStateOrNew()
         update.habitList = habitList
@@ -280,9 +214,6 @@ constructor(
         setViewState(update)
     }
 
-    /*
-        StateEvent Triggers
-     */
     fun isDeletePending(): Boolean {
         val pendingHabit = getCurrentViewStateOrNew().habitPendingDelete
         if (pendingHabit != null) {
@@ -303,9 +234,7 @@ constructor(
         }
     }
 
-
     fun undoDelete() {
-        // replace habit in viewstate
         val update = getCurrentViewStateOrNew()
         update.habitPendingDelete?.let { habitPendingDelete ->
             if (habitPendingDelete.listPosition != null && habitPendingDelete.habit != null) {
@@ -317,16 +246,6 @@ constructor(
             }
         }
         setViewState(update)
-    }
-
-    fun beginPendingDelete(habit: Habit) {
-        setHabitPendingDelete(habit)
-        removePendingHabitFromList(habit)
-        setStateEvent(
-            DeleteHabitEvent(
-                habit = habit
-            )
-        )
     }
 
     fun retrieveHabitListCountInCache() {
