@@ -6,6 +6,19 @@ import com.yolo.fun_habit_journal.business.domain.state.StateMessage
 
 sealed class HabitListStateEvent: StateEvent {
 
+    object GetHabitsLisEvent : HabitListStateEvent() {
+
+        override fun errorInfo(): String {
+            return "Error getting list of habits."
+        }
+
+        override fun eventName(): String {
+            return "GetHabitsListEvent"
+        }
+
+        override fun shouldDisplayProgressBar() = true
+    }
+
     class InsertNewHabitEvent(
         val title: String
     ): HabitListStateEvent() {
@@ -82,20 +95,6 @@ sealed class HabitListStateEvent: StateEvent {
         override fun shouldDisplayProgressBar() = false
     }
 
-    class SearchHabitsEvent(
-        val clearLayoutManagerState: Boolean = true
-    ): HabitListStateEvent(){
-
-        override fun errorInfo(): String {
-            return "Error getting list of habits."
-        }
-
-        override fun eventName(): String {
-            return "SearchHabitsEvent"
-        }
-
-        override fun shouldDisplayProgressBar() = true
-    }
 
     object GetHabitsCountInCacheEvent : HabitListStateEvent() {
 

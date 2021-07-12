@@ -46,7 +46,7 @@ class UpdateHabitUseCaseTest {
     @Test
     fun `WHEN update habit success THEN confirm network and cache are updated`() = runBlocking {
 
-        val randomHabit = cacheDataSource.searchHabits("", "", 1).get(0)
+        val randomHabit = cacheDataSource.getAllHabits().first()
         val updateHabit = Habit(
             id = randomHabit.id,
             title = "Updated title",

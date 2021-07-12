@@ -2,12 +2,8 @@ package com.yolo.fun_habit_journal.framework.presentation.habitlist
 
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RadioGroup
-import android.widget.TextView
-import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
@@ -17,9 +13,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.customview.getCustomView
 import com.yolo.fun_habit_journal.R
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.state.AreYouSureCallback
@@ -34,10 +27,6 @@ import com.yolo.fun_habit_journal.business.domain.util.DateUtil
 import com.yolo.fun_habit_journal.business.usecases.common.usecase.DELETE_HABIT_PENDING
 import com.yolo.fun_habit_journal.business.usecases.common.usecase.DELETE_HABIT_SUCCESS
 import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.DELETE_HABITS_ARE_YOU_SURE
-import com.yolo.fun_habit_journal.framework.datasource.database.HABIT_FILTER_DATE_CREATED
-import com.yolo.fun_habit_journal.framework.datasource.database.HABIT_FILTER_TITLE
-import com.yolo.fun_habit_journal.framework.datasource.database.HABIT_ORDER_ASC
-import com.yolo.fun_habit_journal.framework.datasource.database.HABIT_ORDER_DESC
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseFragment
 import com.yolo.fun_habit_journal.framework.presentation.common.hideKeyboard
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.HABIT_DETAIL_SELECTED_HABIT_BUNDLE_KEY
@@ -85,6 +74,10 @@ class HabitListFragment constructor(
         arguments?.clear()
     }
 
+    override fun activateMultiSelectionMode() {
+        TODO("Not yet implemented")
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -99,35 +92,13 @@ class HabitListFragment constructor(
 
     private fun subscribeObservers() {
 
-        viewModel.toolbarState.observe(viewLifecycleOwner, Observer { toolbarState ->
-
-            when (toolbarState) {
-
-                is MultiSelectionState -> {
-                    enableMultiSelectToolbarState()
-                    disableSearchViewToolbarState()
-                }
-
-                is SearchViewState -> {
-                    enableSearchViewToolbarState()
-                    disableMultiSelectToolbarState()
-                }
-            }
-        })
-
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
 
             if (viewState != null) {
                 viewState.habitList?.let { habitList ->
-                    if (viewModel.isPaginationExhausted()
-                        && !viewModel.isQueryExhausted()
-                    ) {
-                        viewModel.setQueryExhausted(true)
-                    }
                     listAdapter?.submitList(habitList)
                     listAdapter?.notifyDataSetChanged()
                 }
-
 
                 viewState.newHabit?.let { newHabit ->
                     navigateToDetailFragment(newHabit)
@@ -192,47 +163,18 @@ class HabitListFragment constructor(
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                    val lastPosition = layoutManager.findLastVisibleItemPosition()
-                    if (lastPosition == listAdapter?.itemCount?.minus(1)) {
-                        viewModel.nextPage()
-                    }
                 }
             })
             adapter = listAdapter
         }
-    }
 
-    private fun setupSearchView() {
-        val searchViewToolbar: Toolbar? = toolbar_content_container
-            .findViewById<Toolbar>(R.id.searchview_toolbar)
-
-        searchViewToolbar?.let { toolbar ->
-
-            val searchView = toolbar.findViewById<SearchView>(R.id.search_view)
-
-            val searchPlate: SearchView.SearchAutoComplete? = searchView.findViewById(androidx.appcompat.R.id.search_src_text)
-
-            searchPlate?.setOnEditorActionListener { v, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED
-                    || actionId == EditorInfo.IME_ACTION_SEARCH
-                ) {
-                    val searchQuery = v.text.toString()
-                    viewModel.setQuery(searchQuery)
-                    startNewSearch()
-                }
-                true
-            }
-        }
-    }
-
-    private fun startNewSearch() {
-        viewModel.clearList()
-        viewModel.loadFirstPage()
+        viewModel.setStateEvent(
+            HabitListStateEvent.GetHabitsLisEvent
+        )
     }
 
     private fun setupSwipeRefresh() {
         swipe_refresh.setOnRefreshListener {
-            startNewSearch()
             swipe_refresh.isRefreshing = false
         }
     }
@@ -252,73 +194,6 @@ class HabitListFragment constructor(
                     }
                 }
             )
-        }
-    }
-
-    fun showFilterDialog() {
-        activity?.let {
-            val dialog = MaterialDialog(it)
-                .noAutoDismiss()
-                .customView(R.layout.layout_filter)
-
-            val view = dialog.getCustomView()
-
-            val filter = viewModel.getFilter()
-            val order = viewModel.getOrder()
-
-            view.findViewById<RadioGroup>(R.id.filter_group).apply {
-                when (filter) {
-                    HABIT_FILTER_DATE_CREATED -> check(R.id.filter_date)
-                    HABIT_FILTER_TITLE -> check(R.id.filter_title)
-                }
-            }
-
-            view.findViewById<RadioGroup>(R.id.order_group).apply {
-                when (order) {
-                    HABIT_ORDER_ASC -> check(R.id.filter_asc)
-                    HABIT_ORDER_DESC -> check(R.id.filter_desc)
-                }
-            }
-
-            view.findViewById<TextView>(R.id.positive_button).setOnClickListener {
-
-                val newFilter =
-                    when (view.findViewById<RadioGroup>(R.id.filter_group).checkedRadioButtonId) {
-                        R.id.filter_title -> HABIT_FILTER_TITLE
-                        R.id.filter_date -> HABIT_FILTER_DATE_CREATED
-                        else -> HABIT_FILTER_DATE_CREATED
-                    }
-
-                val newOrder =
-                    when (view.findViewById<RadioGroup>(R.id.order_group).checkedRadioButtonId) {
-                        R.id.filter_desc -> "-"
-                        else -> ""
-                    }
-
-                viewModel.apply {
-                    saveFilterOptions(newFilter, newOrder)
-                    setHabitFilter(newFilter)
-                    setHabitOrder(newOrder)
-                }
-
-                startNewSearch()
-
-                dialog.dismiss()
-            }
-
-            view.findViewById<TextView>(R.id.negative_button).setOnClickListener {
-                dialog.dismiss()
-            }
-
-            dialog.show()
-        }
-    }
-
-    private fun setupFilterButton() {
-        val searchViewToolbar: Toolbar? = toolbar_content_container
-            .findViewById<Toolbar>(R.id.searchview_toolbar)
-        searchViewToolbar?.findViewById<ImageView>(R.id.action_filter)?.setOnClickListener {
-            showFilterDialog()
         }
     }
 
@@ -398,7 +273,7 @@ class HabitListFragment constructor(
         parentView
             .findViewById<ImageView>(R.id.action_exit_multiselect_state)
             .setOnClickListener {
-                viewModel.setToolbarState(SearchViewState())
+
             }
 
         parentView
@@ -409,23 +284,6 @@ class HabitListFragment constructor(
     }
 
 
-    private fun enableSearchViewToolbarState() {
-        view?.let { v ->
-            val view = View.inflate(
-                v.context,
-                R.layout.layout_searchview_toolbar,
-                null
-            )
-            view.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-            )
-            toolbar_content_container.addView(view)
-            setupSearchView()
-            setupFilterButton()
-        }
-    }
-
     private fun disableMultiSelectToolbarState() {
         view?.let {
             val view = toolbar_content_container
@@ -435,22 +293,12 @@ class HabitListFragment constructor(
         }
     }
 
-    private fun disableSearchViewToolbarState() {
-        view?.let {
-            val view = toolbar_content_container
-                .findViewById<Toolbar>(R.id.searchview_toolbar)
-            toolbar_content_container.removeView(view)
-        }
-    }
-
     override fun inject() {}
 
     override fun onResume() {
         super.onResume()
         viewModel.retrieveHabitListCountInCache()
         viewModel.clearList()
-        viewModel.refreshSearchQuery()
-
     }
 
     override fun onPause() {
@@ -479,8 +327,6 @@ class HabitListFragment constructor(
     }
 
     override fun isMultiSelectionModeEnabled() = viewModel.isMultiSelectionStateActive()
-
-    override fun activateMultiSelectionMode() = viewModel.setToolbarState(MultiSelectionState())
 
     override fun onItemSelected(position: Int, item: Habit) {
         if (isMultiSelectionModeEnabled()) {

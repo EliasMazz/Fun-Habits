@@ -9,10 +9,4 @@ sealed class HabitListToolbarState {
         }
     }
 
-    class SearchViewState : HabitListToolbarState() {
-
-        override fun toString(): String {
-            return "SearchViewState"
-        }
-    }
 }

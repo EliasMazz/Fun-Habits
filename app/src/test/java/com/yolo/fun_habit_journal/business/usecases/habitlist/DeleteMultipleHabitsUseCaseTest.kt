@@ -46,7 +46,7 @@ class DeleteMultipleHabitsUseCaseTest{
     @Test
     fun `WHEN delete habits success THEN confirm network and cache updated`() = runBlocking {
         val randomHabits: ArrayList<Habit> = ArrayList()
-        val habitsInCache = habitCacheDataSource.searchHabits("", "", 1)
+        val habitsInCache = habitCacheDataSource.getAllHabits()
 
         for (habit in habitsInCache) {
             randomHabits.add(habit)
@@ -83,7 +83,7 @@ class DeleteMultipleHabitsUseCaseTest{
     fun `WHEN delete habits fail THEN confirm correct deletes were made`() = runBlocking {
         val validaHabits: ArrayList<Habit> = ArrayList()
         val invalidHabits: ArrayList<Habit> = ArrayList()
-        val habitsInCache = habitCacheDataSource.searchHabits("", "", 1)
+        val habitsInCache = habitCacheDataSource.getAllHabits()
 
         for (index in 0..habitsInCache.size) {
             var habit: Habit
@@ -139,7 +139,7 @@ class DeleteMultipleHabitsUseCaseTest{
     fun `WHEN delete habits throw exception THEN check generic error and confirm network and cache are not updated`() = runBlocking {
         val validaHabits: ArrayList<Habit> = ArrayList()
         val invalidHabits: ArrayList<Habit> = ArrayList()
-        val habitsInCache = habitCacheDataSource.searchHabits("", "", 1)
+        val habitsInCache = habitCacheDataSource.getAllHabits()
 
         for (habit in habitsInCache) {
             validaHabits.add(habit)

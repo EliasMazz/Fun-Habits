@@ -25,8 +25,6 @@ constructor(
     private val habitListInteractors: HabitListInteractors,
     private val habitDetailInteractors: HabitDetailInteractors,
     private val habitFactory: HabitFactory,
-    private val editor: SharedPreferences.Editor,
-    private val sharedPreferences: SharedPreferences,
     private val habitNetworkSyncManager: HabitNetworkSyncManager
 ) : ViewModelProvider.Factory {
 
@@ -35,9 +33,7 @@ constructor(
             HabitListViewModel::class.java -> {
                 HabitListViewModel(
                     habitListInteractors = habitListInteractors,
-                    habitFactory = habitFactory,
-                    editor = editor,
-                    sharedPreferences = sharedPreferences
+                    habitFactory = habitFactory
                 ) as T
             }
 

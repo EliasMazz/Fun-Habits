@@ -12,12 +12,6 @@ interface IHabitCacheDataSource {
 
     suspend fun updateHabit(id: String, title: String, body: String?, timestamp: String?): Int
 
-    suspend fun searchHabits(
-        query: String,
-        filterAndOrder: String,
-        page: Int
-    ): List<Habit>
-
     suspend fun searchHabitById(id: String): Habit?
 
     suspend fun getHabitsCount(): Int

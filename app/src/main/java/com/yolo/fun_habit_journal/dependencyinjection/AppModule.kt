@@ -1,6 +1,5 @@
 package com.yolo.fun_habit_journal.dependencyinjection
 
-import android.content.SharedPreferences
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yolo.fun_habit_journal.business.data.cache.HabitCacheDataSourceImpl
@@ -17,9 +16,9 @@ import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.UpdateHa
 import com.yolo.fun_habit_journal.business.usecases.habitlist.HabitListInteractors
 import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.DeleteMultipleHabitsUseCase
 import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.GetHabitsCountUseCase
+import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.GetListHabitstUseCase
 import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.InsertNewHabitUseCase
 import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.RestoreDeletedHabitUseCase
-import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.SearchHabitsUseCase
 import com.yolo.fun_habit_journal.framework.datasource.cache.HabitDaoServiceImpl
 import com.yolo.fun_habit_journal.framework.datasource.cache.abstraction.IHabitDaoService
 import com.yolo.fun_habit_journal.framework.datasource.cache.util.HabitCacheMapper
@@ -59,15 +58,6 @@ object AppModule {
         return DateUtil(
             dateFormat
         )
-    }
-
-    @JvmStatic
-    @Singleton
-    @Provides
-    fun provideSharedPrefsEditor(
-        sharedPreferences: SharedPreferences
-    ): SharedPreferences.Editor {
-        return sharedPreferences.edit()
     }
 
     @JvmStatic
@@ -201,10 +191,10 @@ object AppModule {
         HabitListInteractors(
             InsertNewHabitUseCase(habitCacheDataSource, habitNetworkDataSource, habitFactory),
             DeleteHabitUseCase(habitCacheDataSource, habitNetworkDataSource),
-            SearchHabitsUseCase(habitCacheDataSource),
             GetHabitsCountUseCase(habitCacheDataSource),
             RestoreDeletedHabitUseCase(habitCacheDataSource, habitNetworkDataSource),
-            DeleteMultipleHabitsUseCase(habitCacheDataSource, habitNetworkDataSource)
+            DeleteMultipleHabitsUseCase(habitCacheDataSource, habitNetworkDataSource),
+            GetListHabitstUseCase(habitCacheDataSource)
         )
 
 

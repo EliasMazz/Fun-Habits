@@ -22,9 +22,6 @@ constructor(
     override suspend fun updateHabit(id: String, title: String, body: String?, timestamp: String?) =
         habitDaoService.updateHabit(id, title, body, timestamp)
 
-    override suspend fun searchHabits(query: String, filterAndOrder: String, page: Int) =
-        habitDaoService.returnOrderedQuery(query, filterAndOrder, page)
-
     override suspend fun searchHabitById(id: String) =
         habitDaoService.searchHabitById(id)
 

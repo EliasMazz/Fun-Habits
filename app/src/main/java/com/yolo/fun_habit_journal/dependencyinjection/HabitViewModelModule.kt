@@ -1,6 +1,5 @@
 package com.yolo.fun_habit_journal.dependencyinjection
 
-import android.content.SharedPreferences
 import androidx.lifecycle.ViewModelProvider
 import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.HabitDetailInteractors
@@ -25,16 +24,12 @@ object HabitViewModelModule {
         habitListInteractors: HabitListInteractors,
         habitDetailInteractors: HabitDetailInteractors,
         habitFactory: HabitFactory,
-        editor: SharedPreferences.Editor,
-        sharedPreferences: SharedPreferences,
         habitNetworkSyncManager: HabitNetworkSyncManager
     ): ViewModelProvider.Factory {
         return HabitViewModelFactory(
             habitListInteractors = habitListInteractors,
             habitDetailInteractors = habitDetailInteractors,
             habitFactory = habitFactory,
-            editor = editor,
-            sharedPreferences = sharedPreferences,
             habitNetworkSyncManager = habitNetworkSyncManager
         )
     }

@@ -10,11 +10,6 @@ data class HabitListViewState(
     var habitList: ArrayList<Habit>? = null,
     var newHabit: Habit? = null,
     var habitPendingDelete: HabitPendingDelete? = null,
-    var searchQuery: String? = null,
-    var page: Int? = null,
-    var isQueryExhausted: Boolean? = null,
-    var filter: String? = null,
-    var order: String? = null,
     var layoutManagerState: Parcelable? = null,
     var habitsCountInCache: Int? = null
 

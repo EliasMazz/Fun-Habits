@@ -1,9 +1,6 @@
 package com.yolo.fun_habit_journal.framework.presentation.habitlist
 
-import android.content.SharedPreferences
 import android.os.Parcelable
-import androidx.annotation.VisibleForTesting
-import androidx.lifecycle.LiveData
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
 import com.yolo.fun_habit_journal.business.domain.state.DataState
@@ -14,14 +11,9 @@ import com.yolo.fun_habit_journal.business.domain.state.StateMessage
 import com.yolo.fun_habit_journal.business.domain.state.UIComponentType
 import com.yolo.fun_habit_journal.business.usecases.habitlist.HabitListInteractors
 import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.DELETE_HABITS_YOU_MUST_SELECT
-import com.yolo.fun_habit_journal.framework.datasource.database.HABIT_FILTER_DATE_CREATED
-import com.yolo.fun_habit_journal.framework.datasource.database.HABIT_ORDER_DESC
-import com.yolo.fun_habit_journal.framework.datasource.preferences.PreferenceKeys.Companion.HABIT_FILTER
-import com.yolo.fun_habit_journal.framework.datasource.preferences.PreferenceKeys.Companion.HABIT_ORDER
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseViewModel
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListInteractionManager
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListStateEvent.*
-import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListToolbarState
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState.*
 import com.yolo.fun_habit_journal.framework.util.printLogD
@@ -37,21 +29,15 @@ const val HABIT_PENDING_DELETE_BUNDLE_KEY = "pending_delete"
 class HabitListViewModel
 constructor(
     private val habitListInteractors: HabitListInteractors,
-    private val habitFactory: HabitFactory,
-    private val editor: SharedPreferences.Editor,
-    private val sharedPreferences: SharedPreferences
+    private val habitFactory: HabitFactory
 ) : BaseViewModel<HabitListViewState>() {
 
     // -------------- TODO Check if necessary ------------------------------------------------------------
     val habitListInteractionManager =
         HabitListInteractionManager()
 
-    val toolbarState: LiveData<HabitListToolbarState>
-        get() = habitListInteractionManager.toolbarState
 
     fun getSelectedHabits() = habitListInteractionManager.getSelectedHabits()
-
-    fun setToolbarState(state: HabitListToolbarState) = habitListInteractionManager.setToolbarState(state)
 
     fun isMultiSelectionStateActive() = habitListInteractionManager.isMultiSelectionStateActive()
 
@@ -90,20 +76,6 @@ constructor(
 
     // ------------------------------------------------------------
 
-    init {
-        setHabitFilter(
-            sharedPreferences.getString(
-                HABIT_FILTER,
-                HABIT_FILTER_DATE_CREATED
-            )
-        )
-        setHabitOrder(
-            sharedPreferences.getString(
-                HABIT_ORDER,
-                HABIT_ORDER_DESC
-            )
-        )
-    }
 
     override fun handleNewData(data: HabitListViewState) {
         data.let { viewState ->
@@ -139,6 +111,12 @@ constructor(
                 )
             }
 
+            is GetHabitsLisEvent -> {
+                habitListInteractors.getHabitstListUseCase.invoke(
+                    stateEvent = stateEvent
+                )
+            }
+
             is DeleteHabitEvent -> {
                 habitListInteractors.deleteHabitUseCase.deleteHabit(
                     habit = stateEvent.habit,
@@ -156,19 +134,6 @@ constructor(
             is RestoreDeletedHabitEvent -> {
                 habitListInteractors.restoreDeletedHabitUseCase.restoreDeletedHabit(
                     habit = stateEvent.habit,
-                    stateEvent = stateEvent
-                )
-            }
-
-            is SearchHabitsEvent -> {
-                if (stateEvent.clearLayoutManagerState) {
-                    clearLayoutManagerState()
-                }
-
-                habitListInteractors.searchHabitsUseCase.searchHabits(
-                    query = getSearchQuery(),
-                    filterAndOrder = getOrder() + getFilter(),
-                    page = getPage(),
                     stateEvent = stateEvent
                 )
             }
@@ -196,25 +161,7 @@ constructor(
     /*
         Getters
      */
-    fun getFilter(): String {
-        return getCurrentViewStateOrNew().filter
-            ?: HABIT_FILTER_DATE_CREATED
-    }
 
-    fun getOrder(): String {
-        return getCurrentViewStateOrNew().order
-            ?: HABIT_ORDER_DESC
-    }
-
-    fun getSearchQuery(): String {
-        return getCurrentViewStateOrNew().searchQuery
-            ?: return ""
-    }
-
-    private fun getPage(): Int {
-        return getCurrentViewStateOrNew().page
-            ?: return 1
-    }
 
     fun getHabitListSize() = getCurrentViewStateOrNew().habitList?.size ?: 0
 
@@ -239,15 +186,6 @@ constructor(
         return 0
     }
 
-    fun isPaginationExhausted() = getHabitListSize() >= getHabitListCountInCache()
-
-    fun isQueryExhausted(): Boolean {
-        printLogD(
-            "HabitListViewModel",
-            "is query exhasuted? ${getCurrentViewStateOrNew().isQueryExhausted ?: true}"
-        )
-        return getCurrentViewStateOrNew().isQueryExhausted ?: true
-    }
 
     override fun initNewViewState(): HabitListViewState {
         return HabitListViewState()
@@ -262,11 +200,6 @@ constructor(
         setViewState(update)
     }
 
-    fun setQueryExhausted(isExhausted: Boolean) {
-        val update = getCurrentViewStateOrNew()
-        update.isQueryExhausted = isExhausted
-        setViewState(update)
-    }
 
     // can be selected from Recyclerview or created new from dialog
     fun setHabit(habit: Habit?) {
@@ -274,13 +207,6 @@ constructor(
         update.newHabit = habit
         setViewState(update)
     }
-
-    fun setQuery(query: String?) {
-        val update = getCurrentViewStateOrNew()
-        update.searchQuery = query
-        setViewState(update)
-    }
-
 
     // if a habit is deleted and then restored, the id will be incorrect.
     // So need to reset it here.
@@ -334,32 +260,11 @@ constructor(
         body: String? = null
     ) = habitFactory.createSingleHabit(id, title, body)
 
-    private fun resetPage() {
-        val update = getCurrentViewStateOrNew()
-        update.page = 1
-        setViewState(update)
-    }
 
     fun clearList() {
         printLogD("ListViewModel", "clearList")
         val update = getCurrentViewStateOrNew()
         update.habitList = ArrayList()
-        setViewState(update)
-    }
-
-    // workaround for tests
-    // can't submit an empty string because SearchViews SUCK
-    @VisibleForTesting
-    fun clearSearchQuery() {
-        setQuery("")
-        clearList()
-        loadFirstPage()
-    }
-
-    private fun incrementPageNumber() {
-        val update = getCurrentViewStateOrNew()
-        val page = update.copy().page ?: 1
-        update.page = page.plus(1)
         setViewState(update)
     }
 
@@ -373,28 +278,6 @@ constructor(
         val update = getCurrentViewStateOrNew()
         update.layoutManagerState = null
         setViewState(update)
-    }
-
-    fun setHabitFilter(filter: String?) {
-        filter?.let {
-            val update = getCurrentViewStateOrNew()
-            update.filter = filter
-            setViewState(update)
-        }
-    }
-
-    fun setHabitOrder(order: String?) {
-        val update = getCurrentViewStateOrNew()
-        update.order = order
-        setViewState(update)
-    }
-
-    fun saveFilterOptions(filter: String, order: String) {
-        editor.putString(HABIT_FILTER, filter)
-        editor.apply()
-
-        editor.putString(HABIT_FILTER, order)
-        editor.apply()
     }
 
     /*
@@ -446,31 +329,7 @@ constructor(
         )
     }
 
-    fun loadFirstPage() {
-        setQueryExhausted(false)
-        resetPage()
-        setStateEvent(SearchHabitsEvent())
-        printLogD(
-            "HabitListViewModel",
-            "loadFirstPage: ${getCurrentViewStateOrNew().searchQuery}"
-        )
-    }
-
-    fun nextPage() {
-        if (!isQueryExhausted()) {
-            printLogD("HabitListViewModel", "attempting to load next page...")
-            clearLayoutManagerState()
-            incrementPageNumber()
-            setStateEvent(SearchHabitsEvent())
-        }
-    }
-
     fun retrieveHabitListCountInCache() {
         setStateEvent(GetHabitsCountInCacheEvent)
-    }
-
-    fun refreshSearchQuery() {
-        setQueryExhausted(false)
-        setStateEvent(SearchHabitsEvent(false))
     }
 }

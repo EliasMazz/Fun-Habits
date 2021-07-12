@@ -5,7 +5,6 @@ import com.yolo.fun_habit_journal.business.domain.util.DateUtil
 import com.yolo.fun_habit_journal.framework.datasource.cache.abstraction.IHabitDaoService
 import com.yolo.fun_habit_journal.framework.datasource.cache.util.HabitCacheMapper
 import com.yolo.fun_habit_journal.framework.datasource.database.HabitDao
-import com.yolo.fun_habit_journal.framework.datasource.database.returnOrderedQuery
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -65,41 +64,5 @@ constructor(
     override suspend fun getAllHabits(): List<Habit> =
         habitDao.getAllHabits().map { habitMapperHabit.mapFromEntity(it) }
 
-    override suspend fun searchHabitsOrderByDateDESC(query: String, page: Int, pageSize: Int): List<Habit> =
-        habitDao.searchHabitsOrderByDateDESC(
-            query = query,
-            page = page,
-            pageSize = pageSize
-        ).map { habitMapperHabit.mapFromEntity(it) }
-
-    override suspend fun searchHabitsOrderByDateASC(query: String, page: Int, pageSize: Int): List<Habit> =
-        habitDao.searchHabitsOrderByDateASC(
-            query = query,
-            page = page,
-            pageSize = pageSize
-        ).map { habitMapperHabit.mapFromEntity(it) }
-
-    override suspend fun searchHabitsOrderByTitleDESC(query: String, page: Int, pageSize: Int): List<Habit> =
-        habitDao.searchHabitsOrderByTitleDESC(
-            query = query,
-            page = page,
-            pageSize = pageSize
-        ).map { habitMapperHabit.mapFromEntity(it) }
-
-
-    override suspend fun searchHabitsOrderByTitleASC(query: String, page: Int, pageSize: Int): List<Habit> =
-        habitDao.searchHabitsOrderByTitleASC(
-            query = query,
-            page = page,
-            pageSize = pageSize
-        ).map { habitMapperHabit.mapFromEntity(it) }
-
     override suspend fun getHabitsCount(): Int = habitDao.getHabitsCount()
-
-    override suspend fun returnOrderedQuery(query: String, filterAndOrder: String, page: Int): List<Habit> =
-        habitDao.returnOrderedQuery(
-            query = query,
-            page = page,
-            filterAndOrder = filterAndOrder
-        ).map { habitMapperHabit.mapFromEntity(it) }
 }

@@ -72,28 +72,6 @@ constructor(
         } ?: DEFAULT_FAILURE_DB_RESULT
     }
 
-    override suspend fun searchHabits(
-        query: String,
-        filterAndOrder: String,
-        page: Int
-    ): List<Habit> {
-        if (query == FORCE_SEARCH_HABITS_EXCEPTION) {
-            throw Exception("Something went searching the cache for habits.")
-        }
-        val results: ArrayList<Habit> = ArrayList()
-        for (habit in habitsData.values) {
-            if (habit.title.contains(query)) {
-                results.add(habit)
-            } else if (habit.body.contains(query)) {
-                results.add(habit)
-            }
-            if (results.size > (page * HABIT_PAGINATION_PAGE_SIZE)) {
-                break
-            }
-        }
-        return results
-    }
-
     override suspend fun getAllHabits(): List<Habit> {
         return ArrayList(habitsData.values)
     }

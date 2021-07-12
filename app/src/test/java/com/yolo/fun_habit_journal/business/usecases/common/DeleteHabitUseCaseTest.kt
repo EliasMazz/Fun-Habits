@@ -122,9 +122,5 @@ class DeleteHabitUseCaseTest {
     }
 
     private suspend fun getFirstResultFromCache() =
-        habitCacheDataSource.searchHabits(
-            query = "",
-            filterAndOrder = "",
-            page = 1
-        ).get(0)
+        habitCacheDataSource.getAllHabits().first()
 }

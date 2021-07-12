@@ -73,7 +73,7 @@ class SyncHabitsUseCaseTest {
     @Test
     fun `WHEN update new habits into the cache THEN perform sync and check if the cache habits were updated into the network`() =
         runBlocking {
-            val cacheHabits = cacheDataSource.searchHabits("", "", 1)
+            val cacheHabits = cacheDataSource.getAllHabits()
             val habitsToUpdate: ArrayList<Habit> = ArrayList()
             for (habit in cacheHabits) {
                 val updatedHabit = factory.createSingleHabit(
