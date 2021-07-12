@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 /**
- * - Keeps track of active StateEvents in DataChannelManager
+ * - Keeps track of active StateEvents in DataStateManager
  * - Keeps track of whether the progress bar should show or not based on a boolean
  *      value in each StateEvent (shouldDisplayProgressBar)
  */
