@@ -30,7 +30,6 @@ constructor(
     private val habitFactory: HabitFactory
 ) : BaseViewModel<HabitListViewState>() {
 
-
     override fun handleNewData(data: HabitListViewState) {
         data.let { viewState ->
             viewState.habitList?.let { habitList ->

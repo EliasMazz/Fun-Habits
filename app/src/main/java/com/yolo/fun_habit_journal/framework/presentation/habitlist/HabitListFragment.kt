@@ -7,9 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.yolo.fun_habit_journal.R
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.state.DialogInputCaptureCallback
@@ -48,7 +46,6 @@ class HabitListFragment constructor(
     }
 
     private var listAdapter: HabitListAdapter? = null
-    private var itemTouchHelper: ItemTouchHelper? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,9 +76,7 @@ class HabitListFragment constructor(
     }
 
     private fun subscribeObservers() {
-
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-
             if (viewState != null) {
                 viewState.habitList?.let { habitList ->
                     listAdapter?.submitList(habitList)
@@ -137,29 +132,18 @@ class HabitListFragment constructor(
                 dateUtil
             )
 
-            itemTouchHelper?.attachToRecyclerView(this)
-
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                }
-            })
             adapter = listAdapter
         }
 
-        viewModel.setStateEvent(
-            HabitListStateEvent.GetHabitsLisEvent
-        )
+        viewModel.setStateEvent(HabitListStateEvent.GetHabitsLisEvent)
     }
 
-    private fun setupSwipeRefresh() {
+    private fun setupSwipeRefresh() =
         swipe_refresh.setOnRefreshListener {
             swipe_refresh.isRefreshing = false
         }
-    }
 
-    private fun setupFAB() {
+    private fun setupFAB() =
         add_new_habit_fab.setOnClickListener {
             uiController.displayInputCaptureDialog(
                 getString(R.string.text_enter_a_title),
@@ -175,7 +159,6 @@ class HabitListFragment constructor(
                 }
             )
         }
-    }
 
     private fun showUndoSnackbarAndUndoDelete() {
         uiController.onResponseReceived(
@@ -273,7 +256,5 @@ class HabitListFragment constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         listAdapter = null // can leak memory
-        itemTouchHelper = null // can leak memory
     }
-
 }
