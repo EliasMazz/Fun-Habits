@@ -49,20 +49,6 @@ sealed class HabitListStateEvent: StateEvent {
         override fun shouldDisplayProgressBar() = false
     }
 
-
-    object GetHabitsCountInCacheEvent : HabitListStateEvent() {
-
-        override fun errorInfo(): String {
-            return "Error getting the number of habits from the cache."
-        }
-
-        override fun eventName(): String {
-            return "GetNumHabitsInCacheEvent"
-        }
-
-        override fun shouldDisplayProgressBar() = true
-    }
-
     class CreateStateMessageEvent(
         val stateMessage: StateMessage
     ): HabitListStateEvent(){

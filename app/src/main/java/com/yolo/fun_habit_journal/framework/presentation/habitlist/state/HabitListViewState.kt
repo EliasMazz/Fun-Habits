@@ -10,8 +10,7 @@ data class HabitListViewState(
     var habitList: ArrayList<Habit>? = null,
     var newHabit: Habit? = null,
     var habitPendingDelete: HabitPendingDelete? = null,
-    var layoutManagerState: Parcelable? = null,
-    var habitsCountInCache: Int? = null
+    var layoutManagerState: Parcelable? = null
 
 ) : Parcelable, ViewState {
 

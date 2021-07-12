@@ -23,7 +23,6 @@ import com.yolo.fun_habit_journal.framework.presentation.common.BaseFragment
 import com.yolo.fun_habit_journal.framework.presentation.common.hideKeyboard
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.HABIT_DETAIL_SELECTED_HABIT_BUNDLE_KEY
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListStateEvent
-import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListToolbarState.*
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
 import com.yolo.fun_habit_journal.framework.util.TodoCallback
 import kotlinx.android.synthetic.main.fragment_habit_list.add_new_habit_fab
@@ -220,7 +219,6 @@ class HabitListFragment constructor(
 
     override fun onResume() {
         super.onResume()
-        viewModel.retrieveHabitListCountInCache()
         viewModel.clearList()
     }
 

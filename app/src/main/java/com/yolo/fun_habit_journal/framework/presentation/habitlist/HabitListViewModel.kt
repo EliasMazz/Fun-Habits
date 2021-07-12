@@ -36,10 +36,6 @@ constructor(
                 setHabitListData(habitList)
             }
 
-            viewState.habitsCountInCache?.let { habitListCount ->
-                setHabitListCountInCache(habitListCount)
-            }
-
             viewState.newHabit?.let { habit ->
                 setHabit(habit)
             }
@@ -77,12 +73,6 @@ constructor(
                 )
             }
 
-            is GetHabitsCountInCacheEvent -> {
-                habitListInteractors.getHabitsCountUseCase.getHabitsCount(
-                    stateEvent = stateEvent
-                )
-            }
-
             is CreateStateMessageEvent -> {
                 emitStateMessageEvent(
                     stateMessage = stateEvent.stateMessage,
@@ -100,10 +90,6 @@ constructor(
     /*
         Getters
      */
-    fun getHabitListSize() = getCurrentViewStateOrNew().habitList?.size ?: 0
-
-    private fun getHabitListCountInCache() = getCurrentViewStateOrNew().habitsCountInCache ?: 0
-
     // for debugging
     fun getActiveJobs() = dataStateManager.getActiveJobs()
 
@@ -181,11 +167,6 @@ constructor(
         setViewState(update)
     }
 
-    private fun setHabitListCountInCache(habitListCount: Int) {
-        val update = getCurrentViewStateOrNew()
-        update.habitsCountInCache = habitListCount
-        setViewState(update)
-    }
 
     fun createNewHabit(
         id: String? = null,
@@ -247,7 +228,4 @@ constructor(
         setViewState(update)
     }
 
-    fun retrieveHabitListCountInCache() {
-        setStateEvent(GetHabitsCountInCacheEvent)
-    }
 }
