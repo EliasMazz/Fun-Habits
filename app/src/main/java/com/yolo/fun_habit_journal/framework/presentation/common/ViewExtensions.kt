@@ -27,27 +27,6 @@ fun View.gone() {
     visibility = View.GONE
 }
 
-fun EditText.disableContentInteraction() {
-    keyListener = null
-    isFocusable = false
-    isFocusableInTouchMode = false
-    isCursorVisible = false
-    setBackgroundResource(android.R.color.transparent)
-    clearFocus()
-}
-
-fun EditText.enableContentInteraction() {
-    keyListener = EditText(context).keyListener
-    isFocusable = true
-    isFocusableInTouchMode = true
-    isCursorVisible = true
-    setBackgroundResource(android.R.color.white)
-    requestFocus()
-    if(text != null){
-        setSelection(text.length)
-    }
-}
-
 fun Activity.displayToast(
     @StringRes message:Int,
     stateMessageCallback: StateMessageCallback
