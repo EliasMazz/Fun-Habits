@@ -9,7 +9,6 @@ import kotlinx.android.parcel.Parcelize
 data class HabitListViewState(
     var habitList: ArrayList<Habit>? = null,
     var newHabit: Habit? = null,
-    var habitPendingDelete: HabitPendingDelete? = null,
     var layoutManagerState: Parcelable? = null
 
 ) : Parcelable, ViewState {

@@ -1,4 +1,4 @@
-package com.yolo.fun_habit_journal.business.usecases.common.usecase
+package com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase
 
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habit_journal.business.data.cache.util.CacheResultHandler
@@ -11,6 +11,7 @@ import com.yolo.fun_habit_journal.business.domain.state.MessageType
 import com.yolo.fun_habit_journal.business.domain.state.Response
 import com.yolo.fun_habit_journal.business.domain.state.StateEvent
 import com.yolo.fun_habit_journal.business.domain.state.UIComponentType
+import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailViewState
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -20,24 +21,24 @@ const val DELETE_HABIT_FAILURE = "Failed to delete the habit"
 const val DELETE_HABIT_PENDING = "Delete pending..."
 const val DELETE_ARE_YOU_SURE = "Are you sure you want to delete this?"
 
-class DeleteHabitUseCase<ViewState>(
+class DeleteHabitUseCase(
     private val habitCacheDataSource: IHabitCacheDataSource,
     private val habitNetworkDataSouce: IHabitNetworkDataSource
 ) {
     fun deleteHabit(
         habit: Habit,
         stateEvent: StateEvent
-    ): Flow<DataState<ViewState>?> = flow {
+    ): Flow<DataState<HabitDetailViewState>?> = flow {
 
         val cacheResult = safeCacheCall(IO) {
             habitCacheDataSource.deleteHabit(habit.id)
         }
 
-        val dataState = object : CacheResultHandler<ViewState, Int>(
+        val dataState = object : CacheResultHandler<HabitDetailViewState, Int>(
             response = cacheResult,
             stateEvent = stateEvent
         ) {
-            override suspend fun handleDataState(result: Int): DataState<ViewState> {
+            override suspend fun handleDataState(result: Int): DataState<HabitDetailViewState> {
                 return handleCacheSuccess(stateEvent, result)
             }
         }.getResult()
@@ -62,7 +63,7 @@ class DeleteHabitUseCase<ViewState>(
         }
     }
 
-    private fun handleCacheSuccess(stateEvent: StateEvent, result: Int): DataState<ViewState> =
+    private fun handleCacheSuccess(stateEvent: StateEvent, result: Int): DataState<HabitDetailViewState> =
         if (result > 0) {
             DataState.data(
                 response = Response(

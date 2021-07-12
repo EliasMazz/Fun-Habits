@@ -17,8 +17,6 @@ import com.yolo.fun_habit_journal.business.domain.state.SnackbarUndoCallback
 import com.yolo.fun_habit_journal.business.domain.state.StateMessageCallback
 import com.yolo.fun_habit_journal.business.domain.state.UIComponentType
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
-import com.yolo.fun_habit_journal.business.usecases.common.usecase.DELETE_HABIT_PENDING
-import com.yolo.fun_habit_journal.business.usecases.common.usecase.DELETE_HABIT_SUCCESS
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseFragment
 import com.yolo.fun_habit_journal.framework.presentation.common.hideKeyboard
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.HABIT_DETAIL_SELECTED_HABIT_BUNDLE_KEY
@@ -49,17 +47,6 @@ class HabitListFragment constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.setupChannel()
-        arguments?.let { args ->
-            args.getParcelable<Habit>(HABIT_PENDING_DELETE_BUNDLE_KEY)?.let { note ->
-                viewModel.setHabitPendingDelete(note)
-                showUndoSnackbarAndUndoDelete()
-                clearArgs()
-            }
-        }
-    }
-
-    private fun clearArgs() {
-        arguments?.clear()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -95,9 +82,6 @@ class HabitListFragment constructor(
 
         viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
             stateMessage?.let { message ->
-                if (message.response.message?.equals(DELETE_HABIT_SUCCESS) == true) {
-                    showUndoSnackbarAndUndoDelete()
-                } else {
                     uiController.onResponseReceived(
                         response = message.response,
                         stateMessageCallback = object : StateMessageCallback {
@@ -107,7 +91,6 @@ class HabitListFragment constructor(
                         }
                     )
                 }
-            }
         })
     }
 
@@ -159,43 +142,6 @@ class HabitListFragment constructor(
             )
         }
 
-    private fun showUndoSnackbarAndUndoDelete() {
-        uiController.onResponseReceived(
-            response = Response(
-                message = DELETE_HABIT_PENDING,
-                uiComponentType = UIComponentType.SnackBar(
-                    undoCallback = object : SnackbarUndoCallback {
-                        override fun undo() {
-                            viewModel.undoDelete()
-                        }
-                    },
-                    onDismissCallback = object : TodoCallback {
-                        override fun execute() {
-                            viewModel.setHabitPendingDelete(null)
-                        }
-                    }
-                ),
-                messageType = MessageType.Info
-            ),
-            stateMessageCallback = object : StateMessageCallback {
-                override fun removeMessageFromStack() {
-                    viewModel.clearStateMessage()
-                }
-            }
-        )
-    }
-
-// for debugging
-//    private fun printActiveJobs() {
-//
-//        for ((index, job) in viewModel.getActiveJobs().withIndex()) {
-//            printLogD(
-//                "HabitList",
-//                "${index}: ${job}"
-//            )
-//        }
-//    }
-
     private fun navigateToDetailFragment(selectedHabit: Habit) {
         val bundle = bundleOf(HABIT_DETAIL_SELECTED_HABIT_BUNDLE_KEY to selectedHabit)
         findNavController().navigate(
@@ -209,12 +155,6 @@ class HabitListFragment constructor(
         view?.hideKeyboard()
     }
 
-    private fun saveLayoutManagerState() {
-        recycler_view.layoutManager?.onSaveInstanceState()?.let { lmState ->
-            viewModel.setLayoutManagerState(lmState)
-        }
-    }
-
     override fun inject() {}
 
     override fun onResume() {
@@ -222,29 +162,14 @@ class HabitListFragment constructor(
         viewModel.clearList()
     }
 
-    override fun onPause() {
-        super.onPause()
-        saveLayoutManagerState()
-    }
-
-    // I didn't use the "SavedStateHandle" here is not working for testing
     override fun onSaveInstanceState(outState: Bundle) {
         val viewState = viewModel.viewState.value
-
-        //clear the list Don't want to save a large list to bundle.
-        viewState?.habitList = ArrayList()
 
         outState.putParcelable(
             HABIT_LIST_STATE_BUNDLE_KEY,
             viewState
         )
         super.onSaveInstanceState(outState)
-    }
-
-    override fun restoreListPosition() {
-        viewModel.getLayoutManagerState()?.let { lmState ->
-            recycler_view?.layoutManager?.onRestoreInstanceState(lmState)
-        }
     }
 
     override fun onItemSelected(position: Int, item: Habit) {

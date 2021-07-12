@@ -39,13 +39,6 @@ constructor(
             viewState.newHabit?.let { habit ->
                 setHabit(habit)
             }
-
-            viewState.habitPendingDelete?.let { restoredHabit ->
-                restoredHabit.habit?.let { habit ->
-                    setRestoredHabitId(habit)
-                }
-                setHabitPendingDelete(null)
-            }
         }
 
     }
@@ -66,13 +59,6 @@ constructor(
                 )
             }
 
-            is RestoreDeletedHabitEvent -> {
-                habitListInteractors.restoreDeletedHabitUseCase.restoreDeletedHabit(
-                    habit = stateEvent.habit,
-                    stateEvent = stateEvent
-                )
-            }
-
             is CreateStateMessageEvent -> {
                 emitStateMessageEvent(
                     stateMessage = stateEvent.stateMessage,
@@ -87,27 +73,9 @@ constructor(
         launchJob(stateEvent, job)
     }
 
-    /*
-        Getters
-     */
+
     // for debugging
     fun getActiveJobs() = dataStateManager.getActiveJobs()
-
-    fun getLayoutManagerState(): Parcelable? {
-        return getCurrentViewStateOrNew().layoutManagerState
-    }
-
-    private fun findListPositionOfHabit(habit: Habit?): Int {
-        val viewState = getCurrentViewStateOrNew()
-        viewState.habitList?.let { habitList ->
-            for ((index, item) in habitList.withIndex()) {
-                if (item.id == habit?.id) {
-                    return index
-                }
-            }
-        }
-        return 0
-    }
 
     override fun initNewViewState(): HabitListViewState {
         return HabitListViewState()
@@ -127,47 +95,6 @@ constructor(
         setViewState(update)
     }
 
-    // if a habit is deleted and then restored, the id will be incorrect.
-    // So need to reset it here.
-    private fun setRestoredHabitId(restoredHabit: Habit) {
-        val update = getCurrentViewStateOrNew()
-        update.habitList?.let { habitList ->
-            for ((index, habit) in habitList.withIndex()) {
-                if (habit.title.equals(restoredHabit.title)) {
-                    habitList.remove(habit)
-                    habitList.add(index, restoredHabit)
-                    update.habitList = habitList
-                    break
-                }
-            }
-        }
-        setViewState(update)
-    }
-
-    private fun removePendingHabitFromList(habit: Habit?) {
-        val update = getCurrentViewStateOrNew()
-        val list = update.habitList
-        if (list?.contains(habit) == true) {
-            list.remove(habit)
-            update.habitList = list
-            setViewState(update)
-        }
-    }
-
-    fun setHabitPendingDelete(habit: Habit?) {
-        val update = getCurrentViewStateOrNew()
-        if (habit != null) {
-            update.habitPendingDelete = HabitPendingDelete(
-                habit = habit,
-                listPosition = findListPositionOfHabit(habit)
-            )
-        } else {
-            update.habitPendingDelete = null
-        }
-        setViewState(update)
-    }
-
-
     fun createNewHabit(
         id: String? = null,
         title: String,
@@ -181,51 +108,4 @@ constructor(
         update.habitList = ArrayList()
         setViewState(update)
     }
-
-    fun setLayoutManagerState(layoutManagerState: Parcelable) {
-        val update = getCurrentViewStateOrNew()
-        update.layoutManagerState = layoutManagerState
-        setViewState(update)
-    }
-
-    fun clearLayoutManagerState() {
-        val update = getCurrentViewStateOrNew()
-        update.layoutManagerState = null
-        setViewState(update)
-    }
-
-    fun isDeletePending(): Boolean {
-        val pendingHabit = getCurrentViewStateOrNew().habitPendingDelete
-        if (pendingHabit != null) {
-            setStateEvent(
-                CreateStateMessageEvent(
-                    stateMessage = StateMessage(
-                        response = Response(
-                            message = DELETE_PENDING_ERROR,
-                            uiComponentType = UIComponentType.Toast,
-                            messageType = MessageType.Info
-                        )
-                    )
-                )
-            )
-            return true
-        } else {
-            return false
-        }
-    }
-
-    fun undoDelete() {
-        val update = getCurrentViewStateOrNew()
-        update.habitPendingDelete?.let { habitPendingDelete ->
-            if (habitPendingDelete.listPosition != null && habitPendingDelete.habit != null) {
-                update.habitList?.add(
-                    habitPendingDelete.listPosition as Int,
-                    habitPendingDelete.habit as Habit
-                )
-                setStateEvent(RestoreDeletedHabitEvent(habitPendingDelete.habit as Habit))
-            }
-        }
-        setViewState(update)
-    }
-
 }

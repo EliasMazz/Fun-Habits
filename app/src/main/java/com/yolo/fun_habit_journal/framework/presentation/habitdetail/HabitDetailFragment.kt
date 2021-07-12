@@ -17,8 +17,8 @@ import com.yolo.fun_habit_journal.business.domain.state.Response
 import com.yolo.fun_habit_journal.business.domain.state.StateMessage
 import com.yolo.fun_habit_journal.business.domain.state.StateMessageCallback
 import com.yolo.fun_habit_journal.business.domain.state.UIComponentType
-import com.yolo.fun_habit_journal.business.usecases.common.usecase.DELETE_ARE_YOU_SURE
-import com.yolo.fun_habit_journal.business.usecases.common.usecase.DELETE_HABIT_SUCCESS
+import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.DELETE_ARE_YOU_SURE
+import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.DELETE_HABIT_SUCCESS
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.UPDATE_HABIT_SUCCESS
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseFragment
 import com.yolo.fun_habit_journal.framework.presentation.common.COLLAPSING_TOOLBAR_VISIBILITY_THRESHOLD

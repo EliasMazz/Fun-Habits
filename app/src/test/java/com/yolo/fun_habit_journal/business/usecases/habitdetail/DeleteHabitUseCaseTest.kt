@@ -1,4 +1,4 @@
-package com.yolo.fun_habit_journal.business.usecases.common
+package com.yolo.fun_habit_journal.business.usecases.habitdetail
 
 import com.yolo.fun_habit_journal.business.data.cache.FORCE_DELETE_HABIT_EXCEPTION
 import com.yolo.fun_habit_journal.business.data.cache.abstraction.IHabitCacheDataSource
@@ -11,7 +11,6 @@ import com.yolo.fun_habit_journal.business.usecases.common.usecase.DELETE_HABIT_
 import com.yolo.fun_habit_journal.business.usecases.common.usecase.DELETE_HABIT_SUCCESS
 import com.yolo.fun_habit_journal.business.usecases.common.usecase.DeleteHabitUseCase
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailStateEvent
-import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListStateEvent
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector

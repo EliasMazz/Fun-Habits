@@ -10,13 +10,12 @@ import com.yolo.fun_habit_journal.business.domain.model.HabitFactory
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
 import com.yolo.fun_habit_journal.business.usecases.appstart.usecase.SyncDeletedHabitsUseCase
 import com.yolo.fun_habit_journal.business.usecases.appstart.usecase.SyncHabitsUseCase
-import com.yolo.fun_habit_journal.business.usecases.common.usecase.DeleteHabitUseCase
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.HabitDetailInteractors
+import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.DeleteHabitUseCase
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.UpdateHabitUseCase
 import com.yolo.fun_habit_journal.business.usecases.habitlist.HabitListInteractors
 import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.GetListHabitstUseCase
 import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.InsertNewHabitUseCase
-import com.yolo.fun_habit_journal.business.usecases.habitlist.usecase.RestoreDeletedHabitUseCase
 import com.yolo.fun_habit_journal.framework.datasource.cache.HabitDaoServiceImpl
 import com.yolo.fun_habit_journal.framework.datasource.cache.abstraction.IHabitDaoService
 import com.yolo.fun_habit_journal.framework.datasource.cache.util.HabitCacheMapper
@@ -188,8 +187,6 @@ object AppModule {
     ): HabitListInteractors =
         HabitListInteractors(
             InsertNewHabitUseCase(habitCacheDataSource, habitNetworkDataSource, habitFactory),
-            DeleteHabitUseCase(habitCacheDataSource, habitNetworkDataSource),
-            RestoreDeletedHabitUseCase(habitCacheDataSource, habitNetworkDataSource),
             GetListHabitstUseCase(habitCacheDataSource)
         )
 

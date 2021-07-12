@@ -63,12 +63,7 @@ class HabitListAdapter(
     }
 
     fun submitList(list: List<Habit>) {
-        val commitCallback = Runnable {
-            // if process died must restore list position
-            interaction?.restoreListPosition()
-        }
-        printLogD("listadapter", "size: ${list.size}")
-        differ.submitList(list, commitCallback)
+        differ.submitList(list)
     }
 
     class HabitViewHolder
@@ -94,8 +89,6 @@ class HabitListAdapter(
 
     interface Interaction {
         fun onItemSelected(position: Int, item: Habit)
-
-        fun restoreListPosition()
     }
 }
 
