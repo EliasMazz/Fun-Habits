@@ -54,6 +54,13 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation platform('com.google.firebase:firebase-bom:28.2.1')
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+
+
     implementation Dependencies.kotlin_standard_library
     implementation Dependencies.kotlin_reflect
     implementation Dependencies.ktx
@@ -71,13 +78,8 @@ dependencies {
     implementation Dependencies.markdown_processor
     implementation Dependencies.retrofit
     implementation Dependencies.retrofit_gson
-    implementation Dependencies.firebase_firestore
-    implementation Dependencies.firebase_auth
     implementation Dependencies.kotlin_coroutines_play_services
-    implementation Dependencies.firebase_analytics
-    implementation Dependencies.firebase_crashlytics
     implementation Dependencies.coil_image_loading
-
     implementation SupportDependencies.swipe_refresh_layout
     implementation SupportDependencies.appcompat
     implementation SupportDependencies.constraintlayout
@@ -106,5 +108,8 @@ dependencies {
     androidTestImplementation AndroidTestDependencies.navigation_testing
     debugImplementation AndroidTestDependencies.fragment_testing
     kaptAndroidTest AnnotationProcessing.dagger_compiler
+    //Multidex
+    implementation 'androidx.multidex:multidex:2.0.0'
+
 }
 
