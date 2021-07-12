@@ -23,7 +23,7 @@ abstract class DataStateManager<ViewState> {
 
     val shouldDisplayProgressBar = stateEventManager.shouldDisplayProgressBar
 
-    fun setupChannel() {
+    fun setup() {
         cancelJobs()
     }
 

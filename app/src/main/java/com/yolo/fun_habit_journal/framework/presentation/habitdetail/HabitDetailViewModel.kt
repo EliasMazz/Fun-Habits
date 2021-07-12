@@ -1,6 +1,5 @@
 package com.yolo.fun_habit_journal.framework.presentation.habitdetail
 
-import androidx.lifecycle.LiveData
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.state.DataState
 import com.yolo.fun_habit_journal.business.domain.state.MessageType
@@ -12,11 +11,8 @@ import com.yolo.fun_habit_journal.business.usecases.habitdetail.HabitDetailInter
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.UPDATE_HABIT_FAILED
 import com.yolo.fun_habit_journal.framework.datasource.cache.model.HabitCacheEntity
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseViewModel
-import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.CollapsingToolbarState
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailStateEvent
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailViewState
-import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitInteractionManager
-import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitInteractionState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -31,14 +27,6 @@ class HabitDetailViewModel
 constructor(
     private val habitDetailInteractors: HabitDetailInteractors
 ) : BaseViewModel<HabitDetailViewState>() {
-
-    private val habitInteractionManager: HabitInteractionManager = HabitInteractionManager()
-    val habitTitleInteractionState: LiveData<HabitInteractionState>
-        get() = habitInteractionManager.habitTitleState
-    val habitBodyInteractionState: LiveData<HabitInteractionState>
-        get() = habitInteractionManager.noteBodyState
-    val collapsingToolbarState: LiveData<CollapsingToolbarState>
-        get() = habitInteractionManager.collapsingToolbarState
 
     override fun handleNewData(data: HabitDetailViewState) {
         // no data coming in from requests...
@@ -131,10 +119,6 @@ constructor(
         setViewState(update)
     }
 
-    fun setCollapsingToolbarState(
-        state: CollapsingToolbarState
-    ) = habitInteractionManager.setCollapsingToolbarState(state)
-
     fun updateNote(title: String?, body: String?) {
         updateHabitTitle(title)
         updateHabitBody(body)
@@ -172,17 +156,6 @@ constructor(
         setViewState(update)
     }
 
-    fun setNoteInteractionTitleState(state: HabitInteractionState) {
-        habitInteractionManager.setNewNoteTitleState(state)
-    }
-
-    fun setNoteInteractionBodyState(state: HabitInteractionState) {
-        habitInteractionManager.setNewNoteBodyState(state)
-    }
-
-    fun isToolbarCollapsed() = collapsingToolbarState.toString()
-        .equals(CollapsingToolbarState.Collapsed().toString())
-
     fun setIsUpdatePending(isPending: Boolean) {
         val update = getCurrentViewStateOrNew()
         update.isUpdatePending = isPending
@@ -192,17 +165,6 @@ constructor(
     fun getIsUpdatePending(): Boolean {
         return getCurrentViewStateOrNew().isUpdatePending ?: false
     }
-
-    fun isToolbarExpanded() = collapsingToolbarState.toString()
-        .equals(CollapsingToolbarState.Expanded().toString())
-
-    fun checkEditState() = habitInteractionManager.checkEditState()
-
-    fun exitEditState() = habitInteractionManager.exitEditState()
-
-    fun isEditingTitle() = habitInteractionManager.isEditingTitle()
-
-    fun isEditingBody() = habitInteractionManager.isEditingBody()
 
     // force observers to refresh
     fun triggerHabitObservers() {

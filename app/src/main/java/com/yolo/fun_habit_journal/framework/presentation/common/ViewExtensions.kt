@@ -15,12 +15,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
-// threshold for when contents of collapsing toolbar is hidden
-const val COLLAPSING_TOOLBAR_VISIBILITY_THRESHOLD = -75
-const val CLICK_THRESHOLD = 150L // a click is considered 150ms or less
-const val CLICK_COLOR_CHANGE_TIME = 250L
-
 fun View.visible() {
     visibility = View.VISIBLE
 }
@@ -31,57 +25,6 @@ fun View.invisible() {
 
 fun View.gone() {
     visibility = View.GONE
-}
-
-fun View.fadeIn() {
-    val animationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
-    apply {
-        visible()
-        alpha = 0f
-        animate()
-            .alpha(1f)
-            .setDuration(animationDuration.toLong())
-            .setListener(null)
-    }
-}
-
-fun View.fadeOut(todoCallback: TodoCallback? = null){
-    val animationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
-    apply {
-        animate()
-            .alpha(0f)
-            .setDuration(animationDuration.toLong())
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    invisible()
-                    todoCallback?.execute()
-                }
-            })
-    }
-}
-
-fun View.onSelectChangeColor(
-    lifeCycleScope: CoroutineScope,
-    clickColor: Int
-) = CoroutineScope(lifeCycleScope.coroutineContext).launch {
-    val intialColor = (background as ColorDrawable).color
-    setBackgroundColor(
-        ContextCompat.getColor(
-            context,
-            clickColor
-        )
-    )
-    delay(CLICK_COLOR_CHANGE_TIME)
-    setBackgroundColor(intialColor)
-}
-
-fun View.changeColor(newColor: Int) {
-    setBackgroundColor(
-        ContextCompat.getColor(
-            context,
-            newColor
-        )
-    )
 }
 
 fun EditText.disableContentInteraction() {
@@ -104,8 +47,6 @@ fun EditText.enableContentInteraction() {
         setSelection(text.length)
     }
 }
-
-
 
 fun Activity.displayToast(
     @StringRes message:Int,

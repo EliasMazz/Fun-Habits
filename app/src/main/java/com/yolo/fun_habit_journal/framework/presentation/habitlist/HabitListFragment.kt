@@ -11,18 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.yolo.fun_habit_journal.R
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.state.DialogInputCaptureCallback
-import com.yolo.fun_habit_journal.business.domain.state.MessageType
-import com.yolo.fun_habit_journal.business.domain.state.Response
-import com.yolo.fun_habit_journal.business.domain.state.SnackbarUndoCallback
 import com.yolo.fun_habit_journal.business.domain.state.StateMessageCallback
-import com.yolo.fun_habit_journal.business.domain.state.UIComponentType
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseFragment
 import com.yolo.fun_habit_journal.framework.presentation.common.hideKeyboard
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.HABIT_DETAIL_SELECTED_HABIT_BUNDLE_KEY
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListStateEvent
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
-import com.yolo.fun_habit_journal.framework.util.TodoCallback
 import kotlinx.android.synthetic.main.fragment_habit_list.add_new_habit_fab
 import kotlinx.android.synthetic.main.fragment_habit_list.recycler_view
 import kotlinx.android.synthetic.main.fragment_habit_list.swipe_refresh
@@ -46,7 +41,7 @@ class HabitListFragment constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.setupChannel()
+        viewModel.setupDataStateManager()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

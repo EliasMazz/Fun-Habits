@@ -3,12 +3,10 @@ package com.yolo.fun_habit_journal.framework.presentation.habitdetail
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.appbar.AppBarLayout
 import com.yolo.fun_habit_journal.R
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.state.AreYouSureCallback
@@ -21,22 +19,13 @@ import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.DELETE_A
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.DELETE_HABIT_SUCCESS
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.UPDATE_HABIT_SUCCESS
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseFragment
-import com.yolo.fun_habit_journal.framework.presentation.common.COLLAPSING_TOOLBAR_VISIBILITY_THRESHOLD
-import com.yolo.fun_habit_journal.framework.presentation.common.disableContentInteraction
-import com.yolo.fun_habit_journal.framework.presentation.common.enableContentInteraction
 import com.yolo.fun_habit_journal.framework.presentation.common.fadeIn
 import com.yolo.fun_habit_journal.framework.presentation.common.fadeOut
 import com.yolo.fun_habit_journal.framework.presentation.common.hideKeyboard
-import com.yolo.fun_habit_journal.framework.presentation.common.showKeyboard
-import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.CollapsingToolbarState
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailStateEvent
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailViewState
-import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitInteractionState
-import com.yolo.fun_habit_journal.framework.presentation.habitlist.HABIT_PENDING_DELETE_BUNDLE_KEY
 import com.yydcdut.markdown.MarkdownProcessor
 import com.yydcdut.markdown.syntax.edit.EditFactory
-import kotlinx.android.synthetic.main.fragment_habit_detail.app_bar
-import kotlinx.android.synthetic.main.fragment_habit_detail.container_due_date
 import kotlinx.android.synthetic.main.fragment_habit_detail.habit_body
 import kotlinx.android.synthetic.main.fragment_habit_detail.habit_title
 import kotlinx.android.synthetic.main.layout_habit_detail_toolbar.tool_bar_title
@@ -61,7 +50,7 @@ class HabitDetailFragment constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.setupChannel()
+        viewModel.setupDataStateManager()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,18 +59,6 @@ class HabitDetailFragment constructor(
         setupUI()
         setupOnBackPressDispatcher()
         subscribeObservers()
-
-        container_due_date.setOnClickListener {
-            // TODO("handle click of due date")
-        }
-
-        habit_title.setOnClickListener {
-            onClickHabitTitle()
-        }
-
-        habit_body.setOnClickListener {
-            onClickHabitBody()
-        }
 
         setupMarkdown()
         getSelectedNoteFromPreviousFragment()
@@ -110,40 +87,9 @@ class HabitDetailFragment constructor(
         }
     }
 
-    private fun onClickHabitTitle() {
-        if (!viewModel.isEditingTitle()) {
-            updateBodyInViewModel()
-            updateHabit()
-            viewModel.setNoteInteractionTitleState(HabitInteractionState.EditState())
-        }
-    }
-
-    private fun onClickHabitBody() {
-        if (!viewModel.isEditingBody()) {
-            updateTitleInViewModel()
-            updateHabit()
-            viewModel.setNoteInteractionBodyState(HabitInteractionState.EditState())
-        }
-    }
-
     private fun onBackPressed() {
         view?.hideKeyboard()
-        if (viewModel.checkEditState()) {
-            updateBodyInViewModel()
-            updateTitleInViewModel()
-            updateHabit()
-            viewModel.exitEditState()
-            displayDefaultToolbar()
-        } else {
-            findNavController().popBackStack()
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        updateTitleInViewModel()
-        updateBodyInViewModel()
-        updateHabit()
+        findNavController().popBackStack()
     }
 
     private fun subscribeObservers() {
@@ -198,56 +144,8 @@ class HabitDetailFragment constructor(
                     }
                 }
             }
-
         })
 
-        viewModel.collapsingToolbarState.observe(viewLifecycleOwner, Observer { state ->
-
-            when (state) {
-
-                is CollapsingToolbarState.Expanded -> {
-                    transitionToExpandedMode()
-                }
-
-                is CollapsingToolbarState.Collapsed -> {
-                    transitionToCollapsedMode()
-                }
-            }
-        })
-
-        viewModel.habitTitleInteractionState.observe(viewLifecycleOwner, Observer { state ->
-
-            when (state) {
-
-                is HabitInteractionState.EditState -> {
-                    habit_title.enableContentInteraction()
-                    view?.showKeyboard()
-                    displayEditStateToolbar()
-                    viewModel.setIsUpdatePending(true)
-                }
-
-                is HabitInteractionState.DefaultState -> {
-                    habit_title.disableContentInteraction()
-                }
-            }
-        })
-
-        viewModel.habitBodyInteractionState.observe(viewLifecycleOwner, Observer { state ->
-
-            when (state) {
-
-                is HabitInteractionState.EditState -> {
-                    habit_body.enableContentInteraction()
-                    view?.showKeyboard()
-                    displayEditStateToolbar()
-                    viewModel.setIsUpdatePending(true)
-                }
-
-                is HabitInteractionState.DefaultState -> {
-                    habit_body.disableContentInteraction()
-                }
-            }
-        })
     }
 
     private fun displayDefaultToolbar() {
@@ -267,33 +165,9 @@ class HabitDetailFragment constructor(
         }
     }
 
-    private fun displayEditStateToolbar() {
-        activity?.let { a ->
-            toolbar_primary_icon.setImageDrawable(
-                resources.getDrawable(
-                    R.drawable.ic_close_grey_24dp,
-                    a.application.theme
-                )
-            )
-            toolbar_secondary_icon.setImageDrawable(
-                resources.getDrawable(
-                    R.drawable.ic_done_grey_24dp,
-                    a.application.theme
-                )
-            )
-        }
-    }
 
     private fun setHabitTitle(title: String) {
         habit_title.setText(title)
-    }
-
-    private fun getHabitTitle(): String {
-        return habit_title.text.toString()
-    }
-
-    private fun getHabitBody(): String {
-        return habit_body.text.toString()
     }
 
     private fun setHabitBody(body: String?) {
@@ -313,75 +187,19 @@ class HabitDetailFragment constructor(
         arguments?.let { args ->
             (args.getParcelable(HABIT_DETAIL_STATE_BUNDLE_KEY) as HabitDetailViewState?)?.let { viewState ->
                 viewModel.setViewState(viewState)
-
-                // One-time check after rotation
-                if (viewModel.isToolbarCollapsed()) {
-                    app_bar.setExpanded(false)
-                    transitionToCollapsedMode()
-                } else {
-                    app_bar.setExpanded(true)
-                    transitionToExpandedMode()
-                }
             }
-        }
-    }
-
-    private fun updateTitleInViewModel() {
-        if (viewModel.isEditingTitle()) {
-            viewModel.updateHabitTitle(getHabitTitle())
-        }
-    }
-
-    private fun updateBodyInViewModel() {
-        if (viewModel.isEditingBody()) {
-            viewModel.updateHabitBody(getHabitBody())
         }
     }
 
     private fun setupUI() {
-        habit_title.disableContentInteraction()
-        habit_body.disableContentInteraction()
         displayDefaultToolbar()
-        transitionToExpandedMode()
-
-        app_bar.addOnOffsetChangedListener(
-            AppBarLayout.OnOffsetChangedListener { _, offset ->
-
-                if (offset < COLLAPSING_TOOLBAR_VISIBILITY_THRESHOLD) {
-                    updateTitleInViewModel()
-                    if (viewModel.isEditingTitle()) {
-                        viewModel.exitEditState()
-                        displayDefaultToolbar()
-                        updateHabit()
-                    }
-                    viewModel.setCollapsingToolbarState(CollapsingToolbarState.Collapsed())
-                } else {
-                    viewModel.setCollapsingToolbarState(CollapsingToolbarState.Expanded())
-                }
-            })
 
         toolbar_primary_icon.setOnClickListener {
-            if (viewModel.checkEditState()) {
-                view?.hideKeyboard()
-                viewModel.triggerHabitObservers()
-                viewModel.exitEditState()
-                displayDefaultToolbar()
-            } else {
-                onBackPressed()
-            }
+            onBackPressed()
         }
 
         toolbar_secondary_icon.setOnClickListener {
-            if (viewModel.checkEditState()) {
-                view?.hideKeyboard()
-                updateTitleInViewModel()
-                updateBodyInViewModel()
-                updateHabit()
-                viewModel.exitEditState()
-                displayDefaultToolbar()
-            } else {
-                deleteNote()
-            }
+            deleteNote()
         }
     }
 
@@ -416,13 +234,9 @@ class HabitDetailFragment constructor(
     }
 
     private fun onDeleteSuccess() {
-        val bundle = bundleOf(HABIT_PENDING_DELETE_BUNDLE_KEY to viewModel.getHabit())
         viewModel.setHabit(null) // clear note from ViewState
         viewModel.setIsUpdatePending(false) // prevent update onPause
-        findNavController().navigate(
-            R.id.action_habit_detail_fragment_to_habitListFragment,
-            bundle
-        )
+        findNavController().navigate(R.id.action_habit_detail_fragment_to_habitListFragment)
     }
 
     private fun setupOnBackPressDispatcher() {
@@ -441,16 +255,6 @@ class HabitDetailFragment constructor(
                 HabitDetailStateEvent.UpdateHabitEvent()
             )
         }
-    }
-
-    private fun transitionToCollapsedMode() {
-        habit_title.fadeOut()
-        displayToolbarTitle(tool_bar_title, getHabitTitle(), true)
-    }
-
-    private fun transitionToExpandedMode() {
-        habit_title.fadeIn()
-        displayToolbarTitle(tool_bar_title, null, true)
     }
 
     override fun inject() {}

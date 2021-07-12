@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yolo.fun_habit_journal.R
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
-import com.yolo.fun_habit_journal.framework.presentation.common.changeColor
 import com.yolo.fun_habit_journal.framework.util.printLogD
 import kotlinx.android.synthetic.main.layout_habit_list_item.view.habit_timestamp
 import kotlinx.android.synthetic.main.layout_habit_list_item.view.habit_title
