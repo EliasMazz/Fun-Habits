@@ -22,11 +22,11 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
-            manifestPlaceholders = [enableCrashReporting:"false"]
+            manifestPlaceholders = [enableCrashReporting: "false"]
         }
         release {
             minifyEnabled false
-            manifestPlaceholders = [enableCrashReporting:"true"]
+            manifestPlaceholders = [enableCrashReporting: "true"]
         }
     }
 
@@ -48,6 +48,7 @@ android {
             useJUnitPlatform()
         }
     }
+
 }
 
 
@@ -75,7 +76,7 @@ dependencies {
     implementation Dependencies.kotlin_coroutines_play_services
     implementation Dependencies.firebase_analytics
     implementation Dependencies.firebase_crashlytics
-    implementation AndroidTestDependencies.idling_resource
+    implementation Dependencies.coil_image_loading
 
     implementation SupportDependencies.swipe_refresh_layout
     implementation SupportDependencies.appcompat
@@ -91,6 +92,8 @@ dependencies {
     testImplementation TestDependencies.junit4
     testRuntimeOnly TestDependencies.jupiter_engine
 
+
+    implementation AndroidTestDependencies.idling_resource
     androidTestImplementation AndroidTestDependencies.kotlin_test
     androidTestImplementation AndroidTestDependencies.coroutines_test
     androidTestImplementation AndroidTestDependencies.espresso_core
@@ -102,6 +105,6 @@ dependencies {
     androidTestImplementation AndroidTestDependencies.text_core_ktx
     androidTestImplementation AndroidTestDependencies.navigation_testing
     debugImplementation AndroidTestDependencies.fragment_testing
-    kaptAndroidTest  AnnotationProcessing.dagger_compiler
+    kaptAndroidTest AnnotationProcessing.dagger_compiler
 }
 

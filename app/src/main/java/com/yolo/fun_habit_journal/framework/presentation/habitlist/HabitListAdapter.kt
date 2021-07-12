@@ -4,15 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yolo.fun_habit_journal.R
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
-import com.yolo.fun_habit_journal.framework.util.printLogD
 import kotlinx.android.synthetic.main.layout_habit_list_item.view.habit_timestamp
 import kotlinx.android.synthetic.main.layout_habit_list_item.view.habit_title
 
@@ -33,6 +30,7 @@ class HabitListAdapter(
         }
 
     }
+
     private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -65,8 +63,7 @@ class HabitListAdapter(
         differ.submitList(list)
     }
 
-    class HabitViewHolder
-    constructor(
+    class HabitViewHolder constructor(
         itemView: View,
         private val interaction: Interaction?,
         private val lifecycleOwner: LifecycleOwner,
