@@ -25,7 +25,6 @@
                 android:layout_height="@dimen/view_between_spacing"
                 android:layout_gravity="bottom"
                 android:background="@color/app_background_color">
-
             </View>
 
             <com.yydcdut.markdown.MarkdownEditText
@@ -35,7 +34,7 @@
                 android:layout_marginTop="@dimen/default_view_margin"
                 android:background="#fff"
                 android:gravity="top"
-                android:hint="@string/text_habit_go_here"
+                android:hint="@string/text_habit_description"
                 android:imeOptions="flagNoExtractUi"
                 android:minHeight="300dp"
                 android:padding="5dp"
@@ -45,38 +44,6 @@
                 android:textColor="#000"
                 android:textSize="18sp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/view_between_spacing"
-                android:layout_gravity="bottom"
-                android:background="@color/app_background_color"></View>
-
-            <LinearLayout
-                android:id="@+id/container_due_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="@dimen/default_view_margin">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_date_range_black_24dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/default_view_margin"
-                    android:text="@string/text_due_date"
-                    android:textColor="#000"
-                    android:textSize="15sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/scrollview_bottom_margin"
-                android:background="@color/app_background_color"></View>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

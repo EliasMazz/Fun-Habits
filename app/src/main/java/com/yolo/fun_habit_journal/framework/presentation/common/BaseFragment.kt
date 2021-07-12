@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
 import com.yolo.fun_habit_journal.dependencyinjection.AppComponent
 import com.yolo.fun_habit_journal.framework.presentation.BaseApplication
@@ -28,43 +29,12 @@ abstract class BaseFragment constructor(
         return inflater.inflate(layoutRes, container, false)
     }
 
-    fun displayToolbarTitle(textView: TextView, title: String?, useAnimation: Boolean) {
-        if(title != null){
-            showToolbarTitle(textView, title, useAnimation)
-        }
-        else{
-            hideToolbarTitle(textView, useAnimation)
-        }
-    }
-
-    private fun hideToolbarTitle(textView: TextView, animation: Boolean){
-        if(animation){
-            textView.fadeOut(
-                object: TodoCallback {
-                    override fun execute() {
-                        textView.text = ""
-                    }
-                }
-            )
-        }
-        else{
-            textView.text = ""
-            textView.gone()
-        }
-    }
-
     private fun showToolbarTitle(
         textView: TextView,
-        title: String,
-        animation: Boolean
+        title: String
     ){
         textView.text = title
-        if(animation){
-            textView.fadeIn()
-        }
-        else{
-            textView.visible()
-        }
+        textView.visible()
     }
 
     abstract fun inject()
@@ -81,6 +51,7 @@ abstract class BaseFragment constructor(
         setUIController(null) // null in production
     }
 
+    @VisibleForTesting
     fun setUIController(mockController: UIController?){
 
         // TEST: Set interface from mock

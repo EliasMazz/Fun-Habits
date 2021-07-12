@@ -74,6 +74,7 @@ constructor(
                 emitInvalidStateEvent(stateEvent)
             }
         }
+
         launchJob(stateEvent, job)
     }
 
@@ -119,12 +120,7 @@ constructor(
         setViewState(update)
     }
 
-    fun updateNote(title: String?, body: String?) {
-        updateHabitTitle(title)
-        updateHabitBody(body)
-    }
-
-    fun updateHabitTitle(title: String?) {
+    fun updateHabit(title: String?, body: String?) {
         if (title == null) {
             setStateEvent(
                 HabitDetailStateEvent.CreateStateMessageEvent(
@@ -140,36 +136,11 @@ constructor(
         } else {
             val update = getCurrentViewStateOrNew()
             val updatedNote = update.habit?.copy(
-                title = title
+                title = title,
+                body = body ?: ""
             )
             update.habit = updatedNote
             setViewState(update)
-        }
-    }
-
-    fun updateHabitBody(body: String?) {
-        val update = getCurrentViewStateOrNew()
-        val updatedNote = update.habit?.copy(
-            body = body ?: ""
-        )
-        update.habit = updatedNote
-        setViewState(update)
-    }
-
-    fun setIsUpdatePending(isPending: Boolean) {
-        val update = getCurrentViewStateOrNew()
-        update.isUpdatePending = isPending
-        setViewState(update)
-    }
-
-    fun getIsUpdatePending(): Boolean {
-        return getCurrentViewStateOrNew().isUpdatePending ?: false
-    }
-
-    // force observers to refresh
-    fun triggerHabitObservers() {
-        getCurrentViewStateOrNew().habit?.let { habit ->
-            setHabit(habit)
         }
     }
 }

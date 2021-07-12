@@ -18,7 +18,6 @@ constructor(
     private val syncHabits: SyncHabitsUseCase,
     private val syncDeletedHabits: SyncDeletedHabitsUseCase
 ){
-
     private val _hasSyncBeenExecuted: MutableLiveData<Boolean> = MutableLiveData(false)
 
     val hasSyncBeenExecuted: LiveData<Boolean>

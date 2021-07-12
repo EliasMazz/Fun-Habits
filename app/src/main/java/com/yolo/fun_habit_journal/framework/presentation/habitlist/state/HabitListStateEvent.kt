@@ -34,21 +34,6 @@ sealed class HabitListStateEvent: StateEvent {
         override fun shouldDisplayProgressBar() = true
     }
 
-    class RestoreDeletedHabitEvent(
-        val habit: Habit
-    ): HabitListStateEvent() {
-
-        override fun errorInfo(): String {
-            return "Error restoring the habit that was deleted."
-        }
-
-        override fun eventName(): String {
-            return "RestoreDeletedHabitEvent"
-        }
-
-        override fun shouldDisplayProgressBar() = false
-    }
-
     class CreateStateMessageEvent(
         val stateMessage: StateMessage
     ): HabitListStateEvent(){

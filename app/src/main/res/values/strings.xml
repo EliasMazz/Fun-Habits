@@ -21,8 +21,7 @@
     <string name="text_undo">Undo</string>
 
 
-    <string name="text_habit_go_here">Habits go here</string>
-    <string name="text_due_date">Due Date...</string>
+    <string name="text_habit_description">Description</string>
     <string name="text_habit_title_cannot_be_empty">Habit title can not be empty.</string>
     <string name="text_edit_body">Edit Body</string>
     <string name="text_edit_title">Edit Title</string>

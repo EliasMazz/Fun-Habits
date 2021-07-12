@@ -19,8 +19,6 @@ import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.DELETE_A
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.DELETE_HABIT_SUCCESS
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.UPDATE_HABIT_SUCCESS
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseFragment
-import com.yolo.fun_habit_journal.framework.presentation.common.fadeIn
-import com.yolo.fun_habit_journal.framework.presentation.common.fadeOut
 import com.yolo.fun_habit_journal.framework.presentation.common.hideKeyboard
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailStateEvent
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailViewState
@@ -28,9 +26,9 @@ import com.yydcdut.markdown.MarkdownProcessor
 import com.yydcdut.markdown.syntax.edit.EditFactory
 import kotlinx.android.synthetic.main.fragment_habit_detail.habit_body
 import kotlinx.android.synthetic.main.fragment_habit_detail.habit_title
-import kotlinx.android.synthetic.main.layout_habit_detail_toolbar.tool_bar_title
-import kotlinx.android.synthetic.main.layout_habit_detail_toolbar.toolbar_primary_icon
-import kotlinx.android.synthetic.main.layout_habit_detail_toolbar.toolbar_secondary_icon
+import kotlinx.android.synthetic.main.layout_habit_detail_toolbar.toolbar_back_button
+import kotlinx.android.synthetic.main.layout_habit_detail_toolbar.toolbar_delete_button
+import kotlinx.android.synthetic.main.layout_habit_detail_toolbar.toolbar_save_button
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
@@ -111,60 +109,37 @@ class HabitDetailFragment constructor(
         viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
 
             stateMessage?.response?.let { response ->
-
                 when (response.message) {
-
                     UPDATE_HABIT_SUCCESS -> {
-                        viewModel.setIsUpdatePending(false)
-                        viewModel.clearStateMessage()
+                        findNavController().popBackStack()
                     }
 
                     DELETE_HABIT_SUCCESS -> {
-                        viewModel.clearStateMessage()
                         onDeleteSuccess()
                     }
 
+                    HABIT_DETAIL_ERROR_RETRIEVEING_SELECTED_HABIT -> {
+                        findNavController().popBackStack()
+                    }
                     else -> {
-                        uiController.onResponseReceived(
-                            response = stateMessage.response,
-                            stateMessageCallback = object : StateMessageCallback {
-                                override fun removeMessageFromStack() {
-                                    viewModel.clearStateMessage()
-                                }
-                            }
-                        )
-                        when (response.message) {
-                            HABIT_DETAIL_ERROR_RETRIEVEING_SELECTED_HABIT -> {
-                                findNavController().popBackStack()
-                            }
-                            else -> {
-                                // do nothing
-                            }
-                        }
+                        //Do nothing
                     }
                 }
+                delegateStateMessageToActivity(stateMessage)
             }
         })
-
     }
 
-    private fun displayDefaultToolbar() {
-        activity?.let { a ->
-            toolbar_primary_icon.setImageDrawable(
-                resources.getDrawable(
-                    R.drawable.ic_arrow_back_grey_24dp,
-                    a.application.theme
-                )
-            )
-            toolbar_secondary_icon.setImageDrawable(
-                resources.getDrawable(
-                    R.drawable.ic_delete,
-                    a.application.theme
-                )
-            )
-        }
+    private fun delegateStateMessageToActivity(stateMessage: StateMessage) {
+        uiController.onResponseReceived(
+            response = stateMessage.response,
+            stateMessageCallback = object : StateMessageCallback {
+                override fun removeMessageFromStack() {
+                    viewModel.clearStateMessage()
+                }
+            }
+        )
     }
-
 
     private fun setHabitTitle(title: String) {
         habit_title.setText(title)
@@ -192,18 +167,20 @@ class HabitDetailFragment constructor(
     }
 
     private fun setupUI() {
-        displayDefaultToolbar()
-
-        toolbar_primary_icon.setOnClickListener {
+        toolbar_back_button.setOnClickListener {
             onBackPressed()
         }
 
-        toolbar_secondary_icon.setOnClickListener {
-            deleteNote()
+        toolbar_delete_button.setOnClickListener {
+            deleteHabit()
+        }
+
+        toolbar_save_button.setOnClickListener {
+            updateHabit()
         }
     }
 
-    private fun deleteNote() {
+    private fun deleteHabit() {
         viewModel.setStateEvent(
             HabitDetailStateEvent.CreateStateMessageEvent(
                 stateMessage = StateMessage(
@@ -235,7 +212,6 @@ class HabitDetailFragment constructor(
 
     private fun onDeleteSuccess() {
         viewModel.setHabit(null) // clear note from ViewState
-        viewModel.setIsUpdatePending(false) // prevent update onPause
         findNavController().navigate(R.id.action_habit_detail_fragment_to_habitListFragment)
     }
 
@@ -248,13 +224,9 @@ class HabitDetailFragment constructor(
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
-
     private fun updateHabit() {
-        if (viewModel.getIsUpdatePending()) {
-            viewModel.setStateEvent(
-                HabitDetailStateEvent.UpdateHabitEvent()
-            )
-        }
+        viewModel.updateHabit(getHabitTitle(), getHabitBody())
+        viewModel.setStateEvent(HabitDetailStateEvent.UpdateHabitEvent())
     }
 
     override fun inject() {}
@@ -264,4 +236,10 @@ class HabitDetailFragment constructor(
         outState.putParcelable(HABIT_DETAIL_STATE_BUNDLE_KEY, viewState)
         super.onSaveInstanceState(outState)
     }
+
+    private fun getHabitTitle(): String =
+        habit_title.text.toString()
+
+    private fun getHabitBody(): String =
+        habit_body.text.toString()
 }
