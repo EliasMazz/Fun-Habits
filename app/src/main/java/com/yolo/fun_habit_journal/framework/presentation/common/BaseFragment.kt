@@ -37,8 +37,6 @@ abstract class BaseFragment constructor(
         textView.visible()
     }
 
-    abstract fun inject()
-
     fun getAppComponent(): AppComponent {
         return activity?.run {
             (application as BaseApplication).appComponent
@@ -46,7 +44,6 @@ abstract class BaseFragment constructor(
     }
 
     override fun onAttach(context: Context) {
-        inject()
         super.onAttach(context)
         setUIController(null) // null in production
     }

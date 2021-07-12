@@ -100,8 +100,5 @@ constructor(
         findNavController().navigate(R.id.action_splashFragment_to_habitListFragment)
     }
 
-    override fun inject() {
-        getAppComponent().inject(this)
-    }
 }
 

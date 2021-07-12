@@ -31,10 +31,4 @@ interface AppComponent {
     }
 
     fun inject(mainActivity: MainActivity)
-
-    fun inject(habitListFragment: HabitListFragment)
-
-    fun inject(habitDetailFragment: HabitDetailFragment)
-
-    fun inject(splashFragment: SplashFragment)
 }

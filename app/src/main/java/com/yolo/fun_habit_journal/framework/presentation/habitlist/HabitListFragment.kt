@@ -150,8 +150,6 @@ class HabitListFragment constructor(
         view?.hideKeyboard()
     }
 
-    override fun inject() {}
-
     override fun onResume() {
         super.onResume()
         viewModel.clearList()

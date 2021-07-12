@@ -229,8 +229,6 @@ class HabitDetailFragment constructor(
         viewModel.setStateEvent(HabitDetailStateEvent.UpdateHabitEvent())
     }
 
-    override fun inject() {}
-
     override fun onSaveInstanceState(outState: Bundle) {
         val viewState = viewModel.getCurrentViewStateOrNew()
         outState.putParcelable(HABIT_DETAIL_STATE_BUNDLE_KEY, viewState)
