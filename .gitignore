@@ -89,13 +89,3 @@ local.properties
 /buildSrc/build/reports/plugin-development/validation-report.txt
 /buildSrc/build/source-roots/buildSrc/source-roots.txt
 /buildSrc/build/tmp/jar/MANIFEST.MF
-/buildSrc/src/main/java/dependencies/AndroidTestDependencies.kt
-/buildSrc/src/main/java/dependencies/AnnotationProcessing.kt
-/buildSrc/src/main/java/dependencies/Application.kt
-/buildSrc/src/main/java/dependencies/Build.kt
-/buildSrc/src/main/java/dependencies/Dependencies.kt
-/buildSrc/src/main/java/dependencies/Java.kt
-/buildSrc/src/main/java/dependencies/Repositories.kt
-/buildSrc/src/main/java/dependencies/SupportDependencies.kt
-/buildSrc/src/main/java/dependencies/TestDependencies.kt
-/buildSrc/src/main/java/dependencies/Versions.kt
