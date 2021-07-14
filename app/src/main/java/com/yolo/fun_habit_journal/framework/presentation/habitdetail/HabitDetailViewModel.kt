@@ -18,7 +18,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-
+const val HABIT_DETAIL_STATE_RESTORED = "State restored"
 const val HABIT_DETAIL_ERROR_RETRIEVEING_SELECTED_HABIT = "Error retrieving selected habit from bundle."
 @ExperimentalCoroutinesApi
 @FlowPreview

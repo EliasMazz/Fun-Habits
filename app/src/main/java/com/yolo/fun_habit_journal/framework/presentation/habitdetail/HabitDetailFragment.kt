@@ -1,8 +1,11 @@
 package com.yolo.fun_habit_journal.framework.presentation.habitdetail
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,21 +21,18 @@ import com.yolo.fun_habit_journal.business.domain.state.UIComponentType
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.DELETE_ARE_YOU_SURE
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.DELETE_HABIT_SUCCESS
 import com.yolo.fun_habit_journal.business.usecases.habitdetail.usecase.UPDATE_HABIT_SUCCESS
+import com.yolo.fun_habit_journal.databinding.FragmentHabitDetailBinding
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseFragment
 import com.yolo.fun_habit_journal.framework.presentation.common.hideKeyboard
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailStateEvent
-import com.yolo.fun_habit_journal.framework.presentation.habitdetail.state.HabitDetailViewState
 import com.yydcdut.markdown.MarkdownProcessor
 import com.yydcdut.markdown.syntax.edit.EditFactory
 import kotlinx.android.synthetic.main.fragment_habit_detail.habit_body
-import kotlinx.android.synthetic.main.fragment_habit_detail.habit_title
-import kotlinx.android.synthetic.main.layout_habit_detail_toolbar.toolbar_back_button
-import kotlinx.android.synthetic.main.layout_habit_detail_toolbar.toolbar_delete_button
-import kotlinx.android.synthetic.main.layout_habit_detail_toolbar.toolbar_save_button
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
 const val HABIT_DETAIL_STATE_BUNDLE_KEY = "com.yolo.fun_habit_journal.framework.presentation.habitdetail.state"
+const val HABIT_DETAIL_STATE_DESCRIPTION_BUNDLE_KEY = "state_habit_description_restore"
 const val HABIT_DETAIL_SELECTED_HABIT_BUNDLE_KEY = "selectedHabit"
 const val HABIT_TITLE_CANNOT_BE_EMPTY = "Habit title can not be empty."
 
@@ -40,10 +40,23 @@ const val HABIT_TITLE_CANNOT_BE_EMPTY = "Habit title can not be empty."
 @FlowPreview
 class HabitDetailFragment constructor(
     private val viewModelFactory: ViewModelProvider.Factory
-) : BaseFragment(R.layout.fragment_habit_detail) {
+) : BaseFragment() {
 
     val viewModel: HabitDetailViewModel by viewModels {
         viewModelFactory
+    }
+
+    private lateinit var binding: FragmentHabitDetailBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_habit_detail, container,
+            false
+        )
+        binding.viewModel = viewModel
+
+        return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,10 +70,13 @@ class HabitDetailFragment constructor(
         setupUI()
         setupOnBackPressDispatcher()
         subscribeObservers()
-
         setupMarkdown()
-        getSelectedNoteFromPreviousFragment()
-        restoreInstanceState()
+
+        if (savedInstanceState == null) {
+            getSelectedNoteFromPreviousFragment()
+        } else {
+            restoreInstanceState()
+        }
     }
 
     private fun onErrorRetrievingHabitFromPreviousFragment() {
@@ -91,9 +107,7 @@ class HabitDetailFragment constructor(
     }
 
     private fun subscribeObservers() {
-
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-
             if (viewState != null) {
                 viewState.habit?.let { habit ->
                     setHabitTitle(habit.title)
@@ -142,11 +156,11 @@ class HabitDetailFragment constructor(
     }
 
     private fun setHabitTitle(title: String) {
-        habit_title.setText(title)
+        binding.habitTitle.setText(title)
     }
 
-    private fun setHabitBody(body: String?) {
-        habit_body.setText(body)
+    private fun setHabitBody(body: String) {
+        binding.habitBody.setText(body)
     }
 
     private fun getSelectedNoteFromPreviousFragment() {
@@ -155,27 +169,19 @@ class HabitDetailFragment constructor(
                 viewModel.setHabit(selectedHabit)
             } ?: onErrorRetrievingHabitFromPreviousFragment()
         }
-
     }
 
-    private fun restoreInstanceState() {
-        arguments?.let { args ->
-            (args.getParcelable(HABIT_DETAIL_STATE_BUNDLE_KEY) as HabitDetailViewState?)?.let { viewState ->
-                viewModel.setViewState(viewState)
-            }
-        }
-    }
 
     private fun setupUI() {
-        toolbar_back_button.setOnClickListener {
+        binding.toolbarBackButton.setOnClickListener {
             onBackPressed()
         }
 
-        toolbar_delete_button.setOnClickListener {
+        binding.toolbarDeleteButton.setOnClickListener {
             deleteHabit()
         }
 
-        toolbar_save_button.setOnClickListener {
+        binding.toolbarSaveButton.setOnClickListener {
             updateHabit()
         }
     }
@@ -224,20 +230,30 @@ class HabitDetailFragment constructor(
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        val restoreHabit = viewModel.getHabit()?.copy(
+            title = getHabitTitle(),
+            body = getHabitBody()
+        )
+        viewModel.setHabit(restoreHabit)
+        outState.putParcelable(HABIT_DETAIL_STATE_BUNDLE_KEY, restoreHabit)
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun restoreInstanceState() {
+        (arguments?.getParcelable(HABIT_DETAIL_STATE_BUNDLE_KEY) as Habit?)?.let { habit ->
+            viewModel.setHabit(habit)
+        }
+    }
+
     private fun updateHabit() {
         viewModel.updateHabit(getHabitTitle(), getHabitBody())
         viewModel.setStateEvent(HabitDetailStateEvent.UpdateHabitEvent())
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        val viewState = viewModel.getCurrentViewStateOrNew()
-        outState.putParcelable(HABIT_DETAIL_STATE_BUNDLE_KEY, viewState)
-        super.onSaveInstanceState(outState)
-    }
-
     private fun getHabitTitle(): String =
-        habit_title.text.toString()
+        binding.habitTitle.text.toString()
 
     private fun getHabitBody(): String =
-        habit_body.text.toString()
+        binding.habitBody.text.toString()
 }

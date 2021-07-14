@@ -1,8 +1,10 @@
 package com.yolo.fun_habit_journal.framework.presentation.habitlist
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -10,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yolo.fun_habit_journal.R
 import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
-import kotlinx.android.synthetic.main.layout_habit_list_item.view.habit_timestamp
-import kotlinx.android.synthetic.main.layout_habit_list_item.view.habit_title
+import com.yolo.fun_habit_journal.databinding.FragmentHabitListBinding
+import com.yolo.fun_habit_journal.databinding.LayoutHabitListItemBinding
 
 class HabitListAdapter(
     private val interaction: Interaction? = null,
@@ -35,12 +37,12 @@ class HabitListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
+        val layoutInflater = LayoutInflater.from(parent.context)
+
+        val binding: LayoutHabitListItemBinding = DataBindingUtil.inflate(layoutInflater, R.layout.layout_habit_list_item, parent, false)
+
         return HabitViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.layout_habit_list_item,
-                parent,
-                false
-            ),
+            binding,
             interaction,
             lifecycleOwner,
             dateUtil
@@ -64,25 +66,20 @@ class HabitListAdapter(
     }
 
     class HabitViewHolder constructor(
-        itemView: View,
+        private val binding: LayoutHabitListItemBinding,
         private val interaction: Interaction?,
         private val lifecycleOwner: LifecycleOwner,
         private val dateUtil: DateUtil
-    ) : RecyclerView.ViewHolder(itemView) {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        private lateinit var habit: Habit
-
-        fun bind(item: Habit) = with(itemView) {
-            habit = item
-            habit_title.text = item.title
-            habit_timestamp.text = dateUtil.removeTimeFromDateString(item.updated_at)
-
-            setOnClickListener {
-                interaction?.onItemSelected(adapterPosition, habit)
+        fun bind(item: Habit) {
+            binding.setVariable(BR.item, item)
+            binding.executePendingBindings()
+            binding.container.setOnClickListener {
+                interaction?.onItemSelected(adapterPosition, item)
             }
         }
     }
-
     interface Interaction {
         fun onItemSelected(position: Int, item: Habit)
     }

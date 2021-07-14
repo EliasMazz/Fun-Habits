@@ -1,8 +1,11 @@
 package com.yolo.fun_habit_journal.framework.presentation.habitlist
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,13 +16,11 @@ import com.yolo.fun_habit_journal.business.domain.model.Habit
 import com.yolo.fun_habit_journal.business.domain.state.DialogInputCaptureCallback
 import com.yolo.fun_habit_journal.business.domain.state.StateMessageCallback
 import com.yolo.fun_habit_journal.business.domain.util.DateUtil
+import com.yolo.fun_habit_journal.databinding.FragmentHabitListBinding
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseFragment
 import com.yolo.fun_habit_journal.framework.presentation.common.hideKeyboard
 import com.yolo.fun_habit_journal.framework.presentation.habitdetail.HABIT_DETAIL_SELECTED_HABIT_BUNDLE_KEY
 import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListStateEvent
-import com.yolo.fun_habit_journal.framework.presentation.habitlist.state.HabitListViewState
-import kotlinx.android.synthetic.main.fragment_habit_list.add_new_habit_fab
-import kotlinx.android.synthetic.main.fragment_habit_list.recycler_view
 import kotlinx.android.synthetic.main.fragment_habit_list.swipe_refresh
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -31,10 +32,23 @@ const val HABIT_LIST_STATE_BUNDLE_KEY = "com.yolo.fun_habit_journal.framework.pr
 class HabitListFragment constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val dateUtil: DateUtil
-) : BaseFragment(R.layout.fragment_habit_list), HabitListAdapter.Interaction {
+) : BaseFragment(), HabitListAdapter.Interaction {
 
     val viewModel: HabitListViewModel by viewModels {
         viewModelFactory
+    }
+
+    private lateinit var binding: FragmentHabitListBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_habit_list, container,
+            false
+        )
+
+        binding.viewModel = viewModel
+        return binding.root
     }
 
     private var listAdapter: HabitListAdapter? = null
@@ -52,8 +66,6 @@ class HabitListFragment constructor(
         setupSwipeRefresh()
         setupFAB()
         subscribeObservers()
-
-        restoreInstanceState(savedInstanceState)
     }
 
     private fun subscribeObservers() {
@@ -77,28 +89,20 @@ class HabitListFragment constructor(
 
         viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
             stateMessage?.let { message ->
-                    uiController.onResponseReceived(
-                        response = message.response,
-                        stateMessageCallback = object : StateMessageCallback {
-                            override fun removeMessageFromStack() {
-                                viewModel.clearStateMessage()
-                            }
+                uiController.onResponseReceived(
+                    response = message.response,
+                    stateMessageCallback = object : StateMessageCallback {
+                        override fun removeMessageFromStack() {
+                            viewModel.clearStateMessage()
                         }
-                    )
-                }
+                    }
+                )
+            }
         })
     }
 
-    private fun restoreInstanceState(savedInstanceState: Bundle?) {
-        savedInstanceState?.let { inState ->
-            (inState[HABIT_LIST_STATE_BUNDLE_KEY] as HabitListViewState?)?.let { viewState ->
-                viewModel.setViewState(viewState)
-            }
-        }
-    }
-
     private fun setupRecyclerView() {
-        recycler_view.apply {
+        binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(activity)
             val topSpacingDecorator = TopSpacingItemDecoration(20)
             addItemDecoration(topSpacingDecorator)
@@ -111,7 +115,11 @@ class HabitListFragment constructor(
 
             adapter = listAdapter
         }
+    }
 
+
+    override fun onStart() {
+        super.onStart()
         viewModel.setStateEvent(HabitListStateEvent.GetHabitsLisEvent)
     }
 
@@ -120,8 +128,8 @@ class HabitListFragment constructor(
             swipe_refresh.isRefreshing = false
         }
 
-    private fun setupFAB() =
-        add_new_habit_fab.setOnClickListener {
+    private fun setupFAB() {
+        binding.addNewHabitFab.setOnClickListener {
             uiController.displayInputCaptureDialog(
                 getString(R.string.text_enter_a_title),
                 object : DialogInputCaptureCallback {
@@ -136,6 +144,7 @@ class HabitListFragment constructor(
                 }
             )
         }
+    }
 
     private fun navigateToDetailFragment(selectedHabit: Habit) {
         val bundle = bundleOf(HABIT_DETAIL_SELECTED_HABIT_BUNDLE_KEY to selectedHabit)
@@ -153,16 +162,6 @@ class HabitListFragment constructor(
     override fun onResume() {
         super.onResume()
         viewModel.clearList()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        val viewState = viewModel.viewState.value
-
-        outState.putParcelable(
-            HABIT_LIST_STATE_BUNDLE_KEY,
-            viewState
-        )
-        super.onSaveInstanceState(outState)
     }
 
     override fun onItemSelected(position: Int, item: Habit) {

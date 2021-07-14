@@ -16,18 +16,8 @@ import com.yolo.fun_habit_journal.framework.presentation.UIController
 import com.yolo.fun_habit_journal.framework.util.TodoCallback
 import java.lang.ClassCastException
 
-abstract class BaseFragment constructor(
-    @LayoutRes val layoutRes: Int
-) : Fragment() {
+abstract class BaseFragment : Fragment() {
     lateinit var uiController: UIController
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(layoutRes, container, false)
-    }
 
     private fun showToolbarTitle(
         textView: TextView,
@@ -35,12 +25,6 @@ abstract class BaseFragment constructor(
     ){
         textView.text = title
         textView.visible()
-    }
-
-    fun getAppComponent(): AppComponent {
-        return activity?.run {
-            (application as BaseApplication).appComponent
-        }?: throw Exception("AppComponent is null.")
     }
 
     override fun onAttach(context: Context) {

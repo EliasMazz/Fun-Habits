@@ -20,5 +20,8 @@
     <dimen name="recyclerview_start_end_margins">5dp</dimen>
     <dimen name="scrollview_bottom_margin">80dp</dimen>
     <dimen name="splash_logo_width">80dp</dimen>
+    <dimen name="margin_start_default">32dp</dimen>
+    <dimen name="margin_bottom_default">16dp</dimen>
+    <dimen name="margin_top_default">24dp</dimen>
 
 </resources>

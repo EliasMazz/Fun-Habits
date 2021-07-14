@@ -1,48 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/recyclerview_start_end_margins"
-    android:layout_marginEnd="@dimen/recyclerview_start_end_margins"
-    android:background="@color/colorPrimary"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:weightSum="100">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/colorAccent" />
+    <data>
 
-    <TextView
-        android:id="@+id/habit_title"
-        android:layout_width="0dp"
+        <variable
+            name="item"
+            type="com.yolo.fun_habit_journal.business.domain.model.Habit" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:id="@id/container"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/default_view_margin"
-        android:layout_marginTop="@dimen/default_view_margin"
-        android:layout_marginBottom="@dimen/default_view_margin"
-        android:layout_weight="77"
-        android:ellipsize="end"
-        android:lines="1"
-        android:maxLines="1"
-        android:text="Some Habit Title"
-        android:textColor="#000"
-        android:textSize="@dimen/title_list_item_text_size" />
+        android:background="@color/colorPrimary">
 
+        <View
+            android:id="@+id/view"
+            android:layout_width="8dp"
+            android:layout_height="68dp"
+            android:background="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/habit_timestamp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/default_view_margin"
-        android:layout_marginEnd="@dimen/default_view_margin"
-        android:layout_marginBottom="@dimen/default_view_margin"
-        android:layout_weight="20"
-        android:gravity="end"
-        android:text="Dec 1 2017"
-        android:textColor="@color/default_grey"
-        android:textSize="@dimen/date_list_item_text_size" />
+        <TextView
+            android:id="@+id/habit_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_start_default"
+            android:layout_marginTop="@dimen/margin_top_default"
+            android:layout_marginBottom="@dimen/margin_bottom_default"
+            android:ellipsize="end"
+            android:lines="1"
+            android:maxLines="1"
+            android:text="@{item.title}"
+            android:textSize="@dimen/title_list_item_text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/view"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/habit_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/default_view_margin"
+            android:text="@{item.updated_at}"
+            android:textColor="@color/default_grey"
+            android:textSize="@dimen/date_list_item_text_size"
+            app:layout_constraintBottom_toBottomOf="@+id/habit_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/habit_title" />
 
-</LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

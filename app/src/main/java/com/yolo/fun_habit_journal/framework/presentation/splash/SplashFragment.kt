@@ -1,7 +1,10 @@
 package com.yolo.fun_habit_journal.framework.presentation.splash
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +15,7 @@ import coil.request.ImageRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.yolo.fun_habit_journal.R
 import com.yolo.fun_habit_journal.business.domain.state.DialogInputCaptureCallback
+import com.yolo.fun_habit_journal.databinding.FragmentSplashBinding
 import com.yolo.fun_habit_journal.framework.datasource.network.EMAIL
 import com.yolo.fun_habit_journal.framework.presentation.common.BaseFragment
 import com.yolo.fun_habit_journal.framework.util.printLogD
@@ -27,12 +31,26 @@ const val SPLASH_IMAGE_URL = "https://image.flaticon.com/icons/png/512/4310/4310
 class SplashFragment
 constructor(
     private val viewModelFactory: ViewModelProvider.Factory
-) : BaseFragment(R.layout.fragment_splash) {
+) : BaseFragment() {
+
+    private lateinit var binding: FragmentSplashBinding
 
     private var disposable: Disposable? = null
 
     private val viewModel: SplashViewModel by viewModels {
         viewModelFactory
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_splash,
+            container,
+            false
+        )
+
+        binding.viewModel = viewModel
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
