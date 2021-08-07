@@ -7,10 +7,11 @@ import com.yolo.fun_habits.business.data.network.abstraction.IHabitNetworkDataSo
 import com.yolo.fun_habits.business.di.DependencyContainer
 import com.yolo.fun_habits.business.domain.model.HabitFactory
 import com.yolo.fun_habits.business.domain.state.DataState
-import com.yolo.fun_habits.business.usecases.common.usecase.DELETE_HABIT_FAILURE
-import com.yolo.fun_habits.business.usecases.common.usecase.DELETE_HABIT_SUCCESS
-import com.yolo.fun_habits.business.usecases.common.usecase.DeleteHabitUseCase
+import com.yolo.fun_habits.business.usecases.habitdetail.usecase.DELETE_HABIT_FAILURE
+import com.yolo.fun_habits.business.usecases.habitdetail.usecase.DELETE_HABIT_SUCCESS
+import com.yolo.fun_habits.business.usecases.habitdetail.usecase.DeleteHabitUseCase
 import com.yolo.fun_habits.framework.presentation.habitdetail.state.HabitDetailStateEvent
+import com.yolo.fun_habits.framework.presentation.habitdetail.state.HabitDetailViewState
 import com.yolo.fun_habits.framework.presentation.habitlist.state.HabitListViewState
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
@@ -28,7 +29,7 @@ class DeleteHabitUseCaseTest {
     private lateinit var habitNetworkDataSource: IHabitNetworkDataSource
     private lateinit var habitFactory: HabitFactory
 
-    private lateinit var deleteHabitUseCase: DeleteHabitUseCase<HabitListViewState>
+    private lateinit var deleteHabitUseCase: DeleteHabitUseCase
 
     @BeforeEach
     fun setup() {
@@ -37,7 +38,7 @@ class DeleteHabitUseCaseTest {
         habitNetworkDataSource = dependencyContainer.habitNetworkDataSource
         habitFactory = dependencyContainer.habitFactory
 
-        deleteHabitUseCase = DeleteHabitUseCase<HabitListViewState>(
+        deleteHabitUseCase = DeleteHabitUseCase(
             habitCacheDataSource = habitCacheDataSource,
             habitNetworkDataSouce = habitNetworkDataSource
         )
@@ -50,8 +51,8 @@ class DeleteHabitUseCaseTest {
         deleteHabitUseCase.deleteHabit(
             habit = habitToDelete,
             stateEvent = HabitDetailStateEvent.DeleteHabitEvent(habitToDelete)
-        ).collect(object : FlowCollector<DataState<HabitListViewState>?> {
-            override suspend fun emit(value: DataState<HabitListViewState>?) {
+        ).collect(object : FlowCollector<DataState<HabitDetailViewState>?> {
+            override suspend fun emit(value: DataState<HabitDetailViewState>?) {
                 Assertions.assertEquals(
                     DELETE_HABIT_SUCCESS,
                     value?.stateMessage?.response?.message
@@ -76,8 +77,8 @@ class DeleteHabitUseCaseTest {
         deleteHabitUseCase.deleteHabit(
             habit = habitToDelete,
             stateEvent = HabitDetailStateEvent.DeleteHabitEvent(habitToDelete)
-        ).collect(object : FlowCollector<DataState<HabitListViewState>?> {
-            override suspend fun emit(value: DataState<HabitListViewState>?) {
+        ).collect(object : FlowCollector<DataState<HabitDetailViewState>?> {
+            override suspend fun emit(value: DataState<HabitDetailViewState>?) {
                 Assertions.assertEquals(
                     DELETE_HABIT_FAILURE,
                     value?.stateMessage?.response?.message
@@ -103,8 +104,8 @@ class DeleteHabitUseCaseTest {
         deleteHabitUseCase.deleteHabit(
             habit = habitToDelete,
             stateEvent = HabitDetailStateEvent.DeleteHabitEvent(habitToDelete)
-        ).collect(object : FlowCollector<DataState<HabitListViewState>?> {
-            override suspend fun emit(value: DataState<HabitListViewState>?) {
+        ).collect(object : FlowCollector<DataState<HabitDetailViewState>?> {
+            override suspend fun emit(value: DataState<HabitDetailViewState>?) {
                 assert(
                     value?.stateMessage?.response?.message?.contains(
                         CACHE_ERROR_UNKNOWN
