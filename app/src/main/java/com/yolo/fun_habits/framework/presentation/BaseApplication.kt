@@ -1,6 +1,6 @@
 package com.yolo.fun_habits.framework.presentation
 
-import androidx.multidex.MultiDexApplication
+import android.app.Application
 import com.yolo.fun_habits.dependencyinjection.AppComponent
 import com.yolo.fun_habits.dependencyinjection.DaggerAppComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -8,7 +8,7 @@ import kotlinx.coroutines.FlowPreview
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-open class BaseApplication : MultiDexApplication() {
+open class BaseApplication : Application() {
 
     lateinit var appComponent: AppComponent
 

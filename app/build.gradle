@@ -110,8 +110,5 @@ dependencies {
     androidTestImplementation AndroidTestDependencies.navigation_testing
     debugImplementation AndroidTestDependencies.fragment_testing
     kaptAndroidTest AnnotationProcessing.dagger_compiler
-    //Multidex
-    implementation 'androidx.multidex:multidex:2.0.0'
-
 }
 
