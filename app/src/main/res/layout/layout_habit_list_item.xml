@@ -7,7 +7,7 @@
 
         <variable
             name="item"
-            type="com.yolo.fun_habit_journal.business.domain.model.Habit" />
+            type="com.yolo.fun_habits.business.domain.model.Habit" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "323406162382",
-    "project_id": "fun-habit-journal",
-    "storage_bucket": "fun-habit-journal.appspot.com"
+    "project_number": "1043612408610",
+    "project_id": "fun-habits",
+    "storage_bucket": "fun-habits.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:323406162382:android:6498082627742dfaf1e39f",
+        "mobilesdk_app_id": "1:1043612408610:android:ed68262eb5733eb805e37b",
         "android_client_info": {
-          "package_name": "com.yolo.fun_habit_journal"
+          "package_name": "com.yolo.fun_habits"
         }
       },
       "oauth_client": [
         {
-          "client_id": "323406162382-m39k47asjq7vtfih4g26v0dtl3bhd4gj.apps.googleusercontent.com",
+          "client_id": "1043612408610-tv8944de2om3ulk5sbk514nohbnlioba.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCewMbkJQtDdBc6_9hOM2kPqy7qrcJdqS8"
+          "current_key": "AIzaSyD-hKIl_5p2XSTkMAF60AsIgomG_jat23U"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "323406162382-m39k47asjq7vtfih4g26v0dtl3bhd4gj.apps.googleusercontent.com",
+              "client_id": "1043612408610-tv8944de2om3ulk5sbk514nohbnlioba.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

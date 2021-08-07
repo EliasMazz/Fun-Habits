@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.yolo.fun_habit_journal.framework.presentation.habitlist.HabitListViewModel" />
+            type="com.yolo.fun_habits.framework.presentation.habitlist.HabitListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
