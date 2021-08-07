@@ -1,6 +1,6 @@
 package com.yolo.fun_habits.dependencyinjection
 
-import com.yolo.fun_habits.business.TempTest
+import com.yolo.fun_habits.framework.datasource.network.HabitFirestoreServiceTest
 import com.yolo.fun_habits.framework.presentation.TestBaseApplication
 import dagger.BindsInstance
 import dagger.Component
@@ -26,6 +26,6 @@ interface TestAppComponent : AppComponent {
         fun create(@BindsInstance app: TestBaseApplication): TestAppComponent
     }
 
-    fun inject(tempTest: TempTest)
+    fun inject(habitFirestoreServiceTest: HabitFirestoreServiceTest)
 
 }
