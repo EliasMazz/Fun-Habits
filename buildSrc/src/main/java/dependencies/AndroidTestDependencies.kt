@@ -13,5 +13,5 @@ object AndroidTestDependencies {
     val fragment_testing = "androidx.fragment:fragment-testing:${Versions.fragment_version}"
     val androidx_test_ext = "androidx.test.ext:junit-ktx:${Versions.androidx_test_ext}"
     val navigation_testing = "androidx.navigation:navigation-testing:${Versions.nav_components}"
-    val instrumentation_runner = "androidx.test.runner.AndroidJUnitRunner"
+    val instrumentation_runner = "com.yolo.fun_habits.framework.MockTestRunner"
 }
