@@ -35,8 +35,7 @@ constructor(
         title: String,
         body: String?,
         timestamp: String?
-    ): Int =
-        if (timestamp != null) {
+    ): Int = if (timestamp != null) {
             habitDao.updateHabit(
                 primaryKey = id,
                 title = title,
@@ -54,7 +53,6 @@ constructor(
 
     override suspend fun deleteHabit(id: String): Int =
         habitDao.deleteHabit(id)
-
 
     override suspend fun deleteHabitList(habitList: List<Habit>): Int {
         val habitListIds = habitList.map { it.id }
