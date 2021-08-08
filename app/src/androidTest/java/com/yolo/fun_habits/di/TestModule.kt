@@ -1,8 +1,10 @@
-package com.yolo.fun_habits.dependencyinjection
+package com.yolo.fun_habits.di
 
 import androidx.room.Room
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.yolo.fun_habits.business.domain.model.HabitFactory
+import com.yolo.fun_habits.framework.datasource.data.HabitDataFactory
 import com.yolo.fun_habits.framework.datasource.database.HabitDatabase
 import com.yolo.fun_habits.framework.presentation.TestBaseApplication
 import dagger.Module
@@ -44,4 +46,14 @@ object TestModule {
         firestore.firestoreSettings = settings
         return firestore
     }
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun provideHabitDataFactory(
+        application: TestBaseApplication,
+        habitFactory: HabitFactory
+    ): HabitDataFactory = HabitDataFactory(application, habitFactory)
+
+
 }
