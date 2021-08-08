@@ -1,8 +1,8 @@
 package com.yolo.fun_habits.framework.presentation
 
 import android.app.Application
-import com.yolo.fun_habits.dependencyinjection.AppComponent
-import com.yolo.fun_habits.dependencyinjection.DaggerAppComponent
+import com.yolo.fun_habits.di.AppComponent
+import com.yolo.fun_habits.di.DaggerAppComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 

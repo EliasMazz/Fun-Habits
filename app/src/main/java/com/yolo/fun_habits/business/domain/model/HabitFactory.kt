@@ -8,9 +8,7 @@ import javax.inject.Singleton
 @Singleton
 class HabitFactory
 @Inject
-constructor(
-    private val dateUtil: DateUtil
-) {
+constructor(private val dateUtil: DateUtil) {
     fun createSingleHabit(
         id: String? = null,
         title: String,
