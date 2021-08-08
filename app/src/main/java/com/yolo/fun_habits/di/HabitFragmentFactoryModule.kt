@@ -1,4 +1,4 @@
-package com.yolo.fun_habits.dependencyinjection
+package com.yolo.fun_habits.di
 
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider

@@ -1,4 +1,4 @@
-package com.yolo.fun_habits.dependencyinjection
+package com.yolo.fun_habits.di
 
 import androidx.lifecycle.ViewModelProvider
 import com.yolo.fun_habits.business.domain.model.HabitFactory

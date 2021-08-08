@@ -1,4 +1,4 @@
-package com.yolo.fun_habits.dependencyinjection
+package com.yolo.fun_habits.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

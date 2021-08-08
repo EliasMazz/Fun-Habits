@@ -1,4 +1,4 @@
-package com.yolo.fun_habits.dependencyinjection
+package com.yolo.fun_habits.di
 
 import com.yolo.fun_habits.framework.presentation.BaseApplication
 import com.yolo.fun_habits.framework.presentation.MainActivity
