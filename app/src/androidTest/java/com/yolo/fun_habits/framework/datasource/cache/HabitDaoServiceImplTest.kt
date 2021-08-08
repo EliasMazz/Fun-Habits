@@ -78,7 +78,7 @@ class HabitDaoServiceImplTest : BaseTest() {
     }
 
     @Test
-    fun insertHabitList_confirmInserted() = runBlocking {
+    fun insertHabitList_confirmInsertedList() = runBlocking {
         val habitList = habitDataFactory.createHabitList(10)
 
         habitDaoServiceImpl.insertHabitList(habitList)
@@ -99,7 +99,7 @@ class HabitDaoServiceImplTest : BaseTest() {
     }
 
     @Test
-    fun deleteHabitList_confirmDeleted() = runBlocking {
+    fun deleteHabitList_confirmDeletedList() = runBlocking {
         //get random list
         val habitList = habitDao.getAllHabits().take(3)
             .map { habitMapperHabit.mapFromEntity(it) }
@@ -114,6 +114,4 @@ class HabitDaoServiceImplTest : BaseTest() {
 
         assertFalse { result.containsAll(habitList) }
     }
-
-
 }
