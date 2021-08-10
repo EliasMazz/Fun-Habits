@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.yolo.fun_habits.business.data.util.GenericErrors
-import com.yolo.fun_habits.business.domain.state.DataStateManager
 import com.yolo.fun_habits.business.domain.state.DataState
+import com.yolo.fun_habits.business.domain.state.DataStateManager
 import com.yolo.fun_habits.business.domain.state.MessageType
 import com.yolo.fun_habits.business.domain.state.Response
 import com.yolo.fun_habits.business.domain.state.StateEvent

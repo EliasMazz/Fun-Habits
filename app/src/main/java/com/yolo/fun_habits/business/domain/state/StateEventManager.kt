@@ -2,6 +2,8 @@ package com.yolo.fun_habits.business.domain.state
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.yolo.fun_habits.framework.util.printLogD
+import com.yolo.fun_habits.util.EspressoIdlingResource
 
 /**
  * - Keeps track of active StateEvents in DataStateManager
@@ -22,21 +24,27 @@ class StateEventManager {
     }
 
     fun clearActiveStateEventCounter(){
+        printLogD("DCM", "Clear active state events")
+        EspressoIdlingResource.clear()
         activeStateEvents.clear()
         syncNumActiveStateEvents()
     }
 
     fun addStateEvent(stateEvent: StateEvent){
+        printLogD("DCM sem", "Add event: ${stateEvent?.eventName()}")
+        EspressoIdlingResource.increment()
         activeStateEvents.put(stateEvent.eventName(), stateEvent)
         syncNumActiveStateEvents()
     }
 
     fun removeStateEvent(stateEvent: StateEvent?){
+        printLogD("DCM sem", "remove state event: ${stateEvent?.eventName()}")
         activeStateEvents.remove(stateEvent?.eventName())
         syncNumActiveStateEvents()
     }
 
     fun isStateEventActive(stateEvent: StateEvent): Boolean{
+        printLogD("DCM sem", "is state event active? " + "${activeStateEvents.containsKey(stateEvent.eventName())}")
         for(eventName in activeStateEvents.keys){
             if(stateEvent.eventName().equals(eventName)){
                 return true
