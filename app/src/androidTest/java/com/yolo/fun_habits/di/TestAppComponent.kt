@@ -1,5 +1,6 @@
 package com.yolo.fun_habits.di
 
+import com.codingwithmitch.cleannotes.framework.presentation.end_to_end.HabitFeatureTest
 import com.yolo.fun_habits.framework.datasource.cache.HabitDaoServiceImplTest
 import com.yolo.fun_habits.framework.datasource.network.HabitFirestoreServiceTest
 import com.yolo.fun_habits.framework.presentation.TestBaseApplication
@@ -30,5 +31,7 @@ interface TestAppComponent : AppComponent {
     fun inject(habitFirestoreServiceTest: HabitFirestoreServiceTest)
 
     fun inject(habitDaoServiceImplTest: HabitDaoServiceImplTest)
+
+    fun inject(habitFeatureTest: HabitFeatureTest)
 
 }
