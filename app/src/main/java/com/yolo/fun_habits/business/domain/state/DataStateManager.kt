@@ -51,7 +51,7 @@ abstract class DataStateManager<ViewState> {
                             }
                         }
                     }
-                }.launchIn(getChannelScope())
+                }.launchIn(getScope())
         }
     }
 
@@ -60,9 +60,11 @@ abstract class DataStateManager<ViewState> {
         if (isJobAlreadyActive(stateEvent)) {
             return false
         }
-        // if a dialog is showing, do not allow new StateEvents
-        if (!isMessageStackEmpty()) {
-            return false
+        // Check the top of the stack, if a dialog is showing, do not allow new StateEvents
+        if(!isMessageStackEmpty()){
+            if(messageStack[0].response.uiComponentType == UIComponentType.Dialog){
+                return false
+            }
         }
         return true
     }
@@ -107,11 +109,11 @@ abstract class DataStateManager<ViewState> {
         return isStateEventActive(stateEvent)
     }
 
-    fun getChannelScope(): CoroutineScope {
-        return coroutineScope ?: setupNewChannelScope(CoroutineScope(IO))
+    fun getScope(): CoroutineScope {
+        return coroutineScope ?: setupNewScope(CoroutineScope(IO))
     }
 
-    private fun setupNewChannelScope(coroutineScope: CoroutineScope): CoroutineScope {
+    private fun setupNewScope(coroutineScope: CoroutineScope): CoroutineScope {
         this.coroutineScope = coroutineScope
         return this.coroutineScope as CoroutineScope
     }
