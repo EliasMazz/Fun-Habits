@@ -9,6 +9,7 @@ import com.yolo.fun_habits.di.TestAppComponent
 import com.yolo.fun_habits.framework.datasource.data.HabitDataFactory
 import com.yolo.fun_habits.framework.datasource.network.abstraction.IHabitFirestoreService
 import com.yolo.fun_habits.framework.datasource.network.mapper.HabitNetworkMapper
+import com.yolo.fun_habits.util.PASSWORD
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.runBlocking
@@ -23,8 +24,6 @@ import kotlin.random.Random
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-
-const val PASSWORD = "123456"
 
 @ExperimentalCoroutinesApi
 @FlowPreview
