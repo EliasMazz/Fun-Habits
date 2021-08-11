@@ -22,7 +22,7 @@ class UpdateHabitUseCase(
     private val habitCacheDataSource: IHabitCacheDataSource,
     private val habitNetworkDataSource: IHabitNetworkDataSource
 ) {
-    fun updateHabit(
+    fun invoke(
         habit: Habit,
         stateEvent: StateEvent
     ): Flow<DataState<HabitDetailViewState>?> = flow {

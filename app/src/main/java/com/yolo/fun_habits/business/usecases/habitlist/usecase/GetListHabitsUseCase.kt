@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.flow
 
 const val GET_LIST_HABITS_SUCCESS = "Successfully retrieved list habits from the cache."
 const val GET_LIST_HABITS_FAILED = "Failed to get the list of habits from the cache."
-const val GET_LIST_HABITS_NO_MATCHING_RESULTS = "There are no habits in the list"
+const val GET_LIST_HABITS_EMPTY = "There are no habits in the list"
 
 class GetListHabitstUseCase(
     private val habitCacheDataSource: IHabitCacheDataSource
@@ -38,7 +38,7 @@ class GetListHabitstUseCase(
                 var uiComponentType: UIComponentType? = UIComponentType.None
 
                 if (result.isEmpty()) {
-                    message = GET_LIST_HABITS_NO_MATCHING_RESULTS
+                    message = GET_LIST_HABITS_EMPTY
                     uiComponentType = UIComponentType.Toast
                 }
 

@@ -25,7 +25,7 @@ class InsertNewHabitUseCase(
     private val habitNetworkDataSource: IHabitNetworkDataSource,
     private val habitFactory: HabitFactory
 ) {
-    fun insertNewHabit(
+    fun invoke(
         id: String? = null,
         title: String,
         stateEvent: StateEvent

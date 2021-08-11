@@ -13,7 +13,7 @@ class SyncDeletedHabitsUseCase(
     private val habitCacheDataSource: IHabitCacheDataSource,
     private val habitNetworkDataSource: IHabitNetworkDataSource
 ) {
-    suspend fun syncDeletedHabits() {
+    suspend fun invoke() {
         val networkResult = safeNetworkCall(IO) {
             habitNetworkDataSource.getDeletedHabitList()
         }

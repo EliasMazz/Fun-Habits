@@ -25,7 +25,7 @@ class DeleteHabitUseCase(
     private val habitCacheDataSource: IHabitCacheDataSource,
     private val habitNetworkDataSouce: IHabitNetworkDataSource
 ) {
-    fun deleteHabit(
+    fun invoke(
         habit: Habit,
         stateEvent: StateEvent
     ): Flow<DataState<HabitDetailViewState>?> = flow {

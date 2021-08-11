@@ -25,7 +25,7 @@ class SyncHabitsUseCase(
     private val habitCacheDataSource: IHabitCacheDataSource,
     private val habitNetworkDataSource: IHabitNetworkDataSource
 ) {
-    suspend fun syncHabits() {
+    suspend fun invoke() {
         val cachedHabitList = getCachedHabits()
         val networkHabitList = getNetworkHabits()
         syncNetworkHabitsWithCachedHabits(
