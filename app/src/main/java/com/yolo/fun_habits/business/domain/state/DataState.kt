@@ -6,7 +6,6 @@ data class DataState<T>(
     var data: T? = null,
     var stateEvent: StateEvent? = null
 ) {
-
     companion object {
 
         fun <T> error(

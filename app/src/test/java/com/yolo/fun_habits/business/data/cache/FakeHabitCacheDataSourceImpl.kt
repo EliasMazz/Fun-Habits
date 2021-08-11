@@ -5,10 +5,9 @@ import com.yolo.fun_habits.business.domain.model.Habit
 import com.yolo.fun_habits.business.domain.util.DateUtil
 
 const val FORCE_DELETE_HABIT_EXCEPTION = "FORCE_DELETE_HABIT_EXCEPTION"
-const val FORCE_DELETE_HABITS_EXCEPTION = "FORCE_DELETES_HABIT_EXCEPTION"
 const val FORCE_UPDATE_HABIT_EXCEPTION = "FORCE_UPDATE_HABIT_EXCEPTION"
 const val FORCE_NEW_HABIT_EXCEPTION = "FORCE_NEW_HABIT_EXCEPTION"
-const val FORCE_SEARCH_HABITS_EXCEPTION = "FORCE_SEARCH_HABITS_EXCEPTION"
+const val FORCE_GET_ALL_HABITS_EXCEPTION = "FORCE_GET_ALL_HABITS_EXCEPTION"
 const val FORCE_GENERAL_FAILURE = "FORCE_GENERAL_FAILURE"
 const val DEFAULT_SUCCESS_DB_RESULT = 1
 const val DEFAULT_FAILURE_DB_RESULT = -1
@@ -20,11 +19,13 @@ constructor(
     private val dateUtil: DateUtil
 ) : IHabitCacheDataSource {
 
+    var forceError: String? = null
+
     override suspend fun insertHabit(habit: Habit): Long {
-        if (habit.id == FORCE_NEW_HABIT_EXCEPTION) {
+        if (forceError == FORCE_NEW_HABIT_EXCEPTION) {
             throw Exception("Something went wrong inserting the habit.")
         }
-        if (habit.id == FORCE_GENERAL_FAILURE) {
+        if (forceError == FORCE_GENERAL_FAILURE) {
             return DEFAULT_FAILURE_DB_RESULT.toLong()
         }
         habitsData[habit.id] = habit
@@ -32,10 +33,8 @@ constructor(
     }
 
     override suspend fun deleteHabit(id: String): Int {
-        if (id == FORCE_DELETE_HABIT_EXCEPTION) {
+        if (forceError == FORCE_DELETE_HABIT_EXCEPTION) {
             throw Exception("Something went wrong deleting the habit.")
-        } else if (id == FORCE_DELETE_HABITS_EXCEPTION) {
-            throw Exception("Something went wrong deleting the list of habits.")
         }
         return habitsData.remove(id)?.let { DEFAULT_SUCCESS_DB_RESULT } ?: DEFAULT_FAILURE_DB_RESULT
     }
@@ -56,7 +55,7 @@ constructor(
         body: String?,
         timestamp: String?
     ): Int {
-        if (id == FORCE_UPDATE_HABIT_EXCEPTION) {
+        if (forceError == FORCE_UPDATE_HABIT_EXCEPTION) {
             throw Exception("Something went wrong updating the habit.")
         }
         val updatedHabit = Habit(
@@ -72,9 +71,12 @@ constructor(
         } ?: DEFAULT_FAILURE_DB_RESULT
     }
 
-    override suspend fun getAllHabits(): List<Habit> {
-        return ArrayList(habitsData.values)
-    }
+    override suspend fun getAllHabits(): List<Habit> =
+        if (forceError == FORCE_GET_ALL_HABITS_EXCEPTION) {
+            throw Exception("Something went while retrieving list of habits ")
+        } else {
+            ArrayList(habitsData.values)
+        }
 
     override suspend fun searchHabitById(id: String): Habit? {
         return habitsData.get(id)
