@@ -16,8 +16,8 @@ class DependencyContainer {
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
 
     lateinit var habitDateUtil: DateUtil
-    lateinit var habitNetworkDataSource: IHabitNetworkDataSource
-    lateinit var habitCacheDataSource: IHabitCacheDataSource
+    lateinit var habitNetworkDataSource: FakeHabitNetworkDataSourceImpl
+    lateinit var habitCacheDataSource: FakeHabitCacheDataSourceImpl
     lateinit var habitFactory: HabitFactory
     lateinit var fakeHabitDataFactory: FakeHabitDataFactory
 
@@ -26,7 +26,6 @@ class DependencyContainer {
     }
 
     fun build() {
-
         habitDateUtil = DateUtil(dateFormat)
         habitFactory = HabitFactory(habitDateUtil)
 
