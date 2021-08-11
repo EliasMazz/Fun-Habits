@@ -38,7 +38,7 @@ class SyncDeletedHabitsUseCaseTest() {
         runBlocking {
             val networkHabits = networkDataSource.getAllHabits()
             val habitsToDelete: ArrayList<Habit> = ArrayList()
-            for (habit in habitsToDelete) {
+            for (habit in networkHabits) {
                 habitsToDelete.add(habit)
                 networkDataSource.deleteHabit(habit.id)
                 networkDataSource.insertOrUpdateHabit(habit)
@@ -49,7 +49,7 @@ class SyncDeletedHabitsUseCaseTest() {
                 }
             }
 
-            syncDeletedHabitsUseCase.syncDeletedHabits()
+            syncDeletedHabitsUseCase.invoke()
 
             for (habit in habitsToDelete) {
                 val cachedHabit = cacheDataSource.searchHabitById(habit.id)

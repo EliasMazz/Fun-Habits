@@ -48,7 +48,7 @@ class SyncHabitsUseCaseTest {
             val newHabitList = factory.createHabitList(50)
             networkDataSource.insertOrUpdateListHabit(newHabitList)
 
-            syncHabitsUseCase.syncHabits()
+            syncHabitsUseCase.invoke()
 
             for (habit in newHabitList) {
                 val cachedHabit = cacheDataSource.searchHabitById(habit.id)
@@ -62,7 +62,7 @@ class SyncHabitsUseCaseTest {
             val newHabits = factory.createHabitList(50)
             cacheDataSource.insertHabits(newHabits)
 
-            syncHabitsUseCase.syncHabits()
+            syncHabitsUseCase.invoke()
 
             for (habit in newHabits) {
                 val networkHabit = networkDataSource.searchHabit(habit)
@@ -89,7 +89,7 @@ class SyncHabitsUseCaseTest {
 
                 cacheDataSource.insertHabits(habitsToUpdate)
 
-                syncHabitsUseCase.syncHabits()
+                syncHabitsUseCase.invoke()
 
                 for (habit in habitsToUpdate) {
                     val networkHabit = networkDataSource.searchHabit(habit)
@@ -121,7 +121,7 @@ class SyncHabitsUseCaseTest {
 
             networkDataSource.insertOrUpdateListHabit(habitsToUpdate)
 
-            syncHabitsUseCase.syncHabits()
+            syncHabitsUseCase.invoke()
 
             for (habit in habitsToUpdate) {
                 val cacheHabit = cacheDataSource.searchHabitById(habit.id)
@@ -156,7 +156,7 @@ class SyncHabitsUseCaseTest {
 //        }
 //        println("BREAK")
 
-            syncHabitsUseCase.syncHabits()
+            syncHabitsUseCase.invoke()
 
 //          Confirm only a single 'updated_at' date was updated
             val habitsInNetowrk = networkDataSource.getAllHabits()
@@ -190,11 +190,11 @@ class SyncHabitsUseCaseTest {
 
             networkDataSource.insertOrUpdateHabit(updatedHabit)
 
-            syncHabitsUseCase.syncHabits()
+            syncHabitsUseCase.invoke()
 
             // simulate launch app again
             delay(1000)
-            syncHabitsUseCase.syncHabits()
+            syncHabitsUseCase.invoke()
 
             // confirm the date was not updated a second time
             val habits = networkDataSource.getAllHabits()
