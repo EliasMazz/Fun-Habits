@@ -1,9 +1,9 @@
 package com.yolo.fun_habits.business.usecases.habitdetail
 
 import com.yolo.fun_habits.business.data.cache.FORCE_UPDATE_HABIT_EXCEPTION
-import com.yolo.fun_habits.business.data.cache.abstraction.IHabitCacheDataSource
+import com.yolo.fun_habits.business.data.cache.FakeHabitCacheDataSourceImpl
 import com.yolo.fun_habits.business.data.cache.util.CacheErrors
-import com.yolo.fun_habits.business.data.network.abstraction.IHabitNetworkDataSource
+import com.yolo.fun_habits.business.data.network.FakeHabitNetworkDataSourceImpl
 import com.yolo.fun_habits.business.di.DependencyContainer
 import com.yolo.fun_habits.business.domain.model.Habit
 import com.yolo.fun_habits.business.domain.model.HabitFactory
@@ -20,12 +20,13 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.*
 
 @InternalCoroutinesApi
 class UpdateHabitUseCaseTest {
     private lateinit var dependencyContainer: DependencyContainer
-    private lateinit var cacheDataSource: IHabitCacheDataSource
-    private lateinit var networkDataSource: IHabitNetworkDataSource
+    private lateinit var cacheDataSource: FakeHabitCacheDataSourceImpl
+    private lateinit var networkDataSource: FakeHabitNetworkDataSourceImpl
     private lateinit var factory: HabitFactory
 
     private lateinit var updateHabitUseCase: UpdateHabitUseCase
@@ -55,7 +56,7 @@ class UpdateHabitUseCaseTest {
             created_at = randomHabit.created_at
         )
 
-        updateHabitUseCase.updateHabit(
+        updateHabitUseCase.invoke(
             habit = updateHabit,
             stateEvent = HabitDetailStateEvent.UpdateHabitEvent()
         ).collect(object : FlowCollector<DataState<HabitDetailViewState>?> {
@@ -81,7 +82,7 @@ class UpdateHabitUseCaseTest {
             body = "Updated body"
         )
 
-        updateHabitUseCase.updateHabit(
+        updateHabitUseCase.invoke(
             habit = updateHabit,
             stateEvent = HabitDetailStateEvent.UpdateHabitEvent()
         ).collect(object : FlowCollector<DataState<HabitDetailViewState>?> {
@@ -102,13 +103,15 @@ class UpdateHabitUseCaseTest {
 
     @Test
     fun `WHEN update habit throw an exception THEN confirm network and cache are not updated`() = runBlocking {
+        cacheDataSource.forceError = FORCE_UPDATE_HABIT_EXCEPTION
+
         val updateHabit = factory.createSingleHabit(
-            id = FORCE_UPDATE_HABIT_EXCEPTION,
+            id = UUID.randomUUID().toString(),
             title = "Updated title",
             body = "Updated body"
         )
 
-        updateHabitUseCase.updateHabit(
+        updateHabitUseCase.invoke(
             habit = updateHabit,
             stateEvent = HabitDetailStateEvent.UpdateHabitEvent()
         ).collect(object : FlowCollector<DataState<HabitDetailViewState>?> {

@@ -2,8 +2,10 @@ package com.yolo.fun_habits.business.usecases.habitlist
 
 import com.yolo.fun_habits.business.data.cache.FORCE_GENERAL_FAILURE
 import com.yolo.fun_habits.business.data.cache.FORCE_NEW_HABIT_EXCEPTION
+import com.yolo.fun_habits.business.data.cache.FakeHabitCacheDataSourceImpl
 import com.yolo.fun_habits.business.data.cache.abstraction.IHabitCacheDataSource
 import com.yolo.fun_habits.business.data.cache.util.CacheErrors
+import com.yolo.fun_habits.business.data.network.FakeHabitNetworkDataSourceImpl
 import com.yolo.fun_habits.business.data.network.abstraction.IHabitNetworkDataSource
 import com.yolo.fun_habits.business.di.DependencyContainer
 import com.yolo.fun_habits.business.domain.model.HabitFactory
@@ -13,18 +15,20 @@ import com.yolo.fun_habits.business.usecases.habitlist.usecase.INSERT_HABIT_SUCC
 import com.yolo.fun_habits.business.usecases.habitlist.usecase.InsertNewHabitUseCase
 import com.yolo.fun_habits.framework.presentation.habitlist.state.HabitListStateEvent
 import com.yolo.fun_habits.framework.presentation.habitlist.state.HabitListViewState
-import org.junit.jupiter.api.Assertions.*
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.*
 
 @InternalCoroutinesApi
 class InsertNewHabitUseCaseTest {
     private lateinit var dependencyContainer: DependencyContainer
-    private lateinit var habitCacheDataSource: IHabitCacheDataSource
-    private lateinit var habitNetworkDataSource: IHabitNetworkDataSource
+    private lateinit var habitCacheDataSource: FakeHabitCacheDataSourceImpl
+    private lateinit var habitNetworkDataSource: FakeHabitNetworkDataSourceImpl
+
     private lateinit var habitFactory: HabitFactory
 
     private lateinit var insertNewHabitUseCase: InsertNewHabitUseCase
@@ -49,7 +53,7 @@ class InsertNewHabitUseCaseTest {
             title = "new habit"
         )
 
-        insertNewHabitUseCase.insertNewHabit(
+        insertNewHabitUseCase.invoke(
             id = newHabit.id,
             title = newHabit.title,
             stateEvent = HabitListStateEvent.InsertNewHabitEvent(
@@ -70,12 +74,14 @@ class InsertNewHabitUseCaseTest {
 
     @Test
     fun `WHEN insert habit fail THEN confirm network and cache are not updated`() = runBlocking {
+        habitCacheDataSource.forceError = FORCE_GENERAL_FAILURE
+
         val newHabit = habitFactory.createSingleHabit(
-            id = FORCE_GENERAL_FAILURE,
+            id = UUID.randomUUID().toString(),
             title = "new habit"
         )
 
-        insertNewHabitUseCase.insertNewHabit(
+        insertNewHabitUseCase.invoke(
             id = newHabit.id,
             title = newHabit.title,
             stateEvent = HabitListStateEvent.InsertNewHabitEvent(
@@ -96,12 +102,14 @@ class InsertNewHabitUseCaseTest {
 
     @Test
     fun `WHEN insert habit throw exception THEN check generic error and confirm network and cache are not updated`() = runBlocking {
+        habitCacheDataSource.forceError = FORCE_NEW_HABIT_EXCEPTION
+
         val newHabit = habitFactory.createSingleHabit(
-            id = FORCE_NEW_HABIT_EXCEPTION,
+            id = UUID.randomUUID().toString(),
             title = "new habit"
         )
 
-        insertNewHabitUseCase.insertNewHabit(
+        insertNewHabitUseCase.invoke(
             id = newHabit.id,
             title = newHabit.title,
             stateEvent = HabitListStateEvent.InsertNewHabitEvent(
