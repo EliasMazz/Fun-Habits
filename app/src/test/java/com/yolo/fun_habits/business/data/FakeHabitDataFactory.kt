@@ -8,15 +8,11 @@ class FakeHabitDataFactory(
     private val testClassLoader: ClassLoader
 ) {
 
-    fun produceListOfHabits(): List<Habit> {
-        val habits: List<Habit> = Gson()
-            .fromJson(
-                getHabitsFromFile("habit_list.json"),
-                object : TypeToken<List<Habit>>() {}.type
-            )
-
-        return habits
-    }
+    fun produceListOfHabits(): List<Habit> =
+        Gson().fromJson(
+            getHabitsFromFile("habit_list.json"),
+            object : TypeToken<List<Habit>>() {}.type
+        )
 
     fun produceHashMapOfHabits(habitList: List<Habit>): HashMap<String, Habit> {
         val map = HashMap<String, Habit>()
@@ -33,7 +29,6 @@ class FakeHabitDataFactory(
     private fun getHabitsFromFile(fileName: String): String {
         return testClassLoader.getResource(fileName).readText()
     }
-
 }
 
 
