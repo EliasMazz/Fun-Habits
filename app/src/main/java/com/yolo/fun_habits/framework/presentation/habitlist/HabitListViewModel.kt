@@ -38,7 +38,7 @@ constructor(
         val job: Flow<DataState<HabitListViewState>?> = when (stateEvent) {
 
             is InsertNewHabitEvent -> {
-                habitListInteractors.insertNewHabitUseCase.insertNewHabit(
+                habitListInteractors.insertNewHabitUseCase.invoke(
                     title = stateEvent.title,
                     stateEvent = stateEvent
                 )

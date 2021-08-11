@@ -38,7 +38,7 @@ constructor(
             is HabitDetailStateEvent.UpdateHabitEvent -> {
                 val id = getHabit()?.id
                 if (!isHabitTitleNull() && id != null) {
-                    habitDetailInteractors.updateHabitUseCase.updateHabit(
+                    habitDetailInteractors.updateHabitUseCase.invoke(
                         habit = getHabit()!!,
                         stateEvent = stateEvent
                     )
@@ -57,7 +57,7 @@ constructor(
             }
 
             is HabitDetailStateEvent.DeleteHabitEvent -> {
-                habitDetailInteractors.deleteHabitUseCase.deleteHabit(
+                habitDetailInteractors.deleteHabitUseCase.invoke(
                     habit = stateEvent.habit,
                     stateEvent = stateEvent
                 )

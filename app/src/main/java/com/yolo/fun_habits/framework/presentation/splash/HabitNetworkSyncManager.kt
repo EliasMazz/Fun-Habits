@@ -31,12 +31,12 @@ constructor(
         val syncJob = coroutineScope.launch {
             launch {
                 printLogD("SyncDeletedHabits", "syncing deleted habits.")
-                syncDeletedHabits.syncDeletedHabits()
+                syncDeletedHabits.invoke()
             }.join()
 
             launch {
                 printLogD("SyncNotes", "syncing habits.")
-                syncHabits.syncHabits()
+                syncHabits.invoke()
             }
         }
         syncJob.invokeOnCompletion {
