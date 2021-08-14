@@ -16,6 +16,5 @@ interface UIController {
         response: Response,
         stateMessageCallback: StateMessageCallback
     )
-
 }
 

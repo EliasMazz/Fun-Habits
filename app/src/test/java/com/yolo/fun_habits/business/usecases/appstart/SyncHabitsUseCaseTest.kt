@@ -150,20 +150,12 @@ class SyncHabitsUseCaseTest {
 
             networkDataSource.insertOrUpdateHabit(updatedHabit)
 
-//        ONLY FOR DEBUG
-//        for(habit in networkDataSource.getAllHabits()){
-//         println("date: ${habit.updated_at}")
-//        }
-//        println("BREAK")
-
             syncHabitsUseCase.invoke()
 
-//          Confirm only a single 'updated_at' date was updated
+            //Confirm only a single 'updated_at' date was updated
             val habitsInNetowrk = networkDataSource.getAllHabits()
             for (habit in habitsInNetowrk) {
                 cacheDataSource.searchHabitById(habit.id)?.let { habit ->
-//                ONLY FOR DEBUG
-//                println("date: ${habit.updated_at}")
                     if (habit.id == updatedHabit.id) {
                         Assertions.assertTrue { habit.updated_at == newDate }
                     } else {
