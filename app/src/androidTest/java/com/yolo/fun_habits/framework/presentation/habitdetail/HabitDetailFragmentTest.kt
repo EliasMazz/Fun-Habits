@@ -73,7 +73,7 @@ class HabitDetailFragmentTest : BaseTest() {
      * to solve the issues mentioned by using test orchestrator, but that will prevent me from getting reports
      */
     @Test
-    fun generalDetailFragmentTest() {
+    fun generalDetailHabitFragmentTest() {
 
         val testHabit = habitDataFactory.createSingleHabit(
             id = UUID.randomUUID().toString(),
