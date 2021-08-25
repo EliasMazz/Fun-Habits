@@ -5,6 +5,7 @@ import com.yolo.fun_habits.framework.datasource.cache.HabitDaoServiceImplTest
 import com.yolo.fun_habits.framework.datasource.network.HabitFirestoreServiceTest
 import com.yolo.fun_habits.framework.presentation.TestBaseApplication
 import com.yolo.fun_habits.framework.presentation.habitdetail.HabitDetailFragmentTest
+import com.yolo.fun_habits.framework.presentation.habitlist.HabitListFragmentTest
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,5 +37,7 @@ interface TestAppComponent : AppComponent {
     fun inject(habitFeatureTest: HabitFeatureTest)
 
     fun inject(habitDetailFragmentTest: HabitDetailFragmentTest)
+
+    fun inject(habitListFragmentTest: HabitListFragmentTest)
 
 }
