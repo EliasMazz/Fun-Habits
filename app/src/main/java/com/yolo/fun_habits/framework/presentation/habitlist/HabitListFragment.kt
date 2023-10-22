@@ -21,7 +21,6 @@ import com.yolo.fun_habits.framework.presentation.common.BaseFragment
 import com.yolo.fun_habits.framework.presentation.common.hideKeyboard
 import com.yolo.fun_habits.framework.presentation.habitdetail.HABIT_DETAIL_SELECTED_HABIT_BUNDLE_KEY
 import com.yolo.fun_habits.framework.presentation.habitlist.state.HabitListStateEvent
-import kotlinx.android.synthetic.main.fragment_habit_list.swipe_refresh
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
@@ -123,10 +122,15 @@ class HabitListFragment constructor(
         viewModel.setStateEvent(HabitListStateEvent.GetHabitsLisEvent)
     }
 
-    private fun setupSwipeRefresh() =
+    private fun setupSwipeRefresh() {
+       /*
         swipe_refresh.setOnRefreshListener {
             swipe_refresh.isRefreshing = false
         }
+
+        */
+    }
+
 
     private fun setupFAB() {
         binding.addNewHabitFab.setOnClickListener {

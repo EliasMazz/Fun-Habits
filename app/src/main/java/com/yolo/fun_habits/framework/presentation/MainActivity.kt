@@ -27,7 +27,6 @@ import com.yolo.fun_habits.framework.presentation.common.displayToast
 import com.yolo.fun_habits.framework.presentation.common.gone
 import com.yolo.fun_habits.framework.presentation.common.visible
 import com.yolo.fun_habits.framework.util.TodoCallback
-import kotlinx.android.synthetic.main.activity_main.main_progress_bar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
@@ -63,9 +62,9 @@ class MainActivity : AppCompatActivity(), UIController {
 
     override fun displayProgressBar(isDisplayed: Boolean) =
         if (isDisplayed) {
-            main_progress_bar.visible()
+            //main_progress_bar.visible()
         } else {
-            main_progress_bar.gone()
+            //main_progress_bar.gone()
         }
 
     override fun onSupportNavigateUp(): Boolean {

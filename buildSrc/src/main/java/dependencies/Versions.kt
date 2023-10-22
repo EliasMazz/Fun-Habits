@@ -1,16 +1,16 @@
 package dependencies
 
 object Versions {
-    val gradle = "4.0.1"
-    val compilesdk = 29
+    val gradle = "8.1.1"
+    val compilesdk = 33
     val minsdk = 21
-    val targetsdk = 29
-    val kotlin = "1.3.61"
+    val targetsdk = 33
+    val kotlin = "1.8.20"
     val ktx = "1.2.0"
     val dagger = "2.25.4"
     val nav_components = "2.3.0-alpha06"
     val material_dialogs = "3.2.1"
-    val room = "2.1.0"
+    val room = "2.5.0"
     val appcompat = "1.1.0-rc01"
     val constraintlayout = "2.0.4"
     val material_design = "1.1.0"

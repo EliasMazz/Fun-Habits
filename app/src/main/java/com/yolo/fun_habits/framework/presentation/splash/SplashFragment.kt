@@ -19,8 +19,6 @@ import com.yolo.fun_habits.databinding.FragmentSplashBinding
 import com.yolo.fun_habits.framework.datasource.network.EMAIL
 import com.yolo.fun_habits.framework.presentation.common.BaseFragment
 import com.yolo.fun_habits.framework.util.printLogD
-import kotlinx.android.synthetic.main.fragment_splash.splash_fragment_container
-import kotlinx.android.synthetic.main.fragment_splash.splash_icon
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
@@ -64,8 +62,8 @@ constructor(
         val request = ImageRequest.Builder(requireContext())
             .data(SPLASH_IMAGE_URL)
             .target { drawable ->
-                splash_icon.setImageDrawable(drawable)
-                splash_fragment_container.transitionToEnd()
+                //splash_icon.setImageDrawable(drawable)
+                //splash_fragment_container.transitionToEnd()
             }.build()
 
         disposable = imageLoader.enqueue(request)
@@ -99,6 +97,8 @@ constructor(
                                     "Signing in to Firebase: ${it.result}"
                                 )
                                 subscribeObservers()
+                            }else{
+                                checkFirebaseAuth()
                             }
                         }
                 }

@@ -15,7 +15,7 @@ import javax.inject.Singleton
 const val HABITS_COLLECTION = "habits"
 const val USERS_COLLECTION = "users"
 const val HABITS_DELETED_COLLECTION = "habits_deleted"
-const val USER_ID = "dJFxDcMBmzL80FJNyYLAjcFjBnL2" //TODO hardcoded to test
+const val USER_ID = "8ztYGB0CSgh8t3XHgslLxpX1CpG2" //TODO hardcoded to test
 const val EMAIL = "admin@test.com"
 
 @Singleton

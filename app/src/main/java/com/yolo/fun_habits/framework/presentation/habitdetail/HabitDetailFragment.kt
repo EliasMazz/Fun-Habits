@@ -27,7 +27,6 @@ import com.yolo.fun_habits.framework.presentation.common.hideKeyboard
 import com.yolo.fun_habits.framework.presentation.habitdetail.state.HabitDetailStateEvent
 import com.yydcdut.markdown.MarkdownProcessor
 import com.yydcdut.markdown.syntax.edit.EditFactory
-import kotlinx.android.synthetic.main.fragment_habit_detail.habit_body
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 
@@ -97,7 +96,7 @@ class HabitDetailFragment constructor(
         activity?.run {
             val markdownProcessor = MarkdownProcessor(this)
             markdownProcessor.factory(EditFactory.create())
-            markdownProcessor.live(habit_body)
+            //markdownProcessor.live(habit_body)
         }
     }
 

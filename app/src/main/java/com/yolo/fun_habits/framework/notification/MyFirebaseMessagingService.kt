@@ -11,11 +11,10 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.yolo.fun_habits.BuildConfig
 import com.yolo.fun_habits.R
 import com.yolo.fun_habits.framework.presentation.MainActivity
 
-private const val NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel"
+private const val NOTIFICATION_CHANNEL_ID =  ".channel"
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
